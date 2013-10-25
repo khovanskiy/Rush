@@ -21,7 +21,13 @@ SOURCES += main.cpp\
     background.cpp \
     movieclip.cpp \
     mouseevent.cpp \
-    mouse.cpp
+    mouse.cpp \
+    vector2d.cpp \
+    interactiveobject.cpp \
+    eventdispatcher.cpp \
+    stage.cpp \
+    keyboard.cpp \
+    keyboardevent.cpp
 
 HEADERS  += program.h \
     camera.h \
@@ -31,4 +37,11 @@ HEADERS  += program.h \
     background.h \
     movieclip.h \
     mouseevent.h \
-    mouse.h
+    mouse.h \
+    vector2d.h \
+    interactiveobject.h \
+    function.h \
+    eventdispatcher.h \
+    stage.h \
+    keyboard.h \
+    keyboardevent.h

@@ -29,7 +29,7 @@ struct C : B
     }
 };
 
-int main(int argc, char *argv[])
+int main(int, char*)
 {
     /*QApplication a(argc, argv);
     Program w;
