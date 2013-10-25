@@ -31,6 +31,11 @@ void Vector2D::mul(double k)
     this->y *= k;
 }
 
+void Vector2D::setLength(double k)
+{
+    mul(k / getLength());
+}
+
 double Vector2D::getLength() const
 {
     return sqrt(this->x * this->x + this->y * this->y);
@@ -38,7 +43,26 @@ double Vector2D::getLength() const
 
 void Vector2D::normalize()
 {
-    mul(getLength());
+    mul(1 / getLength());
 }
 
+double Vector2D::scalar(const Vector2D &a, const Vector2D &b)
+{
+    return a.x * b.x + a.y * b.y;
+}
+
+double Vector2D::angleBetween(const Vector2D &a, const Vector2D &b)
+{
+    return atan2(a.x * b.y - b.x * a.y, scalar(a,b));
+}
+
+double Vector2D::scalar(const Vector2D &other)
+{
+    return Vector2D::scalar(*this, other);
+}
+
+double Vector2D::angleBetween(const Vector2D &other)
+{
+    return Vector2D::angleBetween(*this, other);
+}
 
