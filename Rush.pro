@@ -12,72 +12,69 @@ TARGET = Rush
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        program.cpp \
-    camera.cpp \
-    graphiccore.cpp \
-    console.cpp \
+SOURCES += background.cpp \
     bitmap.cpp \
-    background.cpp \
+    camera.cpp \
+    console.cpp \
+    displayobject.cpp \
+    displayobjectcontainer.cpp \
+    event.cpp \
+    eventdispatcher.cpp \
+    graphiccore.cpp \
+    interactiveobject.cpp \
+    interface.cpp \
+    keyboard.cpp \
+    keyboardevent.cpp \
+    main.cpp\
     movieclip.cpp \
     mouseevent.cpp \
     mouse.cpp \
-<<<<<<< HEAD
-    physicsobject.cpp \
     physicsbox.cpp \
     physicscircle.cpp \
-    physicssystem.cpp \
-    physicspoint.cpp \
-    physicswheel.cpp \
-    physicsvehicle.cpp \
     physicschassis.cpp \
+    physicsobject.cpp \
+    physicspoint.cpp \
+    physicsvehicle.cpp \
+    physicsvehiclebody.cpp \
     physicsvehicleengine.cpp \
+    physicssystem.cpp \
     physicsturret.cpp \
-    physicsvehiclebody.cpp
-=======
+    physicswheel.cpp \
+    program.cpp \
     vector2d.cpp \
-    interactiveobject.cpp \
-    eventdispatcher.cpp \
-    stage.cpp \
-    keyboard.cpp \
-    keyboardevent.cpp \
-    event.cpp \
-    displayobjectcontainer.cpp \
-    displayobject.cpp \
-    interface.cpp
->>>>>>> origin/dev
+    stage.cpp
 
-HEADERS  += program.h \
-    camera.h \
-    graphiccore.h \
-    console.h \
+HEADERS  += background.h \
     bitmap.h \
-    background.h \
+    camera.h \
+    console.h \
+    displayobject.h \
+    displayobjectcontainer.h \
+    event.h \
+    eventdispatcher.h \
+    function.h \
+    graphiccore.h \
+    interactiveobject.h \
+    interface.h \
+    keyboard.h \
+    keyboardevent.h \
     movieclip.h \
     mouseevent.h \
     mouse.h \
-<<<<<<< HEAD
-    physicsobject.h \
     physicsbox.h \
     physicscircle.h \
-    physicssystem.h \
-    physicspoint.h \
-    physicswheel.h \
-    physicsvehicle.h \
     physicschassis.h \
+    physicsobject.h \
+    physicspoint.h \
+    physicsvehicle.h \
+    physicsvehiclebody.h \
     physicsvehicleengine.h \
+    physicssystem.h \
     physicsturret.h \
-    physicsvehiclebody.h
-=======
-    vector2d.h \
-    interactiveobject.h \
-    function.h \
-    eventdispatcher.h \
+    physicswheel.h \
+    program.h \
     stage.h \
-    keyboard.h \
-    keyboardevent.h \
-    event.h \
-    displayobjectcontainer.h \
-    displayobject.h \
-    interface.h
->>>>>>> origin/dev
+    vector2d.h
+
+
+
