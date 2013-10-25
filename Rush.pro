@@ -21,7 +21,18 @@ SOURCES += main.cpp\
     background.cpp \
     movieclip.cpp \
     mouseevent.cpp \
-    mouse.cpp
+    mouse.cpp \
+    physicsobject.cpp \
+    physicsbox.cpp \
+    physicscircle.cpp \
+    physicssystem.cpp \
+    physicspoint.cpp \
+    physicswheel.cpp \
+    physicsvehicle.cpp \
+    physicschassis.cpp \
+    physicsvehicleengine.cpp \
+    physicsturret.cpp \
+    physicsvehiclebody.cpp
 
 HEADERS  += program.h \
     camera.h \
@@ -31,4 +42,15 @@ HEADERS  += program.h \
     background.h \
     movieclip.h \
     mouseevent.h \
-    mouse.h
+    mouse.h \
+    physicsobject.h \
+    physicsbox.h \
+    physicscircle.h \
+    physicssystem.h \
+    physicspoint.h \
+    physicswheel.h \
+    physicsvehicle.h \
+    physicschassis.h \
+    physicsvehicleengine.h \
+    physicsturret.h \
+    physicsvehiclebody.h
