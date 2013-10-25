@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     event.cpp \
     displayobjectcontainer.cpp \
     displayobject.cpp \
-    interface.cpp
+    interface.cpp \
+    matrix.cpp
 
 HEADERS  += program.h \
     camera.h \
@@ -52,4 +53,5 @@ HEADERS  += program.h \
     event.h \
     displayobjectcontainer.h \
     displayobject.h \
-    interface.h
+    interface.h \
+    matrix.h
