@@ -20,14 +20,12 @@
 
 GraphicCore* GraphicCore::instance = 0;
 
-class Console;
-
 GraphicCore::GraphicCore() : QGLWidget(QGLFormat(QGL::SampleBuffers), 0)
 {
     render2d = new QPainter();
     pen = new QPen(QColor(255,255,255));
-    setWindowTitle("OpenGL game");
-    setFixedSize(Camera::getInstance()->width, Camera::getInstance()->height);
+    setWindowTitle("Rush game");
+    setFixedSize(Camera::gi()->width, Camera::gi()->height);
     setAutoFillBackground(false);
     show();
 }
@@ -42,7 +40,6 @@ GraphicCore* GraphicCore::getInstance()
 {
     if (instance == 0)
     {
-        Console::print("1. Init graphic core");
         instance = new GraphicCore();
     }
     return instance;
@@ -54,9 +51,9 @@ void GraphicCore::paintEvent(QPaintEvent*)
     render2d->setBackground(QBrush(QColor(0,0,0)));
     render2d->eraseRect(QRect(this->rect()));
     render2d->setRenderHint(QPainter::Antialiasing);
-    Background::getInstance()->render(render2d);
-    Stage::getInstance()->render(render2d);
-    Interface::getInstance()->render(render2d);
+    Background::gi()->render(render2d);
+    Stage::gi()->render(render2d);
+    Interface::gi()->render(render2d);
     render2d->end();
 }
 

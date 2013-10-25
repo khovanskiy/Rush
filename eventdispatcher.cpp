@@ -6,10 +6,12 @@
 
 EventDispatcher::EventDispatcher()
 {
+
 }
 
 EventDispatcher::~EventDispatcher()
 {
+
 }
 
 void EventDispatcher::addEventListener(QString type, Function* func)

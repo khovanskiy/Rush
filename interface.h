@@ -6,10 +6,10 @@
 class Interface : public DisplayObjectContainer
 {
 public:
-    static Interface* getInstance();
+    static Interface* gi();
 private:
     Interface();
-    ~Interface();
+    virtual ~Interface();
     static Interface* instance;
 };
 

@@ -12,7 +12,7 @@ Interface::~Interface()
 
 }
 
-Interface* Interface::getInstance()
+Interface* Interface::gi()
 {
     if (instance == 0)
     {

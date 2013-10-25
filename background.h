@@ -6,7 +6,7 @@
 class Background : public DisplayObjectContainer
 {
 public:
-    static Background* getInstance();
+    static Background* gi();
 private:
     Background();
     ~Background();

@@ -6,7 +6,7 @@
 class Stage : public DisplayObjectContainer
 {
 public:
-    static Stage* getInstance();
+    static Stage* gi();
 private:
     Stage();
     ~Stage();

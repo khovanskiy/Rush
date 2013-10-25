@@ -6,7 +6,7 @@
 class Camera
 {
 public:
-    static Camera* getInstance();
+    static Camera* gi();
     int width;
     int height;
     QMatrix* getMatrix();

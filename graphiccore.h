@@ -9,9 +9,13 @@
 #include "displayobjectcontainer.h"
 #include "eventdispatcher.h"
 
+class EventDispatcher;
+
 class GraphicCore : public QGLWidget, public EventDispatcher
 {
 public:
+    GraphicCore();
+    ~GraphicCore();
     static GraphicCore* getInstance();
     void render();
 protected:
@@ -24,8 +28,6 @@ private:
     static GraphicCore* instance;
     QPainter* render2d;
     QPen* pen;
-    GraphicCore();
-    ~GraphicCore();
 };
 
 #endif // GRAPHICCORE_H

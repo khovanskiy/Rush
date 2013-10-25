@@ -27,7 +27,11 @@ SOURCES += main.cpp\
     eventdispatcher.cpp \
     stage.cpp \
     keyboard.cpp \
-    keyboardevent.cpp
+    keyboardevent.cpp \
+    event.cpp \
+    displayobjectcontainer.cpp \
+    displayobject.cpp \
+    interface.cpp
 
 HEADERS  += program.h \
     camera.h \
@@ -44,4 +48,8 @@ HEADERS  += program.h \
     eventdispatcher.h \
     stage.h \
     keyboard.h \
-    keyboardevent.h
+    keyboardevent.h \
+    event.h \
+    displayobjectcontainer.h \
+    displayobject.h \
+    interface.h

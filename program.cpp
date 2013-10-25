@@ -7,7 +7,7 @@ Program::Program(QWidget *parent) : QMainWindow(parent)
     Vector2D v1;
     v1.x = 1;
     v1.y = 2;
-    Console::print(v1);
+    //Console::print(v1);
 }
 
 Program::~Program()

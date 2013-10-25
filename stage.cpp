@@ -12,7 +12,7 @@ Stage::~Stage()
 
 }
 
-Stage* Stage::getInstance()
+Stage* Stage::gi()
 {
     if (instance == 0)
     {
