@@ -12,7 +12,7 @@ Background::~Background()
 
 }
 
-Background* Background::getInstance()
+Background* Background::gi()
 {
     if (instance == 0)
     {

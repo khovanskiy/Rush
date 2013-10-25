@@ -14,7 +14,7 @@ QMatrix* Camera::getMatrix()
     return matrix;
 }
 
-Camera* Camera::getInstance()
+Camera* Camera::gi()
 {
     if (instance == 0)
     {

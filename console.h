@@ -6,6 +6,8 @@
 #include <QThread>
 #include <QTextStream>
 
+#include "vector2d.h"
+
 class Console
 {
 public:
@@ -19,6 +21,11 @@ public:
     static void print(QString string)
     {
         print<QString>(string);
+    }
+
+    static void print(Vector2D v)
+    {
+        print(QString("(")+QVariant(v.x).toString()+","+QVariant(v.y).toString()+")");
     }
 
     static void printThreadId()
