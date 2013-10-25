@@ -10,7 +10,7 @@ class EventDispatcher;
 class Event
 {
 public:
-    //virtual ~Event() {}
+    virtual ~Event() {}
     static const QString INIT;
     static const QString COMPLETE;
     static const QString ENTER_FRAME;

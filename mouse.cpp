@@ -26,9 +26,9 @@ void Mouse::Invoke(const Event &event)
 
 void Mouse::bubbleEvent(const Event &e)
 {
-    Background::getInstance()->handleEvent(e);
-    Stage::getInstance()->handleEvent(e);
-    Interface::getInstance()->handleEvent(e);
+    Background::gi()->handleEvent(e);
+    Stage::gi()->handleEvent(e);
+    Interface::gi()->handleEvent(e);
     dispatchEvent(e);
 }
 
