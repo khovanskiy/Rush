@@ -9,7 +9,7 @@
 class StateFactory
 {
 public:
-    static std::shared_ptr<State> create(StateEnum);
+    static State* create(StateEnum);
 };
 
 #endif // STATEFACTORY_H

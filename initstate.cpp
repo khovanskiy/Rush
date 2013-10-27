@@ -7,6 +7,8 @@
 #include "stage.h"
 #include "math.h"
 #include "background.h"
+#include "keyboard.h"
+#include "keyboardevent.h"
 
 InitState::InitState()
 {
@@ -22,15 +24,15 @@ void InitState::init()
 {
     Console::print("INIT");
     sb = new Bitmap();
-    sb->addEventListener(this);
-    sb->load("D:\\test2.jpg");
-    Background::gi()->addChild(sb);
+    sb->load("D:\\test.jpg");
+    Stage::gi()->addChild(sb);
+    Keyboard::gi()->addEventListener(this);
 }
 
 void InitState::focus()
 {
     Console::print("FOCUS");
-    sb->dispatchEvent(Event(sb, Event::CHANGE));
+    //sb->dispatchEvent(Event(sb, Event::CHANGE));
 }
 
 void InitState::render()
@@ -40,9 +42,9 @@ void InitState::render()
 void InitState::Invoke(const Event &event)
 {
     Console::print(QString("Recieved: ")+event.type);
-    if (event.type == Event::COMPLETE)
+    if (event.type == KeyboardEvent::KEY_UP)
     {
-        sb->removeEventListener(this);
+        context->changeState(StateEnum::INIT);
     }
 }
 
@@ -54,4 +56,8 @@ void InitState::defocus()
 void InitState::release()
 {
     Console::print("RELEASE");
+    Keyboard::gi()->removeEventListener(this);
+    Stage::gi()->removeChild(sb);
+    delete sb;
+    sb = 0;
 }

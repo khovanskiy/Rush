@@ -20,8 +20,9 @@ public:
     void changeState(StateEnum name);
     void Invoke(const Event &event);
 private:
-    typedef std::vector<std::shared_ptr<State>> LIST;
+    typedef std::vector<State*> LIST;
     LIST states;
+    int recuirsion_count;
 };
 
 #endif // STATECONTEXT_H

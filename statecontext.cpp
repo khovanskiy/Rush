@@ -8,49 +8,56 @@
 
 StateContext::StateContext()
 {
+    recuirsion_count = 0;
     GraphicCore::gi()->addEventListener(this);
     push(StateEnum::INIT);
 }
 
 void StateContext::Invoke(const Event &event)
 {
+    ++recuirsion_count;
     if (event.type == Event::ENTER_FRAME)
     {
-        for (LIST::iterator it = states.begin(); it != states.end(); it++)
+        for (LIST::iterator i = states.begin(); i != states.end(); ++i)
         {
-            if (*it != 0)
+            if (*i)
             {
-                it->get()->render();
+                (*i)->render();
             }
         }
     }
+    --recuirsion_count;
 }
 
 void StateContext::push(StateEnum name)
 {
+    ++recuirsion_count;
     Console::print("Turn ON");
     if (states.size() > 0)
     {
-        states[states.size() - 1].get()->defocus();
+        states[states.size() - 1]->defocus();
     }
-    std::shared_ptr<State> s = StateFactory::create(name);
-    s.get()->setContext(this);
+    State* s = 0;
+    s = StateFactory::create(name);
+    s->setContext(this);
+    Console::print(s);
+    s->init();
     states.push_back(s);
-    s.get()->init();
-    s.get()->focus();
+    s->focus();
+    --recuirsion_count;
 }
 
 void StateContext::pop()
 {
     Console::print("Turn OFF");
-    std::shared_ptr<State> last = states[states.size() - 1];
-    last.get()->defocus();
-    last.get()->release();
+    State* last = states[states.size() - 1];
+    last->defocus();
+    last->release();
     states.pop_back();
-    last.reset();
+    delete last;
     if (states.size() > 0)
     {
-        states[states.size() - 1].get()->focus();
+        states[states.size() - 1]->focus();
     }
 }
 

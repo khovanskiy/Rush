@@ -21,7 +21,7 @@ void Keyboard::Invoke(const Event &event)
     dispatchEvent(KeyboardEvent(this, event.type, st->keyCode));
 }
 
-Keyboard* Keyboard::getInstance()
+Keyboard* Keyboard::gi()
 {
     if (instance == 0)
     {

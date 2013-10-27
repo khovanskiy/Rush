@@ -27,7 +27,7 @@ void DisplayObjectContainer::removeChild(DisplayObject* child)
     {
         return;
     }
-    children.erase(std::remove(children.begin(),children.end(), child));
+    children.erase(std::remove(children.begin(), children.end(), child), children.end());
 }
 
 bool DisplayObjectContainer::hasChild(DisplayObject* child) const

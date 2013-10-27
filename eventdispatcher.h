@@ -19,6 +19,7 @@ public:
     void dispatchEvent(const Event&);
 private:
     LIST listeners;
+    LIST nn;
     int recuirsion_count;
 };
 

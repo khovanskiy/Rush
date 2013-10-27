@@ -7,7 +7,7 @@
 class Keyboard : public EventDispatcher, public EventHandler
 {
 public:
-    static Keyboard* getInstance();
+    static Keyboard* gi();
     void Invoke(const Event &event);
 private:
     Keyboard();

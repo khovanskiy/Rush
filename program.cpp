@@ -7,31 +7,6 @@
 #include "eventdispatcher.h"
 #include "eventhandler.h"
 
-
-class A
-{
-public:
-    A()
-    {
-        renderEvent = new EventDispatcher();
-    }
-
-    EventDispatcher* renderEvent;
-};
-
-class B : public EventHandler
-{
-public:
-    B()
-    {
-
-    }
-    virtual void Invoke(const Event &event)
-    {
-        Console::print(event.type + " :: message is recieved");
-    }
-};
-
 Program::Program(QWidget *parent) : QMainWindow(parent)
 {
     core = GraphicCore::gi();

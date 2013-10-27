@@ -13,7 +13,14 @@ void EventDispatcher::addEventListener(EventHandler* func)
     {
         return;
     }
-    listeners.push_back(std::make_pair(func, true));
+    if (recuirsion_count == 0)
+    {
+        listeners.insert(listeners.end(), std::make_pair(func, true));
+    }
+    else
+    {
+        nn.push_back(std::make_pair(func, true));
+    }
 }
 
 void EventDispatcher::removeEventListener(EventHandler* func)
@@ -52,10 +59,18 @@ void EventDispatcher::removeEventListener(EventHandler* func)
 
 void EventDispatcher::dispatchEvent(const Event& event)
 {
+    if (recuirsion_count == 0)
+    {
+        while (!nn.empty())
+        {
+            listeners.push_back(nn.back());
+            nn.pop_back();
+        }
+    }
+
     ++recuirsion_count;
     for (LIST::iterator i = listeners.begin(); i != listeners.end(); ++i)
     {
-        Console::print(i->second);
         if (i->second)
         {
             i->first->Invoke(event);
