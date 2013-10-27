@@ -43,7 +43,23 @@ SOURCES += background.cpp \
     program.cpp \
     vector2d.cpp \
     stage.cpp \
+<<<<<<< HEAD
     physicsbullet.cpp
+=======
+    keyboard.cpp \
+    keyboardevent.cpp \
+    event.cpp \
+    displayobjectcontainer.cpp \
+    displayobject.cpp \
+    interface.cpp \
+    matrix.cpp \
+    game.cpp \
+    statecontext.cpp \
+    statefactory.cpp \
+    stateevent.cpp \
+    state.cpp \
+    initstate.cpp
+>>>>>>> origin/dev
 
 HEADERS  += background.h \
     bitmap.h \
@@ -62,6 +78,7 @@ HEADERS  += background.h \
     movieclip.h \
     mouseevent.h \
     mouse.h \
+<<<<<<< HEAD
     physicsbox.h \
     physicscircle.h \
     physicschassis.h \
@@ -80,3 +97,23 @@ HEADERS  += background.h \
 
 
 
+=======
+    vector2d.h \
+    interactiveobject.h \
+    eventdispatcher.h \
+    stage.h \
+    keyboard.h \
+    keyboardevent.h \
+    event.h \
+    displayobjectcontainer.h \
+    displayobject.h \
+    interface.h \
+    matrix.h \
+    eventhandler.h \
+    game.h \
+    statecontext.h \
+    statefactory.h \
+    stateevent.h \
+    state.h \
+    initstate.h
+>>>>>>> origin/dev

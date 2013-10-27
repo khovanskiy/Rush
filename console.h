@@ -7,6 +7,7 @@
 #include <QTextStream>
 
 #include "vector2d.h"
+#include "matrix.h"
 
 class Console
 {
@@ -26,6 +27,18 @@ public:
     static void print(Vector2D v)
     {
         print(QString("(")+QVariant(v.x).toString()+","+QVariant(v.y).toString()+")");
+    }
+
+    static void print(Matrix m)
+    {
+        QString temp = "[";
+        temp += QVariant(m.M11).toString() + ",";
+        temp += QVariant(m.M12).toString() + ",0,";
+        temp += QVariant(m.M21).toString() + ",";
+        temp += QVariant(m.M22).toString() + ",0,";
+        temp += QVariant(m.M31).toString() + ",";
+        temp += QVariant(m.M32).toString() + ",1]";
+        print(temp);
     }
 
     static void printThreadId()

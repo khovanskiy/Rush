@@ -1,19 +1,19 @@
-#ifndef FUNCTION_H
-#define FUNCTION_H
+#ifndef EVENTHANDLER_H
+#define EVENTHANDLER_H
 
 class Event;
 class FunctionProxy;
 
-class Function
+class EventHandler
 {
 public:
     virtual void Invoke(const Event& event) = 0;
 };
 
-class FunctionProxy : public Function
+class FunctionProxy : public EventHandler
 {
 public:
-    FunctionProxy(Function* f)
+    FunctionProxy(EventHandler* f)
     {
         this->f = f;
     }
@@ -22,7 +22,7 @@ public:
         f->Invoke(event);
     }
 private:
-    Function* f;
+    EventHandler* f;
 };
 
-#endif // FUNCTION_H
+#endif // EVENTHANDLER_H

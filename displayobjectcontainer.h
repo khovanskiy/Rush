@@ -11,18 +11,18 @@
 class DisplayObjectContainer : public InteractiveObject
 {
 public:
-    typedef std::shared_ptr<DisplayObject> ELEMENT;
+    typedef DisplayObject* ELEMENT;
     typedef std::vector<ELEMENT> LIST;
     DisplayObjectContainer();
     virtual ~DisplayObjectContainer();
-    void addChild(std::shared_ptr<DisplayObject> child);
-    void removeChild(std::shared_ptr<DisplayObject> child);
-    bool hasChild(std::shared_ptr<DisplayObject> child) const;
-    LIST* getChildrenList() const;
+    void addChild(DisplayObject* child);
+    void removeChild(DisplayObject* child);
+    bool hasChild(DisplayObject* child) const;
+    //LIST* getChildrenList() const;
     void render(QPainter*);
     void handleEvent(const Event &);
 private:
-    LIST* children;
+    LIST children;
 };
 
 #endif // DISPLAYOBJECTCONTAINER_H

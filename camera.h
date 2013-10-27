@@ -10,6 +10,7 @@ public:
     int width;
     int height;
     QMatrix* getMatrix();
+    void resize(int width, int height);
 private:
     Camera();
     QMatrix* matrix;

@@ -25,7 +25,7 @@ GraphicCore::GraphicCore() : QGLWidget(QGLFormat(QGL::SampleBuffers), 0)
     render2d = new QPainter();
     pen = new QPen(QColor(255,255,255));
     setWindowTitle("Rush game");
-    setFixedSize(Camera::gi()->width, Camera::gi()->height);
+    resize(800, 600);
     setAutoFillBackground(false);
     show();
 }
@@ -36,7 +36,7 @@ GraphicCore::~GraphicCore()
     delete render2d;
 }
 
-GraphicCore* GraphicCore::getInstance()
+GraphicCore* GraphicCore::gi()
 {
     if (instance == 0)
     {
@@ -57,9 +57,10 @@ void GraphicCore::paintEvent(QPaintEvent*)
     render2d->end();
 }
 
-void GraphicCore::resizeEvent(QResizeEvent *)
+void GraphicCore::resizeEvent(QResizeEvent *event)
 {
-    //Console::print("resize");
+    //Console::print("RESIZE "+QVariant(event->size().width()).toString() + " " + QVariant(event->size().height()).toString());
+    Camera::gi()->resize(event->size().width(), event->size().height());
 }
 
 void GraphicCore::mousePressEvent(QMouseEvent* event)
@@ -74,6 +75,5 @@ void GraphicCore::keyPressEvent(QKeyEvent* event)
 
 void GraphicCore::render()
 {
-    dispatchEvent(Event(this, Event::ENTER_FRAME));
     repaint();
 }

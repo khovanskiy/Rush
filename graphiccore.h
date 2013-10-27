@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QImage>
 #include <QPen>
+#include <QTimer>
 
 #include "displayobjectcontainer.h"
 #include "eventdispatcher.h"
@@ -16,7 +17,7 @@ class GraphicCore : public QGLWidget, public EventDispatcher
 public:
     GraphicCore();
     ~GraphicCore();
-    static GraphicCore* getInstance();
+    static GraphicCore* gi();
     void render();
 protected:
     void paintEvent(QPaintEvent *event);
