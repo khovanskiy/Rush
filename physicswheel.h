@@ -9,7 +9,6 @@ struct PhysicsWheel
     //Constants for this wheel.
     //Vector r is relative to the mass center of vehicle.
 
-    bool driving;
     double mu_parallel_friction, mu_parallel_roll;
     double mu_perpendicular_friction, mu_broken_friction;
     double max_angle;
@@ -27,8 +26,7 @@ struct PhysicsWheel
     Vector2D f;
     double force_moment;
 
-    PhysicsWheel(bool driving,
-                 double mu_parallel_friction, double mu_parallel_roll,
+    PhysicsWheel(double mu_parallel_friction, double mu_parallel_roll,
                  double mu_perpendicular_friction, double mu_broken_friction,
                  double max_angle, Vector2D r, double radius);
 

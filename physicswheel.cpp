@@ -2,12 +2,10 @@
 #define M_PI	 3.14159265358979323846
 #include <math.h>
 
-PhysicsWheel::PhysicsWheel(bool driving,
-                           double mu_parallel_friction, double mu_parallel_roll,
+PhysicsWheel::PhysicsWheel(double mu_parallel_friction, double mu_parallel_roll,
                            double mu_perpendicular_friction, double mu_broken_friction,
                            double max_angle, Vector2D r, double radius)
 {
-    this->driving = driving;
     this->mu_parallel_friction = mu_parallel_friction;
     this->mu_parallel_roll = mu_parallel_roll;
     this->mu_perpendicular_friction = mu_perpendicular_friction;

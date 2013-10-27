@@ -65,7 +65,7 @@ double Vector2D::cross(const Vector2D &a, const Vector2D &b)
 
 double Vector2D::angleBetween(const Vector2D &a, const Vector2D &b)
 {
-    return atan2(a.x * b.y - b.x * a.y, scalar(a,b));
+    return atan2(cross(a, b), scalar(a, b));
 }
 
 double Vector2D::scalar(const Vector2D &other)

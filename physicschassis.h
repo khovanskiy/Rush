@@ -6,8 +6,22 @@
 
 struct PhysicsChassis
 {
+    enum WheelType
+    {
+        DrivingRotating,
+        DrivingReverseRotating,
+        NonDrivingRotating,
+        NonDrivingReverseRotating,
+        DrivingNonRotating,
+        NonDrivingNonRotating,
+        LeftTrack,
+        RightTrack
+    };
+
     std::vector<PhysicsWheel> wheels;
     PhysicsVehicleEngine engine;
+    double weight;
+    double height;
 
     Vector2D v;
     Vector2D a;
@@ -17,6 +31,7 @@ struct PhysicsChassis
     double force_moment;
 
     PhysicsChassis(std::vector<PhysicsWheel> wheels, PhysicsVehicleEngine engine);
+    void turningLeft();
 };
 
 #endif // PHYSICSCHASSIS_H
