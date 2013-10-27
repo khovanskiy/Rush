@@ -3,7 +3,7 @@
 
 #include "eventdispatcher.h"
 
-class Mouse : public EventDispatcher, public Function
+class Mouse : public EventDispatcher, public EventHandler
 {
 public:
     static Mouse* getInstance();

@@ -13,6 +13,23 @@ Vector2D::Vector2D()
     this->y = 0;
 }
 
+Vector2D::Vector2D(const Vector2D &other)
+{
+    swap(other);
+}
+
+Vector2D& Vector2D::operator=(const Vector2D &other)
+{
+    swap(other);
+    return *this;
+}
+
+void Vector2D::swap(const Vector2D &other)
+{
+    this->x = other.x;
+    this->y = other.y;
+}
+
 void Vector2D::add(const Vector2D &other)
 {
     this->x += other.x;

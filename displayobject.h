@@ -6,7 +6,7 @@
 #include <QRectF>
 
 #include "eventdispatcher.h"
-#include "function.h"
+#include "eventhandler.h"
 
 class DisplayObject : public EventDispatcher
 {

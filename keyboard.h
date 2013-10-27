@@ -2,9 +2,9 @@
 #define KEYBOARD_H
 
 #include "eventdispatcher.h"
-#include "function.h"
+#include "eventhandler.h"
 
-class Keyboard : public EventDispatcher, public Function
+class Keyboard : public EventDispatcher, public EventHandler
 {
 public:
     static Keyboard* getInstance();

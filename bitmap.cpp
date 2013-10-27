@@ -22,8 +22,8 @@ void Bitmap::load(QString path)
     source = new QImage(path);
     _width = source->width();
     _height = source->height();
-    Console::print(_width);
-    Console::print(_height);
+    //Console::print(_width);
+    //Console::print(_height);
     dispatchEvent(Event(this, Event::COMPLETE));
 }
 

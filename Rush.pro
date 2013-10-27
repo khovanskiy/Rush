@@ -32,7 +32,13 @@ SOURCES += main.cpp\
     displayobjectcontainer.cpp \
     displayobject.cpp \
     interface.cpp \
-    matrix.cpp
+    matrix.cpp \
+    game.cpp \
+    statecontext.cpp \
+    statefactory.cpp \
+    stateevent.cpp \
+    state.cpp \
+    initstate.cpp
 
 HEADERS  += program.h \
     camera.h \
@@ -45,7 +51,6 @@ HEADERS  += program.h \
     mouse.h \
     vector2d.h \
     interactiveobject.h \
-    function.h \
     eventdispatcher.h \
     stage.h \
     keyboard.h \
@@ -54,4 +59,11 @@ HEADERS  += program.h \
     displayobjectcontainer.h \
     displayobject.h \
     interface.h \
-    matrix.h
+    matrix.h \
+    eventhandler.h \
+    game.h \
+    statecontext.h \
+    statefactory.h \
+    stateevent.h \
+    state.h \
+    initstate.h

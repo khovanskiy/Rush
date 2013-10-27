@@ -9,6 +9,12 @@ Camera::Camera()
     matrix = new QMatrix();
 }
 
+void Camera::resize(int width, int height)
+{
+    this->width = width;
+    this->height = height;
+}
+
 QMatrix* Camera::getMatrix()
 {
     return matrix;
