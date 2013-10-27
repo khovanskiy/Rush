@@ -1,19 +1,25 @@
 #ifndef PHYSICSOBJECT_H
 #define PHYSICSOBJECT_H
+#include "vector2d.h"
 
 class PhysicsObject
 {
 public:
-    double x, y, angle;
-    double vx, vy, angular_speed;
-    double fx, fy, force_moment;
-    double ax, ay, angular_acceleration;
+    Vector2D r;
+    Vector2D v;
+    Vector2D f;
+    Vector2D a;
+    double angle;
+    double angular_speed;
+    double force_moment;
+    double angular_acceleration;
     double mass, inertia_moment;
-    PhysicsObject(double x, double y, double angle,
-                  double vx, double vy, double angular_speed,
-                  double fx, double fy, double force_moment,
-                  double ax, double ay, double angular_acceleration,
+    PhysicsObject(Vector2D r, double angle,
+                  Vector2D v, double angular_speed,
+                  Vector2D f, double force_moment,
+                  Vector2D a, double angular_acceleration,
                   double mass, double inertia_moment);
+    PhysicsObject();
     virtual void tick(double dt);
 };
 

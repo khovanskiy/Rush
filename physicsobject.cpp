@@ -1,36 +1,37 @@
 #include "physicsobject.h"
 
-PhysicsObject::PhysicsObject(double x, double y, double angle,
-                             double vx, double vy, double angular_speed,
-                             double fx, double fy, double force_moment,
-                             double ax, double ay, double angular_acceleration,
+PhysicsObject::PhysicsObject(Vector2D r, double angle,
+                             Vector2D v, double angular_speed,
+                             Vector2D f, double force_moment,
+                             Vector2D a, double angular_acceleration,
                              double mass, double inertia_moment)
 {
-    this->x = x;
-    this->y = y;
+    this->r = r;
     this->angle = angle;
-    this->vx = vx;
-    this->vy = vy;
+    this->v = v;
     this->angular_speed = angular_speed;
-    this->fx = fx;
-    this->fy = fy;
+    this->f = f;
     this->force_moment = force_moment;
-    this->ax = ax;
-    this->ay = ay;
+    this->a = a;
     this->angular_acceleration = angular_acceleration;
     this->mass = mass;
     this->inertia_moment = inertia_moment;
 }
 
-PhysicsObject::tick(double dt)
+PhysicsObject::PhysicsObject()
 {
-    x += vx * dt;
-    y += vy * dt;
+
+}
+
+void PhysicsObject::tick(double dt)
+{
+    r.x += v.x * dt;
+    r.y += v.y * dt;
     angle += angular_speed * dt;
-    vx += ax * dt;
-    vy += ay * dt;
+    v.x += a.x * dt;
+    v.y += a.y * dt;
     angular_speed += angular_acceleration * dt;
-    ax = fx / mass;
-    ay = fy / mass;
+    a.x = f.x / mass;
+    a.y = f.y / mass;
     angular_acceleration = force_moment / inertia_moment;
 }

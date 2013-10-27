@@ -7,7 +7,6 @@
 
 class PhysicsVehicle : public PhysicsObject
 {
-public:
     PhysicsVehicle();
 };
 

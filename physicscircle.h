@@ -2,7 +2,7 @@
 #define PHYSICSCIRCLE_H
 #include "physicsobject.h"
 
-class PhysicsCircle : public PhysicsCircle
+class PhysicsCircle
 {
 public:
     PhysicsCircle();

@@ -42,7 +42,8 @@ SOURCES += background.cpp \
     physicswheel.cpp \
     program.cpp \
     vector2d.cpp \
-    stage.cpp
+    stage.cpp \
+    physicsbullet.cpp
 
 HEADERS  += background.h \
     bitmap.h \
@@ -74,7 +75,8 @@ HEADERS  += background.h \
     physicswheel.h \
     program.h \
     stage.h \
-    vector2d.h
+    vector2d.h \
+    physicsbullet.h
 
 
 

@@ -1,5 +1,6 @@
 #include "physicschassis.h"
 
-PhysicsChassis::PhysicsChassis()
+PhysicsChassis::PhysicsChassis(std::vector<PhysicsWheel> wheels, PhysicsVehicleEngine engine)
+    : wheels(wheels), engine(engine)
 {
 }

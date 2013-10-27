@@ -46,9 +46,21 @@ void Vector2D::normalize()
     mul(1 / getLength());
 }
 
+void Vector2D::rotate(double alpha)
+{
+    double x0 = x;
+    x = x * cos(alpha) - y * sin(alpha);
+    y = y * cos(alpha) + x0 * sin(alpha);
+}
+
 double Vector2D::scalar(const Vector2D &a, const Vector2D &b)
 {
     return a.x * b.x + a.y * b.y;
+}
+
+double Vector2D::cross(const Vector2D &a, const Vector2D &b)
+{
+    return a.x * b.y - b.x * a.y;
 }
 
 double Vector2D::angleBetween(const Vector2D &a, const Vector2D &b)
@@ -59,6 +71,11 @@ double Vector2D::angleBetween(const Vector2D &a, const Vector2D &b)
 double Vector2D::scalar(const Vector2D &other)
 {
     return Vector2D::scalar(*this, other);
+}
+
+double Vector2D::cross(const Vector2D &other)
+{
+    return Vector2D::cross(*this, other);
 }
 
 double Vector2D::angleBetween(const Vector2D &other)

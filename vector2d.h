@@ -7,6 +7,7 @@ public:
     Vector2D(double, double);
     Vector2D();
     static double scalar(const Vector2D&, const Vector2D&);
+    static double cross(const Vector2D &, const Vector2D&);
     static double angleBetween(const Vector2D&, const Vector2D&);
 
     void add(const Vector2D&);
@@ -15,8 +16,10 @@ public:
     void div(double k);
     void normalize();
     void setLength(double k);
+    void rotate(double alpha);
     double getLength() const;
     double scalar(const Vector2D &);
+    double cross(const Vector2D &);
     double angleBetween(const Vector2D &);
     double x;
     double y;
