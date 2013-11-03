@@ -16,34 +16,41 @@ PhysicsWheel::PhysicsWheel(double mu_parallel_friction, double mu_parallel_roll,
     this->surface_friction = 1;
 }
 
-void PhysicsWheel::setDistributedWeight(double distributed_weight)
-{
-    this->distributed_weight = distributed_weight;
-}
-
-void PhysicsWheel::setDistributedTorque(double distributed_torque)
-{
-    this->distributed_torque = distributed_torque;
-}
-
-void PhysicsWheel::setSpeed(Vector2D v)
-{
-    this->v = v;
-}
-
 void PhysicsWheel::setWheelAngle(double percent)
 {
     this->angle = this->max_angle * percent;
 }
 
-void PhysicsWheel::setWheelState(WheelState state)
+Vector2D PhysicsWheel::getWheelDirection()
 {
-    this->state = state;
+    return Vector2D(-sin(angle), cos(angle));
 }
 
-void PhysicsWheel::setSurfaceFriction(double surface_friction)
+double PhysicsWheel::getRotatingSpeed()
 {
-    this->surface_friction = surface_friction;
+    return getWheelDirection().scalar(v) / radius;
+}
+
+double PhysicsWheel::getChangedMu(double mu)
+{
+    return mu * surface_friction;
+}
+
+double PhysicsWheel::getMaxAccelerationTorque()
+{
+    if ((state == Forward) || (state == Backward)) {
+        double alpha = Vector2D::angleBetween(getWheelDirection(), v);
+        return distributed_weight * cos(alpha) * cos(alpha) * getChangedMu(mu_parallel_friction) * radius;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+void PhysicsWheel::setTorque(double percent)
+{
+    distributed_torque = getMaxAccelerationTorque() * percent;
 }
 
 void PhysicsWheel::calculateForces(double dt)
@@ -136,29 +143,4 @@ void PhysicsWheel::calculateForces(double dt)
     force_moment = r.cross(f);
 }
 
-Vector2D PhysicsWheel::getWheelDirection()
-{
-    return Vector2D(-sin(angle), cos(angle));
-}
 
-double PhysicsWheel::getRotatingSpeed()
-{
-    return getWheelDirection().scalar(v) / radius;
-}
-
-double PhysicsWheel::getChangedMu(double mu)
-{
-    return mu * surface_friction;
-}
-
-double PhysicsWheel::getMaxAccelerationTorque()
-{
-    if ((state == Forward) || (state == Backward)) {
-        double alpha = Vector2D::angleBetween(getWheelDirection(), v);
-        return distributed_weight * cos(alpha) * cos(alpha) * getChangedMu(mu_parallel_friction) * radius;
-    }
-    else
-    {
-        return 0;
-    }
-}

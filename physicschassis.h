@@ -4,34 +4,37 @@
 #include "physicsvehicleengine.h"
 #include "vector2d.h"
 
-struct PhysicsChassis
+class PhysicsChassis
 {
-    enum WheelType
-    {
-        DrivingRotating,
-        DrivingReverseRotating,
-        NonDrivingRotating,
-        NonDrivingReverseRotating,
-        DrivingNonRotating,
-        NonDrivingNonRotating,
-        LeftTrack,
-        RightTrack
-    };
-
-    std::vector<PhysicsWheel> wheels;
+    std::vector<PhysicsWheel*> wheels;
     PhysicsVehicleEngine engine;
     double weight;
+    Vector2D mass_center;
     double height;
 
     Vector2D v;
     Vector2D a;
-    Vector2D f;
     double angular_speed;
-    double angular_acceleration;
+    double torque_percent;
+    AccelerationState acc_state;
+    double rotation;
+
+    void distributeWeigth();
+    void setWheelsReaction();
+    void setWheelsSpeed();
+    void distributeTorque();
+    void sumForces(double dt);
+
+public:
+    Vector2D f;
     double force_moment;
 
-    PhysicsChassis(std::vector<PhysicsWheel> wheels, PhysicsVehicleEngine engine);
-    void turningLeft();
+    void setTotalState(Vector2D v, Vector2D a, double angular_speed,
+                       double torque_percent, AccelerationState acc_state,
+                       double rotation);
+    void calculateForces(double dt);
+    PhysicsChassis(std::vector<PhysicsWheel*> wheels, PhysicsVehicleEngine engine,
+                   double weight, Vector2D mass_center, double height);
 };
 
 #endif // PHYSICSCHASSIS_H

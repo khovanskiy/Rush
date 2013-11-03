@@ -2,10 +2,11 @@
 #define PHYSICSWHEEL_H
 #include "vector2d.h"
 
+enum WheelState { Broken, Braking, Free, Forward, Backward };
+enum AccelerationState { ForwardAcc, NoAcc, BackwardAcc, Brakes };
+
 struct PhysicsWheel
 {
-    enum WheelState { Broken, Braking, Free, Forward, Backward };
-
     //Constants for this wheel.
     //Vector r is relative to the mass center of vehicle.
 
@@ -31,16 +32,15 @@ struct PhysicsWheel
                  double max_angle, Vector2D r, double radius);
 
     void setWheelAngle(double percent);
-    void setWheelState(WheelState state);
-    void setDistributedWeight(double distributed_weight);
-    void setDistributedTorque(double distributed_torque);
-    void setSpeed(Vector2D v);
-    void setSurfaceFriction(double surface_friction);
     void calculateForces(double dt);
     Vector2D getWheelDirection();
     double getRotatingSpeed();
     double getChangedMu(double mu);
     double getMaxAccelerationTorque();
+    void setTorque(double percent);
+    virtual void changeState(AccelerationState acc_state,
+                             double rotation) = 0;
+
 };
 
 #endif // PHYSICSWHEEL_H

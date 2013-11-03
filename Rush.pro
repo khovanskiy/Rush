@@ -20,16 +20,20 @@ SOURCES += background.cpp \
     displayobjectcontainer.cpp \
     event.cpp \
     eventdispatcher.cpp \
+    game.cpp \
     graphiccore.cpp \
+    initstate.cpp \
     interactiveobject.cpp \
     interface.cpp \
     keyboard.cpp \
     keyboardevent.cpp \
     main.cpp\
+    matrix.cpp \
     movieclip.cpp \
     mouseevent.cpp \
     mouse.cpp \
     physicsbox.cpp \
+    physicsbullet.cpp \
     physicscircle.cpp \
     physicschassis.cpp \
     physicsobject.cpp \
@@ -43,23 +47,12 @@ SOURCES += background.cpp \
     program.cpp \
     vector2d.cpp \
     stage.cpp \
-<<<<<<< HEAD
-    physicsbullet.cpp
-=======
-    keyboard.cpp \
-    keyboardevent.cpp \
-    event.cpp \
-    displayobjectcontainer.cpp \
-    displayobject.cpp \
-    interface.cpp \
-    matrix.cpp \
-    game.cpp \
     statecontext.cpp \
     statefactory.cpp \
     stateevent.cpp \
     state.cpp \
-    initstate.cpp
->>>>>>> origin/dev
+    carwheel.cpp \
+    track.cpp
 
 HEADERS  += background.h \
     bitmap.h \
@@ -68,18 +61,21 @@ HEADERS  += background.h \
     displayobject.h \
     displayobjectcontainer.h \
     event.h \
+    eventhandler.h \
     eventdispatcher.h \
-    function.h \
+    game.h \
     graphiccore.h \
+    initstate.h \
     interactiveobject.h \
     interface.h \
     keyboard.h \
     keyboardevent.h \
+    matrix.h \
     movieclip.h \
     mouseevent.h \
     mouse.h \
-<<<<<<< HEAD
     physicsbox.h \
+    physicsbullet.h \
     physicscircle.h \
     physicschassis.h \
     physicsobject.h \
@@ -93,27 +89,9 @@ HEADERS  += background.h \
     program.h \
     stage.h \
     vector2d.h \
-    physicsbullet.h
-
-
-
-=======
-    vector2d.h \
-    interactiveobject.h \
-    eventdispatcher.h \
-    stage.h \
-    keyboard.h \
-    keyboardevent.h \
-    event.h \
-    displayobjectcontainer.h \
-    displayobject.h \
-    interface.h \
-    matrix.h \
-    eventhandler.h \
-    game.h \
     statecontext.h \
     statefactory.h \
     stateevent.h \
     state.h \
-    initstate.h
->>>>>>> origin/dev
+    carwheel.h \
+    track.h
