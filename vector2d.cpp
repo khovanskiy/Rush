@@ -48,6 +48,12 @@ void Vector2D::mul(double k)
     this->y *= k;
 }
 
+void Vector2D::div(double k)
+{
+    this->x /= k;
+    this->y /= k;
+}
+
 void Vector2D::setLength(double k)
 {
     mul(k / getLength());

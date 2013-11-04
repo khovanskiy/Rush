@@ -1,34 +1,41 @@
-#include "physicsturret.h"
+#include "turret.h"
 
-PhysicsTurret::PhysicsTurret(Vector2D r, double max_angle)
+Turret::Turret(Vector2D const & r, double max_angle)
+    : r(r)
 {
-    this->r = r;
     this->max_angle = max_angle;
     this->firing = false;
 }
 
-void PhysicsTurret::setAngle(double percent)
+Turret::Turret(Turret const & turret)
+    : r(turret.r)
+{
+    this->max_angle = turret.max_angle;
+    this->firing = turret.firing;
+}
+
+void Turret::setAngle(double percent)
 {
     this->angle = this->max_angle * percent;
 }
 
-void PhysicsTurret::setBullet(PhysicsBullet bullet)
+void Turret::setBullet(Bullet const & bullet)
 {
     this->bullet = bullet;
 }
 
-void PhysicsTurret::setFireDelay(double fire_delay)
+void Turret::setFireDelay(double fire_delay)
 {
     this->fire_delay = fire_delay;
     this->next_shot = fire_delay;
 }
 
-void PhysicsTurret::setFiring(bool firing)
+void Turret::setFiring(bool firing)
 {
     this->firing = firing;
 }
 
-void PhysicsTurret::calculateFireAndForces(double dt)
+void Turret::calculateFireAndForces(double dt)
 {
     if (!firing)
     {

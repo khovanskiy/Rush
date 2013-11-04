@@ -1,26 +1,27 @@
 #ifndef PHYSICSTURRET_H
 #define PHYSICSTURRET_H
-#include "physicsbullet.h"
+#include "bullet.h"
 #include "vector2d.h"
 
-struct PhysicsTurret
+struct Turret
 {
     Vector2D r;
     double max_angle;
 
     double angle;
     double fire_delay, next_shot;
-    PhysicsBullet bullet;
+    Bullet bullet;
     bool firing;
     Vector2D f;
     double force_moment;
 
 
-    PhysicsTurret(Vector2D r, double max_angle);
-    void setAngle(double percent);
+    Turret(Vector2D const & r, double max_angle);
+    Turret(Turret const & turret);
     void setFireDelay(double fire_delay);
-    void setBullet(PhysicsBullet bullet);
+    void setBullet(Bullet const & bullet);
     void setFiring(bool firing);
+    void setAngle(double percent);
     void calculateFireAndForces(double dt);
 };
 

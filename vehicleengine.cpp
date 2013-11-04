@@ -1,13 +1,20 @@
-#include "physicsvehicleengine.h"
-#define M_PI	 3.14159265358979323846
+#include "vehicleengine.h"
 
-PhysicsVehicleEngine::PhysicsVehicleEngine(std::vector<Gear> gears)
+static const double M_PI = 3.14159265358979323846;
+
+VehicleEngine::VehicleEngine(std::vector<Gear> const & gears)
     : gears(gears)
 {
     setRotations(0);
 }
 
-void PhysicsVehicleEngine::setRotations(double rotating_speed) {
+VehicleEngine::VehicleEngine(VehicleEngine const & engine)
+    : gears(engine.gears)
+{
+    setRotations(0);
+}
+
+void VehicleEngine::setRotations(double rotating_speed) {
     spins_per_minute = 60 * rotating_speed / (2 * M_PI);
     current_torque = 0;
     current_gear = 0;
@@ -19,17 +26,17 @@ void PhysicsVehicleEngine::setRotations(double rotating_speed) {
     }    
 }
 
-double PhysicsVehicleEngine::getSpins()
+double VehicleEngine::getSpins()
 {
     return spins_per_minute;
 }
 
-double PhysicsVehicleEngine::getTorque(double percent)
+double VehicleEngine::getTorque(double percent)
 {
     return current_torque * percent;
 }
 
-int PhysicsVehicleEngine::getGear()
+int VehicleEngine::getGear()
 {
     return current_gear;
 }

@@ -2,7 +2,7 @@
 #define PHYSICSVEHICLEBODY_H
 #include "vector2d.h"
 
-struct PhysicsVehicleBody
+struct VehicleBody
 {
     //Constants for this vehicle body.
     //Vector r is relative to the mass centre of vehicle.
@@ -23,15 +23,16 @@ struct PhysicsVehicleBody
     double force_moment;
 
 
-    PhysicsVehicleBody(
+    VehicleBody(
             double front_air_resistance,
             double rear_air_resistance,
             double left_air_resistance,
             double right_air_resistance,
             double spin_air_resistance,
-            Vector2D r);
+            Vector2D const & r);
+    VehicleBody(VehicleBody const & body);
     void setEnvironmentResistance(double environment_resistance);
-    void setSpeed(Vector2D v, double angular_speed);
+    void setSpeed(Vector2D const & v, double angular_speed);
     double getChangedResistance(double resistance);
     void calculateForces(double dt);
 };

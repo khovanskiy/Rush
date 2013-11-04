@@ -1,23 +1,24 @@
-#include "physicschassis.h"
-typedef std::vector<PhysicsWheel*> vector;
+#include "chassis.h"
+typedef std::vector<Wheel*> vector;
 typedef vector::iterator iterator;
-#define M_PI	 3.14159265358979323846
+static const double G = 9.80665;
+static const double M_PI = 3.14159265358979323846;
+static const double eps = 1e-3;
 
-static const double g = 9.8;
 
-PhysicsChassis::PhysicsChassis(vector wheels, PhysicsVehicleEngine engine,
-                               double weight, Vector2D mass_center, double height)
+Chassis::Chassis(vector const & wheels, VehicleEngine const & engine,
+                               double weight, Vector2D const & mass_center, double height)
     : wheels(wheels), engine(engine), mass_center(mass_center)
 {
     this->weight = weight;
     this->height = height;
 }
 
-void PhysicsChassis::distributeWeigth()
+void Chassis::distributeWeigth()
 {
     Vector2D mass_center_offset;
-    mass_center_offset.x = height * a.x / sqrt(a.x * a.x + g * g);
-    mass_center_offset.y -= height * a.y / sqrt(a.y * a.y + g * g);
+    mass_center_offset.x = height * a.x / sqrt(a.x * a.x + G * G);
+    mass_center_offset.y -= height * a.y / sqrt(a.y * a.y + G * G);
     int front_amount = 0, back_amount = 0;
     double front_sum = 0, back_sum = 0;
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
@@ -49,7 +50,7 @@ void PhysicsChassis::distributeWeigth()
     double left_sum = 0, right_sum = 0;
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
-        if ((*i)->r.x != 0)
+        if (abs((*i)->r.x) < eps)
         {
             if ((*i)->r.x < mass_center_offset.x)
             {
@@ -61,11 +62,11 @@ void PhysicsChassis::distributeWeigth()
             }
         }
     }
-    double left_koef = right_sum * (left_sum + right_sum);
-    double right_koef = left_sum * (left_sum + right_sum);
+    double left_koef = 2 * right_sum * (left_sum + right_sum);
+    double right_koef = 2 * left_sum * (left_sum + right_sum);
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
-        if ((*i)->r.x != 0)
+        if (abs((*i)->r.x) < eps)
         {
             if ((*i)->r.x < mass_center_offset.x)
             {
@@ -79,7 +80,7 @@ void PhysicsChassis::distributeWeigth()
     }
 }
 
-void PhysicsChassis::setWheelsSpeed()
+void Chassis::setWheelsSpeed()
 {
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
@@ -91,7 +92,7 @@ void PhysicsChassis::setWheelsSpeed()
     }
 }
 
-void PhysicsChassis::setWheelsReaction()
+void Chassis::setWheelsReaction()
 {
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
@@ -99,21 +100,21 @@ void PhysicsChassis::setWheelsReaction()
     }
 }
 
-void PhysicsChassis::distributeTorque()
+void Chassis::distributeTorque()
 {
-    double max_rotation = 0, cur_rotation;
+    double min_rotation = 1e10, cur_rotation;
     double total_torque = 0;
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
         cur_rotation = (*i)->getRotatingSpeed();
-        if (max_rotation < cur_rotation)
+        if (min_rotation > cur_rotation)
         {
-            max_rotation = cur_rotation;
+            min_rotation = cur_rotation;
         }
         total_torque += (*i)->getMaxAccelerationTorque();
     }
-    engine.setRotations(max_rotation);
-    double p = engine.getTorque(torque_percent) / max_rotation;
+    engine.setRotations(min_rotation);
+    double p = engine.getTorque(torque_percent) / total_torque;
     if (p > 1)
     {
         p = 1;
@@ -124,7 +125,7 @@ void PhysicsChassis::distributeTorque()
     }
 }
 
-void PhysicsChassis::sumForces(double dt)
+void Chassis::sumForces(double dt)
 {
     f.x = 0;
     f.y = 0;
@@ -137,8 +138,8 @@ void PhysicsChassis::sumForces(double dt)
     }
 }
 
-void PhysicsChassis::setTotalState(Vector2D v, Vector2D a, double angular_speed,
-                                   double torque_percent, AccelerationState acc_state,
+void Chassis::setTotalState(Vector2D const & v, Vector2D const & a, double angular_speed,
+                                   double torque_percent, AccelerationState const & acc_state,
                                    double rotation)
 {
     this->v = v;
@@ -149,7 +150,7 @@ void PhysicsChassis::setTotalState(Vector2D v, Vector2D a, double angular_speed,
     this->rotation = rotation;
 }
 
-void PhysicsChassis::calculateForces(double dt)
+void Chassis::calculateForces(double dt)
 {
     distributeWeigth();
     setWheelsSpeed();

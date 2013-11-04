@@ -32,18 +32,8 @@ SOURCES += background.cpp \
     movieclip.cpp \
     mouseevent.cpp \
     mouse.cpp \
-    physicsbox.cpp \
-    physicsbullet.cpp \
-    physicscircle.cpp \
-    physicschassis.cpp \
     physicsobject.cpp \
-    physicspoint.cpp \
-    physicsvehicle.cpp \
-    physicsvehiclebody.cpp \
-    physicsvehicleengine.cpp \
     physicssystem.cpp \
-    physicsturret.cpp \
-    physicswheel.cpp \
     program.cpp \
     vector2d.cpp \
     stage.cpp \
@@ -52,7 +42,24 @@ SOURCES += background.cpp \
     stateevent.cpp \
     state.cpp \
     carwheel.cpp \
-    track.cpp
+    track.cpp \
+    box.cpp \
+    bullet.cpp \
+    chassis.cpp \
+    circle.cpp \
+    wheel.cpp \
+    turret.cpp \
+    vehicle.cpp \
+    vehiclebody.cpp \
+    vehicleengine.cpp \
+    position.cpp \
+    realwheel.cpp \
+    realengine.cpp \
+    realbody.cpp \
+    realturret.cpp \
+    materialpoint.cpp \
+    shape.cpp \
+    vehiclefactory.cpp
 
 HEADERS  += background.h \
     bitmap.h \
@@ -74,18 +81,8 @@ HEADERS  += background.h \
     movieclip.h \
     mouseevent.h \
     mouse.h \
-    physicsbox.h \
-    physicsbullet.h \
-    physicscircle.h \
-    physicschassis.h \
     physicsobject.h \
-    physicspoint.h \
-    physicsvehicle.h \
-    physicsvehiclebody.h \
-    physicsvehicleengine.h \
     physicssystem.h \
-    physicsturret.h \
-    physicswheel.h \
     program.h \
     stage.h \
     vector2d.h \
@@ -94,4 +91,21 @@ HEADERS  += background.h \
     stateevent.h \
     state.h \
     carwheel.h \
-    track.h
+    track.h \
+    box.h \
+    bullet.h \
+    chassis.h \
+    circle.h \
+    turret.h \
+    vehicle.h \
+    vehiclebody.h \
+    vehicleengine.h \
+    wheel.h \
+    position.h \
+    realwheel.h \
+    realengine.h \
+    realbody.h \
+    realturret.h \
+    materialpoint.h \
+    shape.h \
+    vehiclefactory.h

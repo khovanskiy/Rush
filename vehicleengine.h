@@ -2,7 +2,7 @@
 #define PHYSICSVEHICLEENGINE_H
 #include <vector>
 
-class PhysicsVehicleEngine
+class VehicleEngine
 {
     struct Gear
     {
@@ -24,7 +24,8 @@ class PhysicsVehicleEngine
     double current_torque;
 
 public:
-    PhysicsVehicleEngine(std::vector<Gear> gears);
+    VehicleEngine(std::vector<Gear> const & gears);
+    VehicleEngine(VehicleEngine const & engine);
     void setRotations(double rotating_speed);
     double getTorque(double percent = 1);
     double getSpins();

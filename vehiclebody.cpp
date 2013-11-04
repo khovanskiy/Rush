@@ -1,39 +1,50 @@
-#include "physicsvehiclebody.h"
+#include "vehiclebody.h"
 #include <math.h>
 
-PhysicsVehicleBody::PhysicsVehicleBody(double front_air_resistance,
+VehicleBody::VehicleBody(double front_air_resistance,
                                        double rear_air_resistance,
                                        double left_air_resistance,
                                        double right_air_resistance,
                                        double spin_air_resistance,
-                                       Vector2D r)
+                                       Vector2D const & r)
+    : r(r)
 {
     this->front_air_resistance = front_air_resistance;
     this->rear_air_resistance = rear_air_resistance;
     this->left_air_resistance = left_air_resistance;
     this->right_air_resistance = right_air_resistance;
     this->spin_air_resistance = spin_air_resistance;
-    this->r = r;
     this->environment_resistance = 1;
 }
 
-void PhysicsVehicleBody::setSpeed(Vector2D v, double angular_speed)
+VehicleBody::VehicleBody(VehicleBody const & body)
+{
+    this->front_air_resistance = body.front_air_resistance;
+    this->rear_air_resistance = body.rear_air_resistance;
+    this->left_air_resistance = body.left_air_resistance;
+    this->right_air_resistance = body.right_air_resistance;
+    this->spin_air_resistance = body.spin_air_resistance;
+    this->r = body.r;
+    this->environment_resistance = body.environment_resistance;
+}
+
+void VehicleBody::setSpeed(Vector2D const & v, double angular_speed)
 {
     this->v = v;
     this->angular_speed = angular_speed;
 }
 
-void PhysicsVehicleBody::setEnvironmentResistance(double environment_resistance)
+void VehicleBody::setEnvironmentResistance(double environment_resistance)
 {
     this->environment_resistance = environment_resistance;
 }
 
-double PhysicsVehicleBody::getChangedResistance(double resistance)
+double VehicleBody::getChangedResistance(double resistance)
 {
     return resistance * environment_resistance;
 }
 
-void PhysicsVehicleBody::calculateForces(double dt)
+void VehicleBody::calculateForces(double dt)
 {
     double vl = v.getLength();
     if (vl > 0)

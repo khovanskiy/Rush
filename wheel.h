@@ -5,7 +5,7 @@
 enum WheelState { Broken, Braking, Free, Forward, Backward };
 enum AccelerationState { ForwardAcc, NoAcc, BackwardAcc, Brakes };
 
-struct PhysicsWheel
+struct Wheel
 {
     //Constants for this wheel.
     //Vector r is relative to the mass center of vehicle.
@@ -27,9 +27,9 @@ struct PhysicsWheel
     Vector2D f;
     double force_moment;
 
-    PhysicsWheel(double mu_parallel_friction, double mu_parallel_roll,
+    Wheel(double mu_parallel_friction, double mu_parallel_roll,
                  double mu_perpendicular_friction, double mu_broken_friction,
-                 double max_angle, Vector2D r, double radius);
+                 double max_angle, Vector2D const & r, double radius);
 
     void setWheelAngle(double percent);
     void calculateForces(double dt);
@@ -38,7 +38,7 @@ struct PhysicsWheel
     double getChangedMu(double mu);
     double getMaxAccelerationTorque();
     void setTorque(double percent);
-    virtual void changeState(AccelerationState acc_state,
+    virtual void changeState(AccelerationState const & acc_state,
                              double rotation) = 0;
 
 };

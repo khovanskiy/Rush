@@ -2,16 +2,16 @@
 
 Track::Track(double mu_parallel_friction, double mu_parallel_roll,
              double mu_perpendicular_friction, double mu_broken_friction,
-             double max_angle, Vector2D r, double radius,
-             TrackType track_type)
-: PhysicsWheel(mu_parallel_friction, mu_parallel_roll,
+             double max_angle, Vector2D const & r, double radius,
+             TrackType const & track_type)
+: Wheel(mu_parallel_friction, mu_parallel_roll,
              mu_perpendicular_friction, mu_broken_friction,
              max_angle, r, radius)
 {
     this->track_type = track_type;
 }
 
-void Track::changeState(AccelerationState acc_state,
+void Track::changeState(AccelerationState const & acc_state,
                         double rotation)
 {
     if (track_type == LeftTrack)

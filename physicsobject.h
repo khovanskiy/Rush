@@ -1,26 +1,19 @@
 #ifndef PHYSICSOBJECT_H
 #define PHYSICSOBJECT_H
 #include "vector2d.h"
+#include <vector>
 
 class PhysicsObject
 {
 public:
-    Vector2D r;
-    Vector2D v;
-    Vector2D f;
-    Vector2D a;
-    double angle;
-    double angular_speed;
-    double force_moment;
-    double angular_acceleration;
-    double mass, inertia_moment;
-    PhysicsObject(Vector2D r, double angle,
-                  Vector2D v, double angular_speed,
-                  Vector2D f, double force_moment,
-                  Vector2D a, double angular_acceleration,
-                  double mass, double inertia_moment);
     PhysicsObject();
-    virtual void tick(double dt);
+    virtual void tick(double dt) = 0;
+    virtual Vector2D getCoordinates() = 0;
+    virtual Vector2D getSpeed() = 0;
+    virtual double getAngle() = 0;
+    virtual double getAngularSpeed() = 0;
+    //virtual std::vector<PhysicsObject*> getCollidingItems() = 0;
+    //virtual bool collidesWithItem(PhysicsObject* object) = 0;
 };
 
 #endif // PHYSICSOBJECT_H

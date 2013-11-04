@@ -1,42 +1,42 @@
-#include "physicswheel.h"
-#define M_PI	 3.14159265358979323846
+#include "wheel.h"
+static const double M_PI = 3.14159265358979323846;
 #include <math.h>
 
-PhysicsWheel::PhysicsWheel(double mu_parallel_friction, double mu_parallel_roll,
+Wheel::Wheel(double mu_parallel_friction, double mu_parallel_roll,
                            double mu_perpendicular_friction, double mu_broken_friction,
-                           double max_angle, Vector2D r, double radius)
+                           double max_angle, Vector2D const & r, double radius)
+    : r(r)
 {
     this->mu_parallel_friction = mu_parallel_friction;
     this->mu_parallel_roll = mu_parallel_roll;
     this->mu_perpendicular_friction = mu_perpendicular_friction;
     this->mu_broken_friction = mu_broken_friction;
     this->max_angle = max_angle;
-    this->r = r;
     this->radius = radius;
     this->surface_friction = 1;
 }
 
-void PhysicsWheel::setWheelAngle(double percent)
+void Wheel::setWheelAngle(double percent)
 {
     this->angle = this->max_angle * percent;
 }
 
-Vector2D PhysicsWheel::getWheelDirection()
+Vector2D Wheel::getWheelDirection()
 {
     return Vector2D(-sin(angle), cos(angle));
 }
 
-double PhysicsWheel::getRotatingSpeed()
+double Wheel::getRotatingSpeed()
 {
-    return getWheelDirection().scalar(v) / radius;
+    return abs(getWheelDirection().scalar(v) / radius);
 }
 
-double PhysicsWheel::getChangedMu(double mu)
+double Wheel::getChangedMu(double mu)
 {
     return mu * surface_friction;
 }
 
-double PhysicsWheel::getMaxAccelerationTorque()
+double Wheel::getMaxAccelerationTorque()
 {
     if ((state == Forward) || (state == Backward)) {
         double alpha = Vector2D::angleBetween(getWheelDirection(), v);
@@ -48,12 +48,12 @@ double PhysicsWheel::getMaxAccelerationTorque()
     }
 }
 
-void PhysicsWheel::setTorque(double percent)
+void Wheel::setTorque(double percent)
 {
     distributed_torque = getMaxAccelerationTorque() * percent;
 }
 
-void PhysicsWheel::calculateForces(double dt)
+void Wheel::calculateForces(double dt)
 {
     double vl;
     double mu_par = 0, mu_perp = 0;
