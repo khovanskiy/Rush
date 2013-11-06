@@ -14,6 +14,13 @@ Chassis::Chassis(vector const & wheels, VehicleEngine const & engine,
     this->height = height;
 }
 
+Chassis::Chassis(const Chassis &chassis)
+    : wheels(chassis.wheels), engine(chassis.engine), mass_center(chassis.mass_center)
+{
+    this->weight = chassis.weight;
+    this->height = chassis.height;
+}
+
 void Chassis::distributeWeigth()
 {
     Vector2D mass_center_offset;
@@ -50,7 +57,7 @@ void Chassis::distributeWeigth()
     double left_sum = 0, right_sum = 0;
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
-        if (abs((*i)->r.x) < eps)
+        if (abs((*i)->r.x) > eps)
         {
             if ((*i)->r.x < mass_center_offset.x)
             {
@@ -66,7 +73,7 @@ void Chassis::distributeWeigth()
     double right_koef = 2 * left_sum * (left_sum + right_sum);
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
-        if (abs((*i)->r.x) < eps)
+        if (abs((*i)->r.x) > eps)
         {
             if ((*i)->r.x < mass_center_offset.x)
             {
@@ -107,7 +114,7 @@ void Chassis::distributeTorque()
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
         cur_rotation = (*i)->getRotatingSpeed();
-        if (min_rotation > cur_rotation)
+        if ((cur_rotation > eps) && (min_rotation > cur_rotation))
         {
             min_rotation = cur_rotation;
         }
@@ -157,6 +164,25 @@ void Chassis::calculateForces(double dt)
     setWheelsReaction();
     distributeTorque();
     sumForces(dt);
+}
+
+int Chassis::getGear()
+{
+    return engine.getGear();
+}
+
+double Chassis::getSpins()
+{
+    return engine.getSpins();
+}
+
+void Chassis::deleteWheels()
+{
+    for (iterator i = wheels.begin(); i != wheels.end(); i++)
+    {
+        delete (*i);
+    }
+    wheels.clear();
 }
 
 

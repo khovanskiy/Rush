@@ -12,8 +12,11 @@ struct CarWheel : public Wheel
              double mu_perpendicular_friction, double mu_broken_friction,
              double max_angle, Vector2D const & r, double radius,
              bool driving, RotationReaction const & reaction);
+    CarWheel(CarWheel * carWheel);
     virtual void changeState(AccelerationState const & acc_state,
                              double rotation);
+    virtual double getRotatingSpeed();
+    virtual CarWheel* copy();
 };
 
 #endif // CARWHEEL_H

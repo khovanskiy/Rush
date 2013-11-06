@@ -12,8 +12,11 @@ struct Track : public Wheel
           double mu_perpendicular_friction, double mu_broken_friction,
           double max_angle, Vector2D const & r, double radius,
           TrackType const & track_type);
+    Track(Track * track);
     virtual void changeState(AccelerationState const & acc_state,
                              double rotation);
+    virtual double getRotatingSpeed();
+    virtual Track* copy();
 };
 
 #endif // TRACK_H

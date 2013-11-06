@@ -30,16 +30,16 @@ struct Wheel
     Wheel(double mu_parallel_friction, double mu_parallel_roll,
                  double mu_perpendicular_friction, double mu_broken_friction,
                  double max_angle, Vector2D const & r, double radius);
-
     void setWheelAngle(double percent);
     void calculateForces(double dt);
     Vector2D getWheelDirection();
-    double getRotatingSpeed();
     double getChangedMu(double mu);
     double getMaxAccelerationTorque();
     void setTorque(double percent);
     virtual void changeState(AccelerationState const & acc_state,
                              double rotation) = 0;
+    virtual double getRotatingSpeed() = 0;
+    virtual Wheel* copy() = 0;
 
 };
 

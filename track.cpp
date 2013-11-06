@@ -1,15 +1,31 @@
 #include "track.h"
+#include "math.h"
 
 Track::Track(double mu_parallel_friction, double mu_parallel_roll,
              double mu_perpendicular_friction, double mu_broken_friction,
              double max_angle, Vector2D const & r, double radius,
              TrackType const & track_type)
-: Wheel(mu_parallel_friction, mu_parallel_roll,
-             mu_perpendicular_friction, mu_broken_friction,
-             max_angle, r, radius)
+    : Wheel(mu_parallel_friction, mu_parallel_roll,
+            mu_perpendicular_friction, mu_broken_friction,
+            max_angle, r, radius)
 {
     this->track_type = track_type;
 }
+
+Track::Track(Track * track)
+    : Wheel(track->mu_parallel_friction, track->mu_parallel_roll,
+            track->mu_perpendicular_friction, track->mu_broken_friction,
+            track->max_angle, track->r, track->radius)
+{
+    this->track_type = track->track_type;
+}
+
+
+double Track::getRotatingSpeed()
+{
+    return abs(getWheelDirection().scalar(v) / radius);
+}
+
 
 void Track::changeState(AccelerationState const & acc_state,
                         double rotation)
@@ -100,4 +116,9 @@ void Track::changeState(AccelerationState const & acc_state,
             break;
         }
     }
+}
+
+Track* Track::copy()
+{
+    return new Track(this);
 }

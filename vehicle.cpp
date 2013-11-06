@@ -17,6 +17,11 @@ Vehicle::Vehicle(Vector2D const & r, double angle,
     this->inertia_moment = inertia_moment;
 }
 
+Vehicle::~Vehicle()
+{
+    chassis.deleteWheels();
+}
+
 void Vehicle::setAccelerationState(AccelerationState acc_state)
 {
     this->acc_state = acc_state;
@@ -77,4 +82,14 @@ void Vehicle::tick(double dt)
 {
     calculateFireAndForces(dt);
     Shape::tick(dt);
+}
+
+int Vehicle::getGear()
+{
+    return chassis.getGear();
+}
+
+double Vehicle::getSpins()
+{
+    return chassis.getSpins();
 }

@@ -1,6 +1,8 @@
 #include "vehiclefactory.h"
 
 static const double G = 9.80665;
+typedef std::vector<RealWheel>::const_iterator wheel_c_it;
+typedef std::vector<RealTurret>::const_iterator turret_c_it;
 
 VehicleFactory::VehicleFactory()
 {
@@ -14,10 +16,10 @@ Vehicle VehicleFactory::createVehicle(Vector2D const & r, double angle,
                                       Vector2D const & f, double force_moment,
                                       Vector2D const & a, double angular_acceleration,
                                       double width, double length, double mass_center_height,
-                                      RealBody r_body,
-                                      RealEngine r_engine,
-                                      std::vector<RealTurret> r_turrets,
-                                      std::vector<RealWheel> r_wheels)
+                                      RealBody const & r_body,
+                                      RealEngine const & r_engine,
+                                      std::vector<RealTurret> const & r_turrets,
+                                      std::vector<RealWheel> const & r_wheels)
 {
     Vector2D mass_center(0, 0);
     double mass = 0;
@@ -30,14 +32,14 @@ Vehicle VehicleFactory::createVehicle(Vector2D const & r, double angle,
     cur.mul(r_engine.p.mass);
     mass_center.add(cur);
     mass += r_engine.p.mass;
-    for (std::vector<RealTurret>::iterator i = r_turrets.begin(); i != r_turrets.end(); i++)
+    for (turret_c_it i = r_turrets.cbegin(); i != r_turrets.cend(); i++)
     {
         cur = (*i).p.r;
         cur.mul((*i).p.mass);
         mass_center.add(cur);
         mass += (*i).p.mass;
     }
-    for (std::vector<RealWheel>::iterator i = r_wheels.begin(); i != r_wheels.end(); i++)
+    for (wheel_c_it i = r_wheels.cbegin(); i != r_wheels.cend(); i++)
     {
         cur = (*i).p.r;
         cur.mul((*i).p.mass);
@@ -47,30 +49,37 @@ Vehicle VehicleFactory::createVehicle(Vector2D const & r, double angle,
     mass_center.div(mass);
     double inertia_moment = r_body.p.mass * (width * width + length * length) / 12;
     double len;
-    r_body.p.r.sub(mass_center);
-    r_body.body.r = r_body.p.r;
-    len = r_body.p.r.getLength();
+    VehicleBody body(r_body.body);
+    body.r = r_body.p.r;
+    body.r.sub(mass_center);
+    Vector2D pos = r_engine.p.r;
+    pos.sub(mass_center);
+    len = pos.getLength();
+    inertia_moment += len * len * r_engine.p.mass;
+    pos = r_body.p.r;
+    pos.sub(mass_center);
+    len = pos.getLength();
     inertia_moment += len * len * r_body.p.mass;
-    std::vector<Wheel*> wheels;
-    for (std::vector<RealWheel>::iterator i = r_wheels.begin(); i != r_wheels.end(); i++)
+    std::vector<Wheel*> wheels = std::vector<Wheel*>();
+    for (wheel_c_it i = r_wheels.cbegin(); i != r_wheels.cend(); i++)
     {
-        (*i).p.r.sub(mass_center);
-        (*i).wheel->r = (*i).p.r;
-        len = (*i).p.r.getLength();
+        Wheel * wheel = (*i).wheel->copy();
+        wheel->r.sub(mass_center);
+        len = wheel->r.getLength();
         inertia_moment += len * len * (*i).p.mass;
-        wheels.push_back((*i).wheel);
+        wheels.push_back(wheel);
     }
-    std::vector<Turret> turrets;
-    for (std::vector<RealTurret>::iterator i = r_turrets.begin(); i != r_turrets.end(); i++)
+    std::vector<Turret> turrets = std::vector<Turret>();
+    for (turret_c_it i = r_turrets.cbegin(); i != r_turrets.cend(); i++)
     {
-        (*i).p.r.sub(mass_center);
-        (*i).turret.r = (*i).p.r;
-        len = (*i).p.r.getLength();
+        Turret turret((*i).turret);
+        turret.r.sub(mass_center);
+        len = turret.r.getLength();
         inertia_moment += len * len * (*i).p.mass;
-        turrets.push_back((*i).turret);
+        turrets.push_back(turret);
     }
     Chassis chassis(wheels, r_engine.engine, mass * G, mass_center, mass_center_height);
     return Vehicle(r, angle, v, angular_speed, f, force_moment, a,
                    angular_acceleration, mass, width, length, mass_center, inertia_moment,
-                   r_body.body, chassis, turrets);
+                   body, chassis, turrets);
 }

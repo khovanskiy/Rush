@@ -19,6 +19,7 @@ protected:
     bool firing_state;
     double firing_angle;
 
+    virtual void calculateFireAndForces(double dt);
 
 public:
     Vehicle(Vector2D const & r, double angle,
@@ -29,12 +30,14 @@ public:
             Vector2D const & mass_center, double inertia_moment,
             VehicleBody const & body, Chassis const & chassis,
             std::vector<Turret> const & turrets);
+    ~Vehicle();
     virtual void setAccelerationState(AccelerationState acc_state);
     virtual void setTorquePercent(double torque_percent);
     virtual void setRotationPercent(double rotation_percent);
     virtual void setFiring(bool firing_state, double firing_angle);
-    virtual void calculateFireAndForces(double dt);
     virtual void tick(double dt);
+    virtual int getGear();
+    virtual double getSpins();
 };
 
 #endif // PHYSICSVEHICLE_H

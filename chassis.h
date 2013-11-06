@@ -29,12 +29,16 @@ public:
     Vector2D f;
     double force_moment;
 
+    Chassis(std::vector<Wheel*> const & wheels, VehicleEngine const & engine,
+                   double weight, Vector2D const & mass_center, double height);
+    Chassis(Chassis const & chassis);
     void setTotalState(Vector2D const & v, Vector2D const & a, double angular_speed,
                        double torque_percent, AccelerationState const & acc_state,
                        double rotation);
     void calculateForces(double dt);
-    Chassis(std::vector<Wheel*> const & wheels, VehicleEngine const & engine,
-                   double weight, Vector2D const & mass_center, double height);
+    int getGear();
+    double getSpins();
+    void deleteWheels();
 };
 
 #endif // PHYSICSCHASSIS_H

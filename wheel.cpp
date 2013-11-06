@@ -3,8 +3,8 @@ static const double M_PI = 3.14159265358979323846;
 #include <math.h>
 
 Wheel::Wheel(double mu_parallel_friction, double mu_parallel_roll,
-                           double mu_perpendicular_friction, double mu_broken_friction,
-                           double max_angle, Vector2D const & r, double radius)
+             double mu_perpendicular_friction, double mu_broken_friction,
+             double max_angle, Vector2D const & r, double radius)
     : r(r)
 {
     this->mu_parallel_friction = mu_parallel_friction;
@@ -24,11 +24,6 @@ void Wheel::setWheelAngle(double percent)
 Vector2D Wheel::getWheelDirection()
 {
     return Vector2D(-sin(angle), cos(angle));
-}
-
-double Wheel::getRotatingSpeed()
-{
-    return abs(getWheelDirection().scalar(v) / radius);
 }
 
 double Wheel::getChangedMu(double mu)
