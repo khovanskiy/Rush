@@ -48,13 +48,19 @@ void Vehicle::calculateFireAndForces(double dt)
     f.x = 0;
     f.y = 0;
     force_moment = 0;
-    chassis.setTotalState(v, a, angular_speed, torque_percent,
+    Vector2D vr(v);
+    vr.rotate(-angle);
+    Vector2D ar(a);
+    ar.rotate(-angle);
+    chassis.setTotalState(vr, ar, angular_speed, torque_percent,
                           acc_state, rotation_percent);
     chassis.calculateForces(dt);
+    chassis.f.rotate(angle);
     f.add(chassis.f);
     force_moment += chassis.force_moment;
-    body.setSpeed(v, angular_speed);
+    body.setSpeed(vr, angular_speed);
     body.calculateForces(dt);
+    body.f.rotate(angle);
     f.add(body.f);
     force_moment += body.force_moment;
     double percent;

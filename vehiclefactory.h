@@ -1,6 +1,7 @@
 #ifndef VEHICLEFACTORY_H
 #define VEHICLEFACTORY_H
 #include "vehicle.h"
+#include "carwheel.h"
 
 class VehicleFactory
 {
@@ -15,6 +16,48 @@ public:
                                  RealEngine const & r_engine,
                                  std::vector<RealTurret> const & r_turrets,
                                  std::vector<RealWheel> const & r_wheels);
+
+    static double revsPerKmToRadius(double rotationsPerKilometer);
+
+    struct CarTrack {
+        double y;
+        double width;
+        double wheel_radius;
+        bool driving;
+        RotationReaction reaction;
+
+        double weigth_percent;
+
+        CarTrack(double y, double width, double wheel_radius, double weight_percent,
+                 bool driving, RotationReaction reaction)
+        {
+            this->y = y;
+            this->width = width;
+            this->wheel_radius = wheel_radius;
+            this->weigth_percent = weight_percent;
+            this->driving = driving;
+            this->reaction = reaction;
+        }
+    };
+
+    static Vehicle createCar(Vector2D const & r, double angle,
+                             Vector2D const & v, double angular_speed,
+                             double length, double width,
+                             double mass, double heigth,
+                             double mu_parallel_friction, double mu_parallel_roll,
+                             double mu_perpendicular_friction, double mu_broken_friction,
+                             double max_angle,
+                             CarTrack back, CarTrack front,
+                             double air_resistance_koef,
+                             double max_engine_torque,
+                             double max_engine_spins_per_minute,
+                             std::vector<double> gear_ratios,
+                             double final_ratio,
+                             std::vector<RealTurret> turrets);
+
+    //Vehicle is supposed to be Dodge Challenger SRT8.
+    static Vehicle createSampleCar(Vector2D const & r, double angle,
+                                   Vector2D const & v, double angular_speed);
 };
 
 #endif // VEHICLEFACTORY_H
