@@ -15,7 +15,7 @@ Vehicle::Vehicle(Vector2D const & r, double angle,
 {
     this->mass_center = mass_center;
     this->inertia_moment = inertia_moment;
-    this->setFiring(false);
+    this->setFiring(false, 0);
     this->setAccelerationState(NoAcc);
     this->setRotationPercent(0);
     this->setTorquePercent(0);
