@@ -9,22 +9,24 @@
 #include "background.h"
 #include "keyboard.h"
 #include "keyboardevent.h"
+#include "random"
+#include "QCoreApplication"
+#include "vehiclefactory.h"
 
 InitState::InitState()
 {
-    Console::print("CONSTRUCTOR");
 }
 
 InitState::~InitState()
 {
-    Console::print("DESTRUCTOR");
 }
 
 void InitState::init()
 {
-    Console::print("INIT");
+    v = &VehicleFactory::createSampleCar(Vector2D(100,100), 0, Vector2D(50,50), 10);
     sb = new Bitmap();
-    sb->load("D:\\test.jpg");
+
+    sb->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.png");
     Stage::gi()->addChild(sb);
     Keyboard::gi()->addEventListener(this);
 }
@@ -32,16 +34,19 @@ void InitState::init()
 void InitState::focus()
 {
     Console::print("FOCUS");
-    //sb->dispatchEvent(Event(sb, Event::CHANGE));
 }
 
 void InitState::render()
 {
+    v->tick(0.001);
+    /*Vector2D c = v->getCoordinates();
+    sb->setX(c.x);
+    sb->setY(c.y);
+    sb->setRotationZ(v->getAngle());*/
 }
 
 void InitState::Invoke(const Event &event)
 {
-    Console::print(QString("Recieved: ")+event.type);
     if (event.type == KeyboardEvent::KEY_UP)
     {
         context->changeState(StateEnum::INIT);
@@ -50,14 +55,9 @@ void InitState::Invoke(const Event &event)
 
 void InitState::defocus()
 {
-   Console::print("DEFOCUS");
 }
 
 void InitState::release()
 {
     Console::print("RELEASE");
-    Keyboard::gi()->removeEventListener(this);
-    Stage::gi()->removeChild(sb);
-    delete sb;
-    sb = 0;
 }

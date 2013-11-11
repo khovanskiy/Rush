@@ -32,15 +32,13 @@ void StateContext::Invoke(const Event &event)
 void StateContext::push(StateEnum name)
 {
     ++recuirsion_count;
-    Console::print("Turn ON");
+    Console::print("PUSH");
     if (states.size() > 0)
     {
         states[states.size() - 1]->defocus();
     }
-    State* s = 0;
-    s = StateFactory::create(name);
+    State* s = StateFactory::create(name);
     s->setContext(this);
-    Console::print(s);
     s->init();
     states.push_back(s);
     s->focus();
@@ -49,7 +47,7 @@ void StateContext::push(StateEnum name)
 
 void StateContext::pop()
 {
-    Console::print("Turn OFF");
+    Console::print("POP");
     State* last = states[states.size() - 1];
     last->defocus();
     last->release();
@@ -63,7 +61,7 @@ void StateContext::pop()
 
 void StateContext::changeState(StateEnum name)
 {
-    Console::print("CHANGE STATE");
+    Console::print("CHANGE");
     while (states.size() > 0)
     {
         pop();

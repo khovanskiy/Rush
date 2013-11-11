@@ -4,6 +4,7 @@
 #include "state.h"
 #include "bitmap.h"
 #include <memory>
+#include "vehicle.h"
 
 class InitState : virtual public State
 {
@@ -19,6 +20,7 @@ public:
     void Invoke(const Event &event);
 private:
     Bitmap* sb;
+    Vehicle* v;
 };
 
 #endif // NULLSTATE_H

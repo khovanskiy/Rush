@@ -1,5 +1,7 @@
 #include "bitmap.h"
 
+#include <QFile>
+
 #include "console.h"
 
 Bitmap::Bitmap()
@@ -19,10 +21,21 @@ QImage* Bitmap::getSource() const
 
 void Bitmap::load(QString path)
 {
-    source = new QImage(path);
-    _width = source->width();
-    _height = source->height();
-    dispatchEvent(Event(this, Event::COMPLETE));
+    if (QFile::exists(path))
+    {
+        source = new QImage(path);
+        _width = source->width();
+        _height = source->height();
+        dispatchEvent(Event(this, Event::COMPLETE));
+    }
+    else
+    {
+        source = new QImage(path);
+        _width = source->width();
+        _height = source->height();
+        dispatchEvent(Event(this, Event::COMPLETE));
+        Console::print("Cant find the file");
+    }
 }
 
 void Bitmap::render(QPainter* render2d)

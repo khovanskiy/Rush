@@ -76,4 +76,5 @@ void GraphicCore::keyPressEvent(QKeyEvent* event)
 void GraphicCore::render()
 {
     repaint();
+    dispatchEvent(Event(this, Event::ENTER_FRAME));
 }
