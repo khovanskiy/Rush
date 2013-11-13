@@ -1,6 +1,8 @@
 #include "wheel.h"
 //#include "console.h"
 static const double M_PI = 3.14159265358979323846;
+static const double G = 9.80665;
+static const double eps = 1e-4;
 #include <math.h>
 
 Wheel::Wheel(double mu_parallel_friction, double mu_parallel_roll,
@@ -76,10 +78,12 @@ void Wheel::calculateForces(double dt)
             break;
         }
         vl = v.getLength();
-        if (vl > 0)
+        if (vl > eps)
         {
             Vector2D w = getWheelDirection();
             double alpha = Vector2D::angleBetween(w, v);
+            double v_par = abs(v.scalar(w));
+            double v_perp = sqrt(abs(vl * vl - v_par * v_par));
             Vector2D f_perp = w;
             f_perp.rotate(M_PI / 2);
             if (f_perp.scalar(v) > 0)
@@ -87,18 +91,26 @@ void Wheel::calculateForces(double dt)
                 f_perp.mul(-1);
             }
             f_perp.mul(distributed_weight * getChangedMu(mu_perp) * sin(alpha) * sin(alpha));
+            if (f_perp.getLength() > v_perp * (distributed_weight / G) / dt)
+            {
+                f_perp.setLength(v_perp * (distributed_weight / G) / dt);
+            }
             Vector2D f_par = w;
             if (f_par.scalar(v) > 0)
             {
                 f_par.mul(-1);
             }
             f_par.mul(distributed_weight * getChangedMu(mu_par) * cos(alpha) * cos(alpha));
+            if (f_par.getLength() > v_par * (distributed_weight / G) / dt)
+            {
+                f_par.setLength(v_par * (distributed_weight / G) / dt);
+            }
             f = f_perp;
             f.add(f_par);
         }
         else
         {
-            f.mul(0);
+            f = Vector2D();
         }
         break;
     case Forward:
@@ -115,7 +127,7 @@ void Wheel::calculateForces(double dt)
         }
         acc_force.add(par_roll_friction);
         vl = v.getLength();
-        if (vl > 0)
+        if (vl > eps)
         {
 
             double alpha = Vector2D::angleBetween(w, v);
