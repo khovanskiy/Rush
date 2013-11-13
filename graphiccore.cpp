@@ -70,6 +70,11 @@ void GraphicCore::mousePressEvent(QMouseEvent* event)
 
 void GraphicCore::keyPressEvent(QKeyEvent* event)
 {
+    dispatchEvent(KeyboardEvent(this, KeyboardEvent::KEY_DOWN, event->key()));
+}
+
+void GraphicCore::keyReleaseEvent(QKeyEvent* event)
+{
     dispatchEvent(KeyboardEvent(this, KeyboardEvent::KEY_UP, event->key()));
 }
 
