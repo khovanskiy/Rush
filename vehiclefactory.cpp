@@ -140,8 +140,8 @@ Vehicle * VehicleFactory::createCar(Vector2D const & r, double angle,
     Vector2D mass_center(0, 0);
     mass_center.y += back.y * back.weigth_percent;
     mass_center.y += front.y * front.weigth_percent;
-    RealBody r_body(Position(mass_center, mass), VehicleBody(air_resistance_koef, 2 * air_resistance_koef,
-                                                             5 * air_resistance_koef, 5 * air_resistance_koef, 30000 * air_resistance_koef, mass_center));
+    RealBody r_body(Position(mass_center, mass), VehicleBody(1000 * air_resistance_koef, 2000 * air_resistance_koef,
+                                                             5000 * air_resistance_koef, 5000 * air_resistance_koef, 30000 * air_resistance_koef, mass_center));
     return createVehicle(r, angle, v, angular_speed,
                          Vector2D(0, 0), 0, Vector2D(0, 0), 0,
                          width, length, mass_center_height,
