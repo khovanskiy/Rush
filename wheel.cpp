@@ -1,5 +1,5 @@
 #include "wheel.h"
-#include "console.h"
+//#include "console.h"
 static const double M_PI = 3.14159265358979323846;
 #include <math.h>
 
@@ -15,7 +15,7 @@ Wheel::Wheel(double mu_parallel_friction, double mu_parallel_roll,
     this->max_angle = max_angle;
     this->radius = radius;
     this->surface_friction = 1;
-    Console::print(r);
+    //Console::print(r);
 }
 
 void Wheel::setWheelAngle(double percent)
@@ -52,6 +52,7 @@ void Wheel::setTorque(double percent)
 
 void Wheel::calculateForces(double dt)
 {
+
     double vl;
     double mu_par = 0, mu_perp = 0;
     switch (state)
@@ -79,16 +80,21 @@ void Wheel::calculateForces(double dt)
         {
             Vector2D w = getWheelDirection();
             double alpha = Vector2D::angleBetween(w, v);
-            double mu = getChangedMu(mu_par * cos(alpha) * cos(alpha)
-                                     + mu_perp * sin(alpha) * sin(alpha));
-            f = v;
-            if (distributed_weight * mu > vl / dt) {
-                f.setLength(-vl / dt);
-            }
-            else
+            Vector2D f_perp = w;
+            f_perp.rotate(M_PI / 2);
+            if (f_perp.scalar(v) > 0)
             {
-                f.setLength(-distributed_weight * mu);
+                f_perp.mul(-1);
             }
+            f_perp.mul(distributed_weight * getChangedMu(mu_perp) * sin(alpha) * sin(alpha));
+            Vector2D f_par = w;
+            if (f_par.scalar(v) > 0)
+            {
+                f_par.mul(-1);
+            }
+            f_par.mul(distributed_weight * getChangedMu(mu_par) * cos(alpha) * cos(alpha));
+            f = f_perp;
+            f.add(f_par);
         }
         else
         {
@@ -136,7 +142,9 @@ void Wheel::calculateForces(double dt)
             f = acc_force;
         }
         break;
-    }
+    }    
+    //f = getWheelDirection();
+    //f.mul(1000);
     force_moment = r.cross(f);
     //Console::print(f);
     //Console::print(Vector2D(force_moment, 0));

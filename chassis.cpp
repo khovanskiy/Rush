@@ -1,5 +1,5 @@
 #include "chassis.h"
-#include "console.h"
+//#include "console.h"
 
 typedef std::vector<Wheel*> vector;
 typedef vector::iterator iterator;
@@ -30,6 +30,8 @@ void Chassis::distributeWeigth()
     mass_center_offset.y -= height * a.y / sqrt(a.y * a.y + G * G);
     int front_amount = 0, back_amount = 0;
     double front_sum = 0, back_sum = 0;
+    //Console::print("Weight:");
+    //Console::print(weight);
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
         if ((*i)->r.y > mass_center_offset.y)
@@ -45,6 +47,10 @@ void Chassis::distributeWeigth()
     }
     double front_weight = weight * back_sum / (front_amount * back_sum + back_amount * front_sum);
     double back_weight = weight * front_sum / (front_amount * back_sum + back_amount * front_sum);
+    //Console::print("Front weigth:");
+    //Console::print(front_weight);
+    //Console::print("Back weight");
+    //Console::print(back_weight);
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
         if ((*i)->r.y > mass_center_offset.y)
@@ -71,8 +77,8 @@ void Chassis::distributeWeigth()
             }
         }
     }
-    double left_koef = 2 * right_sum * (left_sum + right_sum);
-    double right_koef = 2 * left_sum * (left_sum + right_sum);
+    double left_koef = 2 * right_sum / (left_sum + right_sum);
+    double right_koef = 2 * left_sum / (left_sum + right_sum);
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
         if (abs((*i)->r.x) > eps)
@@ -86,6 +92,8 @@ void Chassis::distributeWeigth()
                 (*i)->distributed_weight *= right_koef;
             }
         }
+        //Console::print("Distributed weight:");
+        //Console::print((*i)->distributed_weight);
     }
 }
 
@@ -131,6 +139,8 @@ void Chassis::distributeTorque()
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
         (*i)->setTorque(p);
+        //Console::print("Distributed torque:");
+        //Console::print(p);
     }
 }
 
@@ -144,6 +154,10 @@ void Chassis::sumForces(double dt)
         (*i)->calculateForces(dt);
         f.add((*i)->f);
         force_moment += ((*i)->force_moment);
+        //Console::print("Force:");
+        //Console::print((*i)->f);
+        //Console::print("Force moment:");
+        //Console::print((*i)->force_moment);
     }
 }
 

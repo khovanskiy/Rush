@@ -1,5 +1,6 @@
 #include "carwheel.h"
 #include "math.h"
+//#include "console.h"
 
 CarWheel::CarWheel(double mu_parallel_friction, double mu_parallel_roll,
                    double mu_perpendicular_friction, double mu_broken_friction,
@@ -45,19 +46,32 @@ void CarWheel::changeState(AccelerationState const & acc_state,
     case ForwardAcc:
         if (driving)
         {
-            state = Forward;
+            state = Forward;            
         }
         break;
     case BackwardAcc:
         if (driving)
         {
-            state = Backward;
+            state = Backward;            
         }
         break;
     case Brakes:
         state = Braking;
         break;
     }
+    /*switch (state)
+    {
+    case Forward:
+        Console::print("State: Forward");
+        break;
+    case Backward:
+        Console::print("State: Backward");
+        break;
+    case Free:
+        Console::print("State: Free");
+        break;
+    }*/
+
     double percent = 0;
     if (reaction == StraightRot)
     {

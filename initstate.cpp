@@ -23,12 +23,18 @@ InitState::~InitState()
 
 void InitState::init()
 {
-    v = VehicleFactory::createSampleCar(Vector2D(100,100), 0, Vector2D(50,50), 10);
+    v = VehicleFactory::createSampleCar(Vector2D(100,100), -3.14 / 2, Vector2D(0, 0), 0);
+    v->setAccelerationState(ForwardAcc);
+    v->setRotationPercent(0.3);
+    v->setTorquePercent(0.3);
     sb = new Bitmap();
     sb->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.jpg");
     sb->setRSPointCenter();
+    sb->setScaleX(0.05f);
+    sb->setScaleY(0.05f);
     Stage::gi()->addChild(sb);
     Keyboard::gi()->addEventListener(this);
+    v->tick(0.01);
 }
 
 void InitState::focus()
@@ -38,13 +44,34 @@ void InitState::focus()
 
 void InitState::render()
 {
-    v->tick(0.1);
-    v->setAccelerationState(ForwardAcc);
-    v->setTorquePercent(1);
+    static double time = 0;
+    //v->setAccelerationState(ForwardAcc);
+    //v->setRotationPercent(1);
+    //v->setTorquePercent(1);
+    v->tick(0.05);
+    time += 0.05;
+    if (time > 5)
+    {
+        v->setRotationPercent(-0.6);
+    }
+    if (time > 20)
+    {
+        v->setAccelerationState(Brakes);
+    }
+    if (time > 25)
+    {
+        v->setAccelerationState(BackwardAcc);
+        v->setRotationPercent(0.3);
+    }
     Vector2D c = v->getCoordinates();
     sb->setX(c.x);
     sb->setY(c.y);
-    sb->setRotationZ(v->getAngle());
+    sb->setRotationZ(v->getAngle() / 2);
+    //Console::print("Gear:");
+    //Console::print(v->getGear());
+    //Console::print("Spins per minute");
+    //Console::print(v->getSpins());
+    //Console::print(time);
 }
 
 void InitState::Invoke(const Event &event)

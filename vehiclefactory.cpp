@@ -48,7 +48,8 @@ Vehicle * VehicleFactory::createVehicle(Vector2D const & r, double angle,
         mass += (*i).p.mass;
     }
     mass_center.div(mass);
-    double inertia_moment = r_body.p.mass * (width * width + length * length) / 12;
+    //double inertia_moment = r_body.p.mass * (width * width + length * length) / 12;
+    double inertia_moment = r_body.p.mass * (width * width + length * length);
     double len;
     VehicleBody body(r_body.body);
     body.r = r_body.p.r;
