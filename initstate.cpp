@@ -23,15 +23,15 @@ InitState::~InitState()
 
 void InitState::init()
 {
-    v = VehicleFactory::createSampleCar(Vector2D(100,100), -3.14 / 2, Vector2D(0, 0), 0);
+    v = VehicleFactory::createSampleCar(Vector2D(100,100), 0, Vector2D(0, 0), 0);
     v->setAccelerationState(ForwardAcc);
-    v->setRotationPercent(0.3);
-    v->setTorquePercent(0.3);
+    v->setRotationPercent(0.4);
+    v->setTorquePercent(1);
     sb = new Bitmap();
     sb->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.jpg");
     sb->setRSPointCenter();
-    sb->setScaleX(0.05f);
-    sb->setScaleY(0.05f);
+    sb->setScaleX(0.02f);
+    sb->setScaleY(0.02f);
     Stage::gi()->addChild(sb);
     Keyboard::gi()->addEventListener(this);
     v->tick(0.01);
@@ -64,8 +64,8 @@ void InitState::render()
         v->setRotationPercent(0.3);
     }
     Vector2D c = v->getCoordinates();
-    sb->setX(c.x);
-    sb->setY(c.y);
+    sb->setX(c.x / 4);
+    sb->setY(c.y / 4);
     sb->setRotationZ(v->getAngle() / 2);
     //Console::print("Gear:");
     //Console::print(v->getGear());
