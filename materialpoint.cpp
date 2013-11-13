@@ -39,3 +39,13 @@ double MaterialPoint::getAngularSpeed()
 {
     return 0;
 }
+
+void MaterialPoint::setCoordinates(Vector2D const & r)
+{
+    this->r = r;
+}
+void MaterialPoint::setSpeed(Vector2D const & v)
+{
+    this->v = v;
+}
+

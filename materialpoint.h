@@ -22,7 +22,8 @@ public:
     virtual Vector2D getSpeed();
     virtual double getAngle();
     virtual double getAngularSpeed();
-
+    virtual void setCoordinates(Vector2D const & r);
+    virtual void setSpeed(Vector2D const & v);
 };
 
 #endif // PHYSICSPOINT_H
