@@ -1,4 +1,6 @@
 #include "chassis.h"
+#include "console.h"
+
 typedef std::vector<Wheel*> vector;
 typedef vector::iterator iterator;
 static const double G = 9.80665;
@@ -164,6 +166,8 @@ void Chassis::calculateForces(double dt)
     setWheelsReaction();
     distributeTorque();
     sumForces(dt);
+    //Console::print(f);
+    //Console::print(Vector2D(force_moment, 0));
 }
 
 int Chassis::getGear()

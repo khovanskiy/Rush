@@ -20,7 +20,7 @@ public:
     void Invoke(const Event &event);
 private:
     Bitmap* sb;
-    Vehicle* v;
+    Vehicle* v;    
 };
 
 #endif // NULLSTATE_H

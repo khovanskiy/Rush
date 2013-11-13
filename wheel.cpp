@@ -1,4 +1,5 @@
 #include "wheel.h"
+#include "console.h"
 static const double M_PI = 3.14159265358979323846;
 #include <math.h>
 
@@ -14,6 +15,7 @@ Wheel::Wheel(double mu_parallel_friction, double mu_parallel_roll,
     this->max_angle = max_angle;
     this->radius = radius;
     this->surface_friction = 1;
+    Console::print(r);
 }
 
 void Wheel::setWheelAngle(double percent)
@@ -136,6 +138,8 @@ void Wheel::calculateForces(double dt)
         break;
     }
     force_moment = r.cross(f);
+    //Console::print(f);
+    //Console::print(Vector2D(force_moment, 0));
 }
 
 

@@ -12,7 +12,7 @@ VehicleFactory::VehicleFactory()
 // All vectors r of input body, engine, turrets and wheels
 //must be relative to the geometry center of the car.
 
-Vehicle VehicleFactory::createVehicle(Vector2D const & r, double angle,
+Vehicle * VehicleFactory::createVehicle(Vector2D const & r, double angle,
                                       Vector2D const & v, double angular_speed,
                                       Vector2D const & f, double force_moment,
                                       Vector2D const & a, double angular_acceleration,
@@ -80,7 +80,7 @@ Vehicle VehicleFactory::createVehicle(Vector2D const & r, double angle,
         turrets.push_back(turret);
     }
     Chassis chassis(wheels, r_engine.engine, mass * G, mass_center, mass_center_height);
-    return Vehicle(r, angle, v, angular_speed, f, force_moment, a,
+    return new Vehicle(r, angle, v, angular_speed, f, force_moment, a,
                    angular_acceleration, mass, width, length, mass_center, inertia_moment,
                    body, chassis, turrets);
 }
@@ -90,7 +90,7 @@ double VehicleFactory::revsPerKmToRadius(double revsPerKilometer)
     return 1000 / (2 * M_PI * revsPerKilometer);
 }
 
-Vehicle VehicleFactory::createCar(Vector2D const & r, double angle,
+Vehicle * VehicleFactory::createCar(Vector2D const & r, double angle,
                          Vector2D const & v, double angular_speed,
                          double length, double width,
                          double mass, double height,
@@ -124,7 +124,7 @@ Vehicle VehicleFactory::createCar(Vector2D const & r, double angle,
     r_wheels.push_back(RealWheel(Position(Vector2D(back.width, back.reaction), 0),
                                new CarWheel(mu_parallel_friction, mu_parallel_roll,
                                   mu_perpendicular_friction, mu_broken_friction,
-                                  max_angle, Vector2D(back.width, back.reaction),
+                                  max_angle, Vector2D(back.width/2, back.y),
                                   back.wheel_radius, back.driving, back.reaction)));
     double mass_center_height = height / 3;
     std::vector<VehicleEngine::Gear> gears;
@@ -146,7 +146,7 @@ Vehicle VehicleFactory::createCar(Vector2D const & r, double angle,
                          r_body, r_engine, turrets, r_wheels);
 }
 
-Vehicle VehicleFactory::createSampleCar(Vector2D const & r, double angle,
+Vehicle* VehicleFactory::createSampleCar(Vector2D const & r, double angle,
                                         Vector2D const & v, double angular_speed)
 {
     std::vector<RealTurret> turrets;
@@ -156,7 +156,7 @@ Vehicle VehicleFactory::createSampleCar(Vector2D const & r, double angle,
     gears.push_back(1.41);
     gears.push_back(1);
     gears.push_back(0.83);
-    return createCar(r, angle + M_PI, v, angular_speed,
+    return createCar(r, angle, v, angular_speed,
                      5.0, 1.923, 1887, 1.45, 1, 0.05, 1, 1.5, M_PI / 6,
                      CarTrack(-1.62724, 1.604, revsPerKmToRadius(456), 0.466,
                               true, NoRotation),

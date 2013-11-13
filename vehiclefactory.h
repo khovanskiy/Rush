@@ -7,7 +7,7 @@ class VehicleFactory
 {
 public:
     VehicleFactory();
-    static Vehicle createVehicle(Vector2D const & r, double angle,
+    static Vehicle* createVehicle(Vector2D const & r, double angle,
                                  Vector2D const & v, double angular_speed,
                                  Vector2D const & f, double force_moment,
                                  Vector2D const & a, double angular_acceleration,
@@ -40,7 +40,7 @@ public:
         }
     };
 
-    static Vehicle createCar(Vector2D const & r, double angle,
+    static Vehicle* createCar(Vector2D const & r, double angle,
                              Vector2D const & v, double angular_speed,
                              double length, double width,
                              double mass, double heigth,
@@ -56,7 +56,7 @@ public:
                              std::vector<RealTurret> turrets);
 
     //Vehicle is supposed to be Dodge Challenger SRT8.
-    static Vehicle createSampleCar(Vector2D const & r, double angle,
+    static Vehicle* createSampleCar(Vector2D const & r, double angle,
                                    Vector2D const & v, double angular_speed);
 };
 

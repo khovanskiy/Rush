@@ -1,4 +1,5 @@
 #include "vehicle.h"
+#include "console.h"
 
 static const double G = 9.80665;
 
@@ -91,6 +92,8 @@ void Vehicle::calculateFireAndForces(double dt)
 void Vehicle::tick(double dt)
 {
     calculateFireAndForces(dt);
+    //Console::print(f);
+    //Console::print(Vector2D(force_moment, 0));
     Shape::tick(dt);
 }
 
