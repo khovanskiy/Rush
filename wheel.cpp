@@ -2,7 +2,7 @@
 //#include "console.h"
 static const double M_PI = 3.14159265358979323846;
 static const double G = 9.80665;
-static const double eps = 1e-4;
+static const double eps = 1e-9;
 #include <math.h>
 
 Wheel::Wheel(double mu_parallel_friction, double mu_parallel_roll,
