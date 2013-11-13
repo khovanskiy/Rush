@@ -26,7 +26,7 @@ void InitState::init()
     v = VehicleFactory::createSampleCar(Vector2D(100,100), 0, Vector2D(0, 0), 0);
     v->setTorquePercent(1);
     sb = new Bitmap();
-    sb->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.png");
+    sb->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.jpg");
     sb->setRSPointCenter();
     sb->setScaleX(0.05f);
     sb->setScaleY(0.05f);

@@ -159,6 +159,10 @@ void Chassis::sumForces(double dt)
         //Console::print("Force moment:");
         //Console::print((*i)->force_moment);
     }
+    /*if (f.getLength() > (weight / G) * v.getLength() / dt)
+    {
+        f.setLength((weight / G) * v.getLength() / dt);
+    }*/
 }
 
 void Chassis::setTotalState(Vector2D const & v, Vector2D const & a, double angular_speed,

@@ -71,7 +71,7 @@ void VehicleBody::calculateForces(double dt)
         f.y = 0;
         force_moment = 0;
     }
-    force_moment -= angular_speed * abs(angular_speed) * getChangedResistance(spin_air_resistance);
+    force_moment -= angular_speed * getChangedResistance(spin_air_resistance);
 }
 
 
