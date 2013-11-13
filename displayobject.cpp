@@ -38,7 +38,7 @@ QMatrix* DisplayObject::getLocalMatrix()
 {
     QMatrix a; a.translate(-rx,-ry);
     QMatrix b; b.scale(_scaleX, _scaleY);
-    QMatrix c; c.rotate(_rotationZ / asin(1) * 180);
+    QMatrix c; c.rotate(_rotationZ / asin(1) * 90);
     QMatrix d; d.translate(rx,ry);
     QMatrix e; e.translate(_x-rx, _y-ry);
     QMatrix r = a * b * c * d * e;

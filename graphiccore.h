@@ -23,6 +23,7 @@ protected:
     void paintEvent(QPaintEvent *event);
     void mousePressEvent(QMouseEvent *);
     void keyPressEvent(QKeyEvent *);
+    void keyReleaseEvent(QKeyEvent *);
     void resizeEvent(QResizeEvent *);
 private:
     //void render(DisplayObjectContainer* child);
