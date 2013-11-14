@@ -9,21 +9,10 @@
 
 Program::Program(QWidget *parent) : QMainWindow(parent)
 {
-    core = GraphicCore::gi();
-    ticks_timer = new QTimer(this);
-    ticks_timer->setSingleShot(false);
-    QObject::connect(ticks_timer, SIGNAL(timeout()), this, SLOT(onTick()));
-    ticks_timer->start(0);
-
     game = new Game();
-}
-
-void Program::onTick()
-{
-    core->render();
 }
 
 Program::~Program()
 {
-    
+    delete game;
 }

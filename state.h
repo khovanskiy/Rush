@@ -4,10 +4,8 @@
 #include "eventhandler.h"
 #include "eventdispatcher.h"
 #include "console.h"
-#include "statecontext.h"
 
 class StateContext;
-
 enum StateEnum
 {
     INIT, MAIN_MENU, GAMEPLAY, EXIT, GAMEOVER
@@ -20,7 +18,7 @@ public:
     virtual ~State() { Console::print("State is deleted"); } // Без этого delete State* не сделать
     virtual void init() {}
     virtual void focus() {}
-    virtual void render() {}
+    virtual void tick(double dt) {}
     virtual void defocus() {}
     virtual void release() {}
     virtual void Invoke(const Event&) {}

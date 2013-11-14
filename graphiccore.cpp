@@ -25,7 +25,8 @@ GraphicCore::GraphicCore() : QGLWidget(QGLFormat(QGL::SampleBuffers), 0)
     render2d = new QPainter();
     pen = new QPen(QColor(255,255,255));
     setWindowTitle("Rush game");
-    resize(1920, 1080);
+    resize(1280, 800);
+    move(50,50);
     setAutoFillBackground(false);
     show();
 }
@@ -94,7 +95,7 @@ void GraphicCore::keyReleaseEvent(QKeyEvent* event)
     }
 }
 
-void GraphicCore::render()
+void GraphicCore::render(float interpolation)
 {
     repaint();
     dispatchEvent(Event(this, Event::ENTER_FRAME));

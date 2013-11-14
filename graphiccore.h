@@ -18,7 +18,7 @@ public:
     GraphicCore();
     ~GraphicCore();
     static GraphicCore* gi();
-    void render();
+    void render(float interpolation);
 protected:
     void paintEvent(QPaintEvent *event);
     void mousePressEvent(QMouseEvent *);

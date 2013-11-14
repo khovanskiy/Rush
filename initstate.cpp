@@ -23,7 +23,7 @@ InitState::~InitState()
 
 void InitState::init()
 {
-    v = VehicleFactory::createSampleCar(Vector2D(100,100), 0, Vector2D(0, 0), 0);
+    v = VehicleFactory::createSampleCar(Vector2D(100,100), asin(1), Vector2D(0, 0), 0);
     v->setTorquePercent(1);
     sb = new Bitmap();
     sb->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.png");
@@ -39,16 +39,16 @@ void InitState::focus()
     Console::print("FOCUS");
 }
 
-void InitState::render()
+void InitState::tick(double dt)
 {
     static double time = 0;
-    time+=0.05;
-    v->tick(0.05);
+    time+=dt;
+    v->tick(dt);
     Vector2D c = v->getCoordinates();
     sb->setX(c.x * 5);
     sb->setY(c.y * 5);
     sb->setRotationZ(v->getAngle());
-    Console::print(QVariant(v->getSpeed().getLength()*3.6).toString()+" "+QVariant(time).toString());
+    Console::print(QVariant(v->getSpeed().getLength()).toString()+" "+QVariant(time).toString());
 }
 
 void InitState::Invoke(const Event &event)

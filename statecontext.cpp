@@ -9,30 +9,26 @@
 StateContext::StateContext()
 {
     recuirsion_count = 0;
-    GraphicCore::gi()->addEventListener(this);
     push(StateEnum::INIT);
 }
 
-void StateContext::Invoke(const Event &event)
+void StateContext::tick(double dt)
 {
     ++recuirsion_count;
-    if (event.type == Event::ENTER_FRAME)
-    {
-        for (LIST::iterator i = states.begin(); i != states.end(); ++i)
+    for (LIST::iterator i = states.begin(); i != states.end(); ++i)
         {
             if (*i)
             {
-                (*i)->render();
+                (*i)->tick(dt);
             }
         }
-    }
     --recuirsion_count;
 }
 
 void StateContext::push(StateEnum name)
 {
     ++recuirsion_count;
-    Console::print("PUSH");
+    //Console::print("PUSH");
     if (states.size() > 0)
     {
         states[states.size() - 1]->defocus();
@@ -47,7 +43,7 @@ void StateContext::push(StateEnum name)
 
 void StateContext::pop()
 {
-    Console::print("POP");
+    //Console::print("POP");
     State* last = states[states.size() - 1];
     last->defocus();
     last->release();
@@ -61,7 +57,7 @@ void StateContext::pop()
 
 void StateContext::changeState(StateEnum name)
 {
-    Console::print("CHANGE");
+    //Console::print("CHANGE");
     while (states.size() > 0)
     {
         pop();
