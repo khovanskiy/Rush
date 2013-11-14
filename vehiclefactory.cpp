@@ -162,8 +162,8 @@ Vehicle* VehicleFactory::createSampleCar(Vector2D const & r, double angle,
     return createCar(r, angle, v, angular_speed,
                      5.0, 1.923, 1887, 1.45, 1, 0.08 , 0.8, 1.5, M_PI / 6,
                      CarTrack(-1.62724, 1.604, revsPerKmToRadius(456), 0.466,
-                              false, NoRotation),
+                              true, NoRotation),
                      CarTrack(1.74552, 1.603, revsPerKmToRadius(456), 0.544,
-                              true, StraightRot),
+                              false, StraightRot),
                      0.356, 637, 6000, gears, 3.06, turrets);
 }

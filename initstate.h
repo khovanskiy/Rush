@@ -13,10 +13,9 @@ public:
     virtual ~InitState();
     void init();
     void focus();
-    void render();
+    void tick(double dt);
     void defocus();
     void release();
-
     void Invoke(const Event &event);
 private:
     Bitmap* sb;

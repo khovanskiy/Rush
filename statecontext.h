@@ -8,17 +8,14 @@
 #include "eventhandler.h"
 #include "state.h"
 
-class State;
-enum StateEnum;
-
-class StateContext : public EventHandler
+class StateContext
 {
 public:
     StateContext();
     void push(StateEnum name);
     void pop();
     void changeState(StateEnum name);
-    void Invoke(const Event &event);
+    void tick(double dt);
 private:
     typedef std::vector<State*> LIST;
     LIST states;
