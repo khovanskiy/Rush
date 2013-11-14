@@ -26,10 +26,10 @@ void InitState::init()
     v = VehicleFactory::createSampleCar(Vector2D(100,100), 0, Vector2D(0, 0), 0);
     v->setTorquePercent(1);
     sb = new Bitmap();
-    sb->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.jpg");
+    sb->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.png");
     sb->setRSPointCenter();
-    sb->setScaleX(0.05f);
-    sb->setScaleY(0.05f);
+    sb->setWidth(5 * 1.923);
+    sb->setHeight(5 * 5.0);
     Stage::gi()->addChild(sb);
     Keyboard::gi()->addEventListener(this);
 }
@@ -41,11 +41,14 @@ void InitState::focus()
 
 void InitState::render()
 {
-    v->tick(0.1);
+    static double time = 0;
+    time+=0.05;
+    v->tick(0.05);
     Vector2D c = v->getCoordinates();
-    sb->setX(c.x);
-    sb->setY(c.y);
+    sb->setX(c.x * 5);
+    sb->setY(c.y * 5);
     sb->setRotationZ(v->getAngle());
+    Console::print(QVariant(v->getSpeed().getLength()*3.6).toString()+" "+QVariant(time).toString());
 }
 
 void InitState::Invoke(const Event &event)
@@ -55,19 +58,19 @@ void InitState::Invoke(const Event &event)
         KeyboardEvent* st = (KeyboardEvent*)(&event);
         switch (st->keyCode)
         {
-            case Qt::Key_W:
+            case Qt::Key_Up:
             {
-                    v->setAccelerationState(ForwardAcc);
+                v->setAccelerationState(ForwardAcc);
             } break;
-            case Qt::Key_S:
+            case Qt::Key_Down:
             {
                     v->setAccelerationState(BackwardAcc);
             } break;
-            case Qt::Key_A:
+            case Qt::Key_Left:
             {
-                    v->setRotationPercent(-1);
+                v->setRotationPercent(-1);
             } break;
-            case Qt::Key_D:
+            case Qt::Key_Right:
             {
                     v->setRotationPercent(1);
             } break;
@@ -82,19 +85,19 @@ void InitState::Invoke(const Event &event)
         KeyboardEvent* st = (KeyboardEvent*)(&event);
         switch (st->keyCode)
         {
-            case Qt::Key_W:
+            case Qt::Key_Up:
             {
                     v->setAccelerationState(NoAcc);
             } break;
-            case Qt::Key_S:
+            case Qt::Key_Down:
             {
                     v->setAccelerationState(NoAcc);
             } break;
-            case Qt::Key_A:
+            case Qt::Key_Left:
             {
                     v->setRotationPercent(0);
             } break;
-            case Qt::Key_D:
+            case Qt::Key_Right:
             {
                     v->setRotationPercent(0);
             } break;
