@@ -90,7 +90,7 @@ void Wheel::calculateForces(double dt)
             {
                 f_perp.mul(-1);
             }
-            f_perp.mul(distributed_weight * getChangedMu(mu_perp) * sin(alpha) * sin(alpha));
+            f_perp.mul(distributed_weight * getChangedMu(mu_perp));// * sin(alpha));// * sin(alpha));
             if (f_perp.getLength() > v_perp * (distributed_weight / G) / dt)
             {
                 f_perp.setLength(v_perp * (distributed_weight / G) / dt);
@@ -132,15 +132,13 @@ void Wheel::calculateForces(double dt)
 
             double alpha = Vector2D::angleBetween(w, v);
             acc_force.mul(cos(alpha) * cos(alpha));
-            /*
             Vector2D f_perp = w;
             f_perp.rotate(M_PI / 2);
             if (f_perp.scalar(v) > 0)
             {
                 f_perp.mul(-1);
             }
-            f_perp.mul(distributed_weight * getChangedMu(mu_perp) * sin(alpha) * sin(alpha));
-            */
+            f_perp.mul(distributed_weight * getChangedMu(mu_perp));// * sin(alpha));// * sin(alpha));//magic
             /*
             Vector2D perp_friction = w;
             perp_friction.rotate(M_PI / 2);
@@ -159,6 +157,7 @@ void Wheel::calculateForces(double dt)
             f.add(perp_friction);
             */
             f = acc_force;
+            f.add(f_perp);
         }
         else
         {

@@ -35,21 +35,22 @@ Vehicle * VehicleFactory::createVehicle(Vector2D const & r, double angle,
     mass += r_engine.p.mass;
     for (turret_c_it i = r_turrets.cbegin(); i != r_turrets.cend(); i++)
     {
-        cur = (*i).p.r;
-        cur.mul((*i).p.mass);
+        cur = i->p.r;
+        cur.mul(i->p.mass);
         mass_center.add(cur);
-        mass += (*i).p.mass;
+        mass += i->p.mass;
     }
     for (wheel_c_it i = r_wheels.cbegin(); i != r_wheels.cend(); i++)
     {
-        cur = (*i).p.r;
-        cur.mul((*i).p.mass);
+        cur = i->p.r;
+        cur.mul(i->p.mass);
         mass_center.add(cur);
-        mass += (*i).p.mass;
+        mass += i->p.mass;
     }
     mass_center.div(mass);
+
     //double inertia_moment = r_body.p.mass * (width * width + length * length) / 12;
-    double inertia_moment = r_body.p.mass * (width * width + length * length);
+    double inertia_moment = r_body.p.mass * (width * width + length * length) / 12;
     double len;
     VehicleBody body(r_body.body);
     body.r = r_body.p.r;
@@ -141,7 +142,7 @@ Vehicle * VehicleFactory::createCar(Vector2D const & r, double angle,
     mass_center.y += back.y * back.weigth_percent;
     mass_center.y += front.y * front.weigth_percent;
     RealBody r_body(Position(mass_center, mass), VehicleBody(1000 * air_resistance_koef, 2000 * air_resistance_koef,
-                                                             5000 * air_resistance_koef, 5000 * air_resistance_koef, 30000 * air_resistance_koef, mass_center));
+                                                             50000 * air_resistance_koef, 50000 * air_resistance_koef, 80000 * air_resistance_koef, mass_center));
     return createVehicle(r, angle, v, angular_speed,
                          Vector2D(0, 0), 0, Vector2D(0, 0), 0,
                          width, length, mass_center_height,
@@ -159,10 +160,10 @@ Vehicle* VehicleFactory::createSampleCar(Vector2D const & r, double angle,
     gears.push_back(1);
     gears.push_back(0.83);
     return createCar(r, angle, v, angular_speed,
-                     5.0, 1.923, 1887, 1.45, 1, 0.05, 1, 1.5, M_PI / 6,
+                     5.0, 1.923, 1887, 1.45, 1, 0.08 , 0.8, 1.5, M_PI / 6,
                      CarTrack(-1.62724, 1.604, revsPerKmToRadius(456), 0.466,
-                              true, NoRotation),
+                              false, NoRotation),
                      CarTrack(1.74552, 1.603, revsPerKmToRadius(456), 0.544,
-                              false, StraightRot),
+                              true, StraightRot),
                      0.356, 637, 6000, gears, 3.06, turrets);
 }

@@ -25,7 +25,7 @@ GraphicCore::GraphicCore() : QGLWidget(QGLFormat(QGL::SampleBuffers), 0)
     render2d = new QPainter();
     pen = new QPen(QColor(255,255,255));
     setWindowTitle("Rush game");
-    resize(800, 600);
+    resize(1920, 1080);
     setAutoFillBackground(false);
     show();
 }
@@ -70,12 +70,28 @@ void GraphicCore::mousePressEvent(QMouseEvent* event)
 
 void GraphicCore::keyPressEvent(QKeyEvent* event)
 {
-    dispatchEvent(KeyboardEvent(this, KeyboardEvent::KEY_DOWN, event->key()));
+    if (!event->isAutoRepeat())
+    {
+        dispatchEvent(KeyboardEvent(this, KeyboardEvent::KEY_DOWN, event->key()));
+        event->accept();
+    }
+    else
+    {
+        event->ignore();
+    }
 }
 
 void GraphicCore::keyReleaseEvent(QKeyEvent* event)
 {
-    dispatchEvent(KeyboardEvent(this, KeyboardEvent::KEY_UP, event->key()));
+    if (!event->isAutoRepeat())
+    {
+        dispatchEvent(KeyboardEvent(this, KeyboardEvent::KEY_UP, event->key()));
+        event->accept();
+    }
+    else
+    {
+        event->ignore();
+    }
 }
 
 void GraphicCore::render()
