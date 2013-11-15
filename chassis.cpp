@@ -1,5 +1,5 @@
 #include "chassis.h"
-//#include "console.h"
+#include "console.h"
 
 typedef std::vector<Wheel*> vector;
 typedef vector::iterator iterator;
@@ -124,14 +124,21 @@ void Chassis::distributeTorque()
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
         cur_rotation = (*i)->getRotatingSpeed();
-        if ((cur_rotation > eps) && (min_rotation > cur_rotation))
+        //Console::print(QString("CUR ROTATION")+" "+QVariant(cur_rotation).toString());
+        if ((cur_rotation >= 0) && (min_rotation > cur_rotation))
         {
             min_rotation = cur_rotation;
         }
         total_torque += (*i)->getMaxAccelerationTorque();
     }
     engine.setRotations(min_rotation);
-    double p = engine.getTorque(torque_percent) / total_torque;
+    double p = 0;
+    if (total_torque != 0)
+    {
+        p = engine.getTorque(torque_percent) / total_torque;
+        //Console::print(QString("GET TORGUE")+" "+QVariant(engine.getTorque(torque_percent)).toString());
+    }
+    //Console::print(QString("Total: ")+" "+QVariant(total_torque).toString());
     if (p > 1)
     {
         p = 1;
@@ -139,7 +146,7 @@ void Chassis::distributeTorque()
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
         (*i)->setTorque(p);
-        //Console::print("Distributed torque:");
+        //Console::print("T Distributed torque:");
         //Console::print(p);
     }
 }
@@ -158,7 +165,7 @@ void Chassis::sumForces(double dt)
         //Console::print((*i)->f);
         //Console::print("Force moment:");
         //Console::print((*i)->force_moment);
-    }    
+    }
 }
 
 void Chassis::setTotalState(Vector2D const & v, Vector2D const & a, double angular_speed,

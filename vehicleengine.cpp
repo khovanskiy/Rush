@@ -1,4 +1,5 @@
 #include "vehicleengine.h"
+#include "console.h"
 
 static const double M_PI = 3.14159265358979323846;
 
@@ -24,7 +25,11 @@ void VehicleEngine::setRotations(double rotating_speed) {
             current_gear = (*i).number;
             spins_per_minute *= (*i).ratio;
         }
-    }    
+    }
+    //Console::print(QString("rotating_speed")+" "+QVariant(rotating_speed).toString());
+    //Console::print(QString("spins_per_minute")+" "+QVariant(spins_per_minute).toString());
+    //Console::print(QString("current_torque")+" "+QVariant(current_torque).toString());
+    //Console::print(QString("current_gear")+" "+QVariant(current_gear).toString());
 }
 
 double VehicleEngine::getSpins()
@@ -34,6 +39,7 @@ double VehicleEngine::getSpins()
 
 double VehicleEngine::getTorque(double percent)
 {
+    //Console::print(QString("PERCENT")+" "+QVariant(current_torque).toString());
     return current_torque * percent;
 }
 

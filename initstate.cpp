@@ -23,13 +23,13 @@ InitState::~InitState()
 
 void InitState::init()
 {
-    v = VehicleFactory::createSampleCar(Vector2D(100,100), asin(1), Vector2D(0, 0), 0);
+    v = VehicleFactory::createSampleCar(Vector2D(20,20), asin(1), Vector2D(0, 0), 0);
     v->setTorquePercent(1);
     sb = new Bitmap();
     sb->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.png");
     sb->setRSPointCenter();
-    sb->setWidth(5 * 1.923);
-    sb->setHeight(5 * 5.0);
+    sb->setWidth(15 * 1.923);
+    sb->setHeight(15 * 5.0);
     Stage::gi()->addChild(sb);
     Keyboard::gi()->addEventListener(this);
 }
@@ -45,10 +45,10 @@ void InitState::tick(double dt)
     time+=dt;
     v->tick(dt);
     Vector2D c = v->getCoordinates();
-    sb->setX(c.x * 5);
-    sb->setY(c.y * 5);
+    sb->setX(c.x * 15);
+    sb->setY(c.y * 15);
     sb->setRotationZ(v->getAngle());
-    Console::print(QVariant(v->getSpeed().getLength()).toString()+" "+QVariant(time).toString());
+    Console::print(QVariant(v->getSpeed().getLength()).toString()+" ");
 }
 
 void InitState::Invoke(const Event &event)
@@ -77,6 +77,11 @@ void InitState::Invoke(const Event &event)
             case Qt::Key_Space:
             {
                     v->setAccelerationState(Brakes);
+            } break;
+            case Qt::Key_W:
+            {
+            Console::print("Enter");
+                context->changeState(StateEnum::INIT);
             } break;
         }
     }
