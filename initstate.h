@@ -5,6 +5,7 @@
 #include "bitmap.h"
 #include <memory>
 #include "vehicle.h"
+#include "statecontext.h"
 
 class InitState : virtual public State
 {

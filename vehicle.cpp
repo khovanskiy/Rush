@@ -87,6 +87,18 @@ void Vehicle::calculateFireAndForces(double dt)
         f.add((*i).f);
         force_moment += (*i).force_moment;
     }
+    //magic
+    //Vector2D q = Vector2D(0, 1);
+    //q.rotate(angle);
+    //double df = f.scalar(q);
+    //q.mul(df);
+    //f = q;
+    //force_moment = 0;
+    /*
+    bool brakes = f.scalar(v) < 0;
+    f.rotate(f.angleBetween(v));
+    if (brakes) f.mul(-1);
+    force_moment = 0;*/
 }
 
 void Vehicle::tick(double dt)
@@ -97,6 +109,13 @@ void Vehicle::tick(double dt)
     //Console::print("Total force moment:");
     //Console::print(Vector2D(force_moment, 0));
     Shape::tick(dt);
+    //magic
+    if (v.getLength() < 25)
+    {
+        //v.rotate(rotation_percent * dt);
+        //angle += rotation_percent * dt;
+    }
+    //angle = -v.angleBetween(Vector2D(0, 1));
 }
 
 int Vehicle::getGear()

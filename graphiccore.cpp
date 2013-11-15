@@ -25,7 +25,7 @@ GraphicCore::GraphicCore() : QGLWidget(QGLFormat(QGL::SampleBuffers), 0)
     render2d = new QPainter();
     pen = new QPen(QColor(255,255,255));
     setWindowTitle("Rush game");
-    resize(1280, 800);
+    resize(1880, 800);
     move(50,50);
     setAutoFillBackground(false);
     show();

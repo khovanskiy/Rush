@@ -128,7 +128,7 @@ Vehicle * VehicleFactory::createCar(Vector2D const & r, double angle,
                                   mu_perpendicular_friction, mu_broken_friction,
                                   max_angle, Vector2D(back.width/2, back.y),
                                   back.wheel_radius, back.driving, back.reaction)));
-    double mass_center_height = height / 3;
+    double mass_center_height = height / 6;
     std::vector<VehicleEngine::Gear> gears;
     int n = 0;
     for (std::vector<double>::iterator i = gear_ratios.begin(); i != gear_ratios.end(); i++)
@@ -141,8 +141,8 @@ Vehicle * VehicleFactory::createCar(Vector2D const & r, double angle,
     Vector2D mass_center(0, 0);
     mass_center.y += back.y * back.weigth_percent;
     mass_center.y += front.y * front.weigth_percent;
-    RealBody r_body(Position(mass_center, mass), VehicleBody(1000 * air_resistance_koef, 2000 * air_resistance_koef,
-                                                             50000 * air_resistance_koef, 50000 * air_resistance_koef, 80000 * air_resistance_koef, mass_center));
+    RealBody r_body(Position(mass_center, mass), VehicleBody(mass * air_resistance_koef, 2 * mass * air_resistance_koef,
+                                                             5 * mass * air_resistance_koef, 5 * mass * air_resistance_koef, 3 * mass * air_resistance_koef, mass_center));
     return createVehicle(r, angle, v, angular_speed,
                          Vector2D(0, 0), 0, Vector2D(0, 0), 0,
                          width, length, mass_center_height,
@@ -160,10 +160,10 @@ Vehicle* VehicleFactory::createSampleCar(Vector2D const & r, double angle,
     gears.push_back(1);
     gears.push_back(0.83);
     return createCar(r, angle, v, angular_speed,
-                     5.0, 1.923, 1887, 1.45, 1, 0.08 , 0.8, 1.5, M_PI / 6,
+                     5.0, 1.923, 1887, 1.45, 1, 0.08, 1, 1.5, M_PI / 6,
                      CarTrack(-1.62724, 1.604, revsPerKmToRadius(456), 0.466,
                               true, NoRotation),
                      CarTrack(1.74552, 1.603, revsPerKmToRadius(456), 0.544,
                               false, StraightRot),
-                     0.356, 637, 6000, gears, 3.06, turrets);
+                     0.356, 437, 6000, gears, 3.06, turrets);
 }

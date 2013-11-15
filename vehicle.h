@@ -15,13 +15,13 @@ protected:
     std::vector<Turret> turrets;
     AccelerationState acc_state;
     double torque_percent;
-    double rotation_percent;
     bool firing_state;
     double firing_angle;
 
     virtual void calculateFireAndForces(double dt);
 
 public:
+    double rotation_percent;
     Vehicle(Vector2D const & r, double angle,
             Vector2D const & v, double angular_speed,
             Vector2D const & f, double force_moment,
