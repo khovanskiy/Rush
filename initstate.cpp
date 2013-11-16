@@ -28,7 +28,7 @@ void InitState::init()
     v = VehicleFactory::createDodgeChallengerSRT8(Vector2D(20,20), asin(1), Vector2D(0, 0), 0);
     v->setTorquePercent(1);
     sb = new Bitmap();
-    sb->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.jpg");
+    sb->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.png");
     sb->setRSPointCenter();
     sb->setWidth(scale * v->getWidth());
     sb->setHeight(scale * v->getLength());
