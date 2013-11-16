@@ -1,6 +1,5 @@
 #include "carwheel.h"
 #include "math.h"
-//#include "console.h"
 
 CarWheel::CarWheel(double mu_parallel_friction, double mu_parallel_roll,
                    double mu_perpendicular_friction, double mu_broken_friction,
@@ -40,44 +39,31 @@ double CarWheel::getRotatingSpeed()
 void CarWheel::changeState(AccelerationState const & acc_state,
                            double rotation)
 {
-    state = Free;
+    state = WheelState::Free;
     switch (acc_state)
     {
-    case ForwardAcc:
+    case AccelerationState::ForwardAcc:
         if (driving)
         {
-            state = Forward;            
+            state = WheelState::Forward;
         }
         break;
-    case BackwardAcc:
+    case AccelerationState::BackwardAcc:
         if (driving)
         {
-            state = Backward;            
+            state = WheelState::Backward;
         }
         break;
-    case Brakes:
-        state = Braking;
+    case AccelerationState::Brakes:
+        state = WheelState::Braking;
         break;
-    }
-    /*switch (state)
-    {
-    case Forward:
-        Console::print("State: Forward");
-        break;
-    case Backward:
-        Console::print("State: Backward");
-        break;
-    case Free:
-        Console::print("State: Free");
-        break;
-    }*/
-
+    }   
     double percent = 0;
-    if (reaction == StraightRot)
+    if (reaction == RotationReaction::StraightRot)
     {
         percent = rotation;
     }
-    else if (reaction == ReverseRot)
+    else if (reaction == RotationReaction::ReverseRot)
     {
         percent = -rotation;
     }

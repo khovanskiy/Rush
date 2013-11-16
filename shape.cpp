@@ -57,3 +57,18 @@ Vector2D Shape::getSpeed()
 {
     return vg;
 }
+
+Vector2D Shape::getMassCenter()
+{
+    return mass_center;
+}
+
+Vector2D Shape::getMassCenterCoordinates()
+{
+    return r;
+}
+
+Vector2D Shape::getMassCenterSpeed()
+{
+    return v;
+}

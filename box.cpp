@@ -9,4 +9,16 @@ Box::Box(const Vector2D &r, double angle,
             a, angular_acceleration, mass, mass * (width * width + length * length) / 12,
             Vector2D(0, 0))
 {
+    this->width = width;
+    this->length = length;
+}
+
+double Box::getLength()
+{
+    return length;
+}
+
+double Box::getWidth()
+{
+    return width;
 }

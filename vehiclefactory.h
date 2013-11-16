@@ -55,8 +55,7 @@ public:
                              double final_ratio,
                              std::vector<RealTurret> turrets);
 
-    //Vehicle is supposed to be Dodge Challenger SRT8.
-    static Vehicle* createSampleCar(Vector2D const & r, double angle,
+    static Vehicle* createDodgeChallengerSRT8(Vector2D const & r, double angle,
                                    Vector2D const & v, double angular_speed);
 };
 

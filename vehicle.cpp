@@ -17,7 +17,7 @@ Vehicle::Vehicle(Vector2D const & r, double angle,
     this->mass_center = mass_center;
     this->inertia_moment = inertia_moment;
     this->setFiring(false, 0);
-    this->setAccelerationState(NoAcc);
+    this->setAccelerationState(AccelerationState::NoAcc);
     this->setRotationPercent(0);
     this->setTorquePercent(0);
 }
@@ -64,7 +64,7 @@ void Vehicle::calculateFireAndForces(double dt)
     f.add(chassis.f);
     force_moment += chassis.force_moment;
     body.setSpeed(vr, angular_speed);
-    body.calculateForces(dt);
+    body.calculateForces();
     body.f.rotate(angle);
     f.add(body.f);
     force_moment += body.force_moment;
@@ -86,36 +86,13 @@ void Vehicle::calculateFireAndForces(double dt)
         (*i).calculateFireAndForces(dt);
         f.add((*i).f);
         force_moment += (*i).force_moment;
-    }
-    //magic
-    //Vector2D q = Vector2D(0, 1);
-    //q.rotate(angle);
-    //double df = f.scalar(q);
-    //q.mul(df);
-    //f = q;
-    //force_moment = 0;
-    /*
-    bool brakes = f.scalar(v) < 0;
-    f.rotate(f.angleBetween(v));
-    if (brakes) f.mul(-1);
-    force_moment = 0;*/
+    }    
 }
 
 void Vehicle::tick(double dt)
 {
     calculateFireAndForces(dt);
-    //Console::print("Total force:");
-    //Console::print(f);
-    //Console::print("Total force moment:");
-    //Console::print(Vector2D(force_moment, 0));
     Shape::tick(dt);
-    //magic
-    if (v.getLength() < 25)
-    {
-        //v.rotate(rotation_percent * dt);
-        //angle += rotation_percent * dt;
-    }
-    //angle = -v.angleBetween(Vector2D(0, 1));
 }
 
 int Vehicle::getGear()

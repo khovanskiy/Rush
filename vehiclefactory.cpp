@@ -2,15 +2,17 @@
 
 static const double G = 9.80665;
 static const double M_PI = 3.14159265358979323846;
+static const double straight_air_koef = 1;
+static const double back_air_koef = 3;
+static const double left_air_koef = 5;
+static const double right_air_koef = 5;
+static const double rotation_air_koef = 100;
 typedef std::vector<RealWheel>::const_iterator wheel_c_it;
 typedef std::vector<RealTurret>::const_iterator turret_c_it;
 
 VehicleFactory::VehicleFactory()
 {
 }
-
-// All vectors r of input body, engine, turrets and wheels
-//must be relative to the geometry center of the car.
 
 Vehicle * VehicleFactory::createVehicle(Vector2D const & r, double angle,
                                       Vector2D const & v, double angular_speed,
@@ -49,7 +51,6 @@ Vehicle * VehicleFactory::createVehicle(Vector2D const & r, double angle,
     }
     mass_center.div(mass);
 
-    //double inertia_moment = r_body.p.mass * (width * width + length * length) / 12;
     double inertia_moment = r_body.p.mass * (width * width + length * length) / 12;
     double len;
     VehicleBody body(r_body.body);
@@ -141,15 +142,19 @@ Vehicle * VehicleFactory::createCar(Vector2D const & r, double angle,
     Vector2D mass_center(0, 0);
     mass_center.y += back.y * back.weigth_percent;
     mass_center.y += front.y * front.weigth_percent;
-    RealBody r_body(Position(mass_center, mass), VehicleBody(mass * air_resistance_koef, 2 * mass * air_resistance_koef,
-                                                             5 * mass * air_resistance_koef, 5 * mass * air_resistance_koef, 3 * mass * air_resistance_koef, mass_center));
+    double raw_square = (width * length + 2 * (width + length) * height);
+    double air_resistance = air_resistance_koef * raw_square;
+    RealBody r_body(Position(mass_center, mass),
+                    VehicleBody(straight_air_koef * air_resistance, back_air_koef * air_resistance,
+                                left_air_koef * air_resistance, right_air_koef * air_resistance,
+                                rotation_air_koef * air_resistance, mass_center));
     return createVehicle(r, angle, v, angular_speed,
                          Vector2D(0, 0), 0, Vector2D(0, 0), 0,
                          width, length, mass_center_height,
                          r_body, r_engine, turrets, r_wheels);
 }
 
-Vehicle* VehicleFactory::createSampleCar(Vector2D const & r, double angle,
+Vehicle* VehicleFactory::createDodgeChallengerSRT8(Vector2D const & r, double angle,
                                         Vector2D const & v, double angular_speed)
 {
     std::vector<RealTurret> turrets;
@@ -162,8 +167,8 @@ Vehicle* VehicleFactory::createSampleCar(Vector2D const & r, double angle,
     return createCar(r, angle, v, angular_speed,
                      5.0, 1.923, 1887, 1.45, 1, 0.08, 1, 1.5, M_PI / 6,
                      CarTrack(-1.62724, 1.604, revsPerKmToRadius(456), 0.466,
-                              true, NoRotation),
+                              true, RotationReaction::NoRotation),
                      CarTrack(1.74552, 1.603, revsPerKmToRadius(456), 0.544,
-                              false, StraightRot),
+                              false, RotationReaction::StraightRot),
                      0.356, 437, 6000, gears, 3.06, turrets);
 }

@@ -10,3 +10,8 @@ Circle::Circle(const Vector2D &r, double angle,
             Vector2D(0, 0))
 {
 }
+
+double Circle::getRadius()
+{
+    return radius;
+}
