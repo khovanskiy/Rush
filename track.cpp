@@ -30,89 +30,89 @@ double Track::getRotatingSpeed()
 void Track::changeState(AccelerationState const & acc_state,
                         double rotation)
 {
-    if (track_type == LeftTrack)
+    if (track_type == TrackType::LeftTrack)
     {
         switch (acc_state)
         {
-        case ForwardAcc:
+        case AccelerationState::ForwardAcc:
             if (rotation > 0)
             {
-                this->state = Free;
+                this->state = WheelState::Free;
             }
             else
             {
-                this->state = Forward;
+                this->state = WheelState::Forward;
             }
             break;
-        case NoAcc:
+        case AccelerationState::NoAcc:
             if (rotation > 0)
             {
-                this->state = Backward;
+                this->state = WheelState::Backward;
             }
             else if (rotation < 0)
             {
-                this->state = Forward;
+                this->state = WheelState::Forward;
             }
             else
             {
-                this->state = Free;
+                this->state = WheelState::Free;
             }
             break;
-        case BackwardAcc:
+        case AccelerationState::BackwardAcc:
             if (rotation > 0)
             {
-                this->state = Free;
+                this->state = WheelState::Free;
             }
             else
             {
-                this->state = Backward;
+                this->state = WheelState::Backward;
             }
             break;
-        case Brakes:
-            this->state = Braking;
+        case AccelerationState::Brakes:
+            this->state = WheelState::Braking;
             break;
         }
     }
-    else
+    else if (track_type == TrackType::RightTrack)
     {
         switch (acc_state)
         {
-        case ForwardAcc:
+        case AccelerationState::ForwardAcc:
             if (rotation < 0)
             {
-                this->state = Free;
+                this->state = WheelState::Free;
             }
             else
             {
-                this->state = Forward;
+                this->state = WheelState::Forward;
             }
             break;
-        case NoAcc:
+        case AccelerationState::NoAcc:
             if (rotation < 0)
             {
-                this->state = Backward;
+                this->state = WheelState::Backward;
             }
             else if (rotation > 0)
             {
-                this->state = Forward;
+                this->state = WheelState::Forward;
             }
             else
             {
-                this->state = Free;
+                this->state = WheelState::Free;
             }
             break;
-        case BackwardAcc:
+        case AccelerationState::BackwardAcc:
             if (rotation < 0)
             {
-                this->state = Free;
+                this->state = WheelState::Free;
             }
             else
             {
-                this->state = Backward;
+                this->state = WheelState::Backward;
             }
             break;
-        case Brakes:
-            this->state = Braking;
+        case AccelerationState::Brakes:
+            this->state = WheelState::Braking;
             break;
         }
     }

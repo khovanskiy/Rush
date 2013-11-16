@@ -1,10 +1,10 @@
 #include "chassis.h"
-#include "console.h"
 
 typedef std::vector<Wheel*> vector;
 typedef vector::iterator iterator;
 static const double G = 9.80665;
 static const double M_PI = 3.14159265358979323846;
+static const double rotation_infinity = 1e10;
 static const double eps = 1e-3;
 
 
@@ -30,8 +30,6 @@ void Chassis::distributeWeigth()
     mass_center_offset.y -= height * a.y / sqrt(a.y * a.y + G * G);
     int front_amount = 0, back_amount = 0;
     double front_sum = 0, back_sum = 0;
-    //Console::print("Weight:");
-    //Console::print(weight);
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
         if ((*i)->r.y > mass_center_offset.y)
@@ -47,10 +45,6 @@ void Chassis::distributeWeigth()
     }
     double front_weight = weight * back_sum / (front_amount * back_sum + back_amount * front_sum);
     double back_weight = weight * front_sum / (front_amount * back_sum + back_amount * front_sum);
-    //Console::print("Front weigth:");
-    //Console::print(front_weight);
-    //Console::print("Back weight");
-    //Console::print(back_weight);
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
         if ((*i)->r.y > mass_center_offset.y)
@@ -91,9 +85,7 @@ void Chassis::distributeWeigth()
             {
                 (*i)->distributed_weight *= right_koef;
             }
-        }
-        //Console::print("Distributed weight:");
-        //Console::print((*i)->distributed_weight);
+        }        
     }
 }
 
@@ -119,12 +111,11 @@ void Chassis::setWheelsReaction()
 
 void Chassis::distributeTorque()
 {
-    double min_rotation = 1e10, cur_rotation;
+    double min_rotation = rotation_infinity, cur_rotation;
     double total_torque = 0;
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
         cur_rotation = (*i)->getRotatingSpeed();
-        //Console::print(QString("CUR ROTATION")+" "+QVariant(cur_rotation).toString());
         if ((cur_rotation >= 0) && (min_rotation > cur_rotation))
         {
             min_rotation = cur_rotation;
@@ -135,19 +126,15 @@ void Chassis::distributeTorque()
     double p = 0;
     if (total_torque != 0)
     {
-        p = engine.getTorque(torque_percent) / total_torque;
-        //Console::print(QString("GET TORGUE")+" "+QVariant(engine.getTorque(torque_percent)).toString());
+        p = engine.getTorque(torque_percent) / total_torque;        
     }
-    //Console::print(QString("Total: ")+" "+QVariant(total_torque).toString());
     if (p > 1)
     {
         p = 1;
     }
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
-        (*i)->setTorque(p);
-        //Console::print("T Distributed torque:");
-        //Console::print(p);
+        (*i)->setTorque(p);        
     }
 }
 
@@ -160,11 +147,7 @@ void Chassis::sumForces(double dt)
     {
         (*i)->calculateForces(dt);
         f.add((*i)->f);
-        force_moment += ((*i)->force_moment);
-        //Console::print("Force:");
-        //Console::print((*i)->f);
-        //Console::print("Force moment:");
-        //Console::print((*i)->force_moment);
+        force_moment += ((*i)->force_moment);        
     }
 }
 
@@ -186,9 +169,7 @@ void Chassis::calculateForces(double dt)
     setWheelsSpeed();
     setWheelsReaction();
     distributeTorque();
-    sumForces(dt);
-    //Console::print(f);
-    //Console::print(Vector2D(force_moment, 0));
+    sumForces(dt);    
 }
 
 int Chassis::getGear()

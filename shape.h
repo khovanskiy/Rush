@@ -12,11 +12,8 @@ protected:
     double inertia_moment;
     Vector2D mass_center;
 
-    //Temporary vectors for faster calculation.
     Vector2D dr;
     Vector2D dv;
-
-    //Physics values for geometry center (0, 0) of this shape.
 
     Vector2D rg;
     Vector2D vg;
@@ -33,6 +30,9 @@ public:
     virtual Vector2D getSpeed();
     virtual double getAngle();
     virtual double getAngularSpeed();
+    virtual Vector2D getMassCenter();
+    virtual Vector2D getMassCenterCoordinates();
+    virtual Vector2D getMassCenterSpeed();
 };
 
 #endif // SHAPE_H

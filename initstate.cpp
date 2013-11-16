@@ -13,6 +13,8 @@
 #include "QCoreApplication"
 #include "vehiclefactory.h"
 
+static const double scale = 15;
+
 InitState::InitState()
 {
 }
@@ -23,13 +25,13 @@ InitState::~InitState()
 
 void InitState::init()
 {
-    v = VehicleFactory::createSampleCar(Vector2D(20,20), asin(1), Vector2D(0, 0), 0);
+    v = VehicleFactory::createDodgeChallengerSRT8(Vector2D(20,20), asin(1), Vector2D(0, 0), 0);
     v->setTorquePercent(1);
     sb = new Bitmap();
-    sb->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.png");
+    sb->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.jpg");
     sb->setRSPointCenter();
-    sb->setWidth(15 * 1.923);
-    sb->setHeight(15 * 5.0);
+    sb->setWidth(scale * v->getWidth());
+    sb->setHeight(scale * v->getLength());
     Stage::gi()->addChild(sb);
     Keyboard::gi()->addEventListener(this);
 }
@@ -42,13 +44,13 @@ void InitState::focus()
 void InitState::tick(double dt)
 {
     static double time = 0;
-    time+=dt;
+    time += dt;
     v->tick(dt);
     Vector2D c = v->getCoordinates();
-    sb->setX(c.x * 15);
-    sb->setY(c.y * 15);
+    sb->setX(c.x  * scale);
+    sb->setY(c.y * scale);
     sb->setRotationZ(v->getAngle());
-    Console::print(QVariant(v->getSpeed().getLength()).toString()+" ");
+    Console::print(v->getSpeed());
 }
 
 void InitState::Invoke(const Event &event)

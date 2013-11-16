@@ -7,16 +7,11 @@ enum AccelerationState { ForwardAcc, NoAcc, BackwardAcc, Brakes };
 
 struct Wheel
 {
-    //Constants for this wheel.
-    //Vector r is relative to the mass center of vehicle.
-
     double mu_parallel_friction, mu_parallel_roll;
     double mu_perpendicular_friction, mu_broken_friction;
     double max_angle;
     Vector2D r;
     double radius;
-
-    //Current state of this wheel.
 
     WheelState state;
     double angle;
