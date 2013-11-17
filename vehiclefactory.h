@@ -18,6 +18,7 @@ public:
                                  std::vector<RealWheel> const & r_wheels);
 
     static double revsPerKmToRadius(double rotationsPerKilometer);
+    static double tireSpecsToRadius(double tread_width, double aspect_ratio, double rim_diameter);
 
     struct CarTrack {
         double y;
@@ -56,6 +57,8 @@ public:
                              std::vector<RealTurret> turrets);
 
     static Vehicle* createDodgeChallengerSRT8(Vector2D const & r, double angle,
+                                   Vector2D const & v, double angular_speed);
+    static Vehicle* createFerrari599GTO(Vector2D const & r, double angle,
                                    Vector2D const & v, double angular_speed);
 };
 

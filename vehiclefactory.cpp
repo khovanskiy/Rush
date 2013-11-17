@@ -2,6 +2,7 @@
 
 static const double G = 9.80665;
 static const double M_PI = 3.14159265358979323846;
+static const double inch_to_meter = 0.0254;
 static const double straight_air_koef = 1;
 static const double back_air_koef = 3;
 static const double left_air_koef = 5;
@@ -93,10 +94,16 @@ double VehicleFactory::revsPerKmToRadius(double revsPerKilometer)
     return 1000 / (2 * M_PI * revsPerKilometer);
 }
 
+double VehicleFactory::tireSpecsToRadius(double tread_width,
+                                         double aspect_ratio, double rim_diameter)
+{
+    return ((tread_width / 1000) * (aspect_ratio / 100) + rim_diameter * inch_to_meter);
+}
+
+
 Vehicle * VehicleFactory::createCar(Vector2D const & r, double angle,
                          Vector2D const & v, double angular_speed,
-                         double length, double width,
-                         double mass, double height,
+                         double length, double width, double mass, double height,
                          double mu_parallel_friction, double mu_parallel_roll,
                          double mu_perpendicular_friction, double mu_broken_friction,
                          double max_angle,
@@ -165,10 +172,32 @@ Vehicle* VehicleFactory::createDodgeChallengerSRT8(Vector2D const & r, double an
     gears.push_back(1);
     gears.push_back(0.83);
     return createCar(r, angle, v, angular_speed,
-                     5.0, 1.923, 1887, 1.45, 1, 0.08, 1, 1.5, M_PI / 6,
+                     5.0, 1.923, 1887, 1.45,
+                     1, 0.08, 1, 1.5, M_PI / 6,
                      CarTrack(-1.62724, 1.604, revsPerKmToRadius(456), 0.466,
                               true, RotationReaction::NoRotation),
                      CarTrack(1.74552, 1.603, revsPerKmToRadius(456), 0.544,
                               false, RotationReaction::StraightRot),
-                     0.356, 437, 6000, gears, 3.06, turrets);
+                     0.356, 637, 6000, gears, 3.06, turrets);
+}
+
+Vehicle* VehicleFactory::createFerrari599GTO(Vector2D const & r, double angle,
+                                        Vector2D const & v, double angular_speed)
+{
+    std::vector<RealTurret> turrets;
+    std::vector<double> gears;
+    gears.push_back(3.15);
+    gears.push_back(2.18);
+    gears.push_back(1.57);
+    gears.push_back(1.19);
+    gears.push_back(0.94);
+    gears.push_back(0.76);
+    return createCar(r, angle, v, angular_speed,
+                     4.710, 1.962, 1605, 1.326,
+                     1, 0.08, 1, 1.5, M_PI / 6,
+                     CarTrack(-1.328, 1.610, tireSpecsToRadius(315, 35, 20),
+                              0.53, true, RotationReaction::NoRotation),
+                     CarTrack(1.470, 1.701, tireSpecsToRadius(280, 35, 20),
+                              0.47, false, RotationReaction::StraightRot),
+                     0.356, 620, 8400, gears, 4.18, turrets);
 }

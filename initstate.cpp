@@ -25,14 +25,24 @@ InitState::~InitState()
 
 void InitState::init()
 {
-    v = VehicleFactory::createDodgeChallengerSRT8(Vector2D(20,20), asin(1), Vector2D(0, 0), 0);
-    v->setTorquePercent(1);
-    sb = new Bitmap();
-    sb->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.png");
-    sb->setRSPointCenter();
-    sb->setWidth(scale * v->getWidth());
-    sb->setHeight(scale * v->getLength());
-    Stage::gi()->addChild(sb);
+    dodge = VehicleFactory::createDodgeChallengerSRT8(Vector2D(20,20), -asin(1), Vector2D(0, 0), 0);
+    ferrari = VehicleFactory::createFerrari599GTO(Vector2D(20, 30), -asin(1), Vector2D(0, 0), 0);
+    dodge->setTorquePercent(1);
+    ferrari->setTorquePercent(1);
+    dodge->setAccelerationState(ForwardAcc);
+    ferrari->setAccelerationState(ForwardAcc);
+    dodgeBitmap = new Bitmap();
+    dodgeBitmap->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.png");
+    dodgeBitmap->setRSPointCenter();
+    dodgeBitmap->setWidth(scale * dodge->getWidth());
+    dodgeBitmap->setHeight(scale * dodge->getLength());
+    ferrariBitmap = new Bitmap();
+    ferrariBitmap->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.png");
+    ferrariBitmap->setRSPointCenter();
+    ferrariBitmap->setWidth(scale * ferrari->getWidth());
+    ferrariBitmap->setHeight(scale * ferrari->getLength());
+    Stage::gi()->addChild(dodgeBitmap);
+    Stage::gi()->addChild(ferrariBitmap);
     Keyboard::gi()->addEventListener(this);
 }
 
@@ -45,12 +55,20 @@ void InitState::tick(double dt)
 {
     static double time = 0;
     time += dt;
-    v->tick(dt);
-    Vector2D c = v->getCoordinates();
-    sb->setX(c.x  * scale);
-    sb->setY(c.y * scale);
-    sb->setRotationZ(v->getAngle());
-    Console::print(v->getSpeed());
+    dodge->tick(dt);
+    ferrari->tick(dt);
+    Vector2D dodge_c = dodge->getCoordinates();
+    dodgeBitmap->setX(dodge_c.x  * scale);
+    dodgeBitmap->setY(dodge_c.y * scale);
+    dodgeBitmap->setRotationZ(dodge->getAngle());
+    Vector2D ferrari_c = ferrari->getCoordinates();
+    ferrariBitmap->setX(ferrari_c.x  * scale);
+    ferrariBitmap->setY(ferrari_c.y * scale);
+    ferrariBitmap->setRotationZ(ferrari->getAngle());
+    Console::print(dodge->getSpeed());
+    Console::print(dodge->isStaying());
+    Console::print(ferrari->getSpeed());
+    Console::print(ferrari->isStaying());
 }
 
 void InitState::Invoke(const Event &event)
@@ -62,23 +80,23 @@ void InitState::Invoke(const Event &event)
         {
             case Qt::Key_Up:
             {
-                v->setAccelerationState(ForwardAcc);
+                dodge->setAccelerationState(ForwardAcc);
             } break;
             case Qt::Key_Down:
             {
-                    v->setAccelerationState(BackwardAcc);
+                dodge->setAccelerationState(BackwardAcc);
             } break;
             case Qt::Key_Left:
             {
-                v->setRotationPercent(-1);
+                dodge->setRotationPercent(-1);
             } break;
             case Qt::Key_Right:
             {
-                    v->setRotationPercent(1);
+                    dodge->setRotationPercent(1);
             } break;
             case Qt::Key_Space:
             {
-                    v->setAccelerationState(Brakes);
+                    dodge->setAccelerationState(Brakes);
             } break;
             case Qt::Key_W:
             {
@@ -94,23 +112,23 @@ void InitState::Invoke(const Event &event)
         {
             case Qt::Key_Up:
             {
-                    v->setAccelerationState(NoAcc);
+                    dodge->setAccelerationState(NoAcc);
             } break;
             case Qt::Key_Down:
             {
-                    v->setAccelerationState(NoAcc);
+                    dodge->setAccelerationState(NoAcc);
             } break;
             case Qt::Key_Left:
             {
-                    v->setRotationPercent(0);
+                    dodge->setRotationPercent(0);
             } break;
             case Qt::Key_Right:
             {
-                    v->setRotationPercent(0);
+                    dodge->setRotationPercent(0);
             } break;
             case Qt::Key_Space:
             {
-                    v->setAccelerationState(NoAcc);
+                    dodge->setAccelerationState(NoAcc);
             } break;
         }
     }
@@ -122,6 +140,12 @@ void InitState::defocus()
 
 void InitState::release()
 {
-    delete v; Stage::gi()->removeChild(sb); Keyboard::gi()->removeEventListener(this); delete sb;
+    delete dodge;
+    delete ferrari;
+    Stage::gi()->removeChild(dodgeBitmap);
+    Stage::gi()->removeChild(ferrariBitmap);
+    Keyboard::gi()->removeEventListener(this);
+    delete dodgeBitmap;
+    delete ferrariBitmap;
     Console::print("RELEASE");
 }
