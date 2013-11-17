@@ -5,7 +5,7 @@ static const double M_PI = 3.14159265358979323846;
 static const double G = 9.80665;
 static const double eps = 1e-9;
 static const double shaking_koef = 0.5;
-static const double default_surface_friction = 1;
+static const double default_surface_friction = 2;
 
 #include <math.h>
 
@@ -69,13 +69,13 @@ void Wheel::calculateForces(double dt)
         mu_perp = mu_perpendicular_friction;
         break;
     case WheelState::Free:
-        mu_par = mu_parallel_roll;
+        mu_par = mu_parallel_roll / radius;
         mu_perp = mu_perpendicular_friction;
         break;
     case WheelState::Forward:
     case WheelState::Backward:
     default:
-        mu_par = mu_parallel_roll;
+        mu_par = mu_parallel_roll / radius;
         mu_perp = mu_perpendicular_friction;
         break;
     }

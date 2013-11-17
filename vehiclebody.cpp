@@ -1,7 +1,7 @@
 #include "vehiclebody.h"
 #include <math.h>
 
-static const double default_environment_resistance = 1;
+static const double default_environment_resistance = 0.1;
 
 VehicleBody::VehicleBody(double front_air_resistance,
                          double rear_air_resistance,
