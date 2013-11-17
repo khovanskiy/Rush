@@ -2,6 +2,7 @@
 //#include "console.h"
 
 static const double G = 9.80665;
+static const double eps = 2e-4;
 
 Vehicle::Vehicle(Vector2D const & r, double angle,
                  Vector2D const & v, double angular_speed,
@@ -103,4 +104,9 @@ int Vehicle::getGear()
 double Vehicle::getSpins()
 {
     return chassis.getSpins();
+}
+
+bool Vehicle::isStaying()
+{
+    return ((v.getLength() < eps) && (angular_speed < eps));
 }

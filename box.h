@@ -4,6 +4,7 @@
 
 class Box : public Shape
 {
+protected:
     double width;
     double length;
 

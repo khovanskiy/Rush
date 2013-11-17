@@ -19,8 +19,10 @@ public:
     void release();
     void Invoke(const Event &event);
 private:
-    Bitmap* sb;
-    Vehicle* v;    
+    Bitmap* dodgeBitmap;
+    Bitmap* ferrariBitmap;
+    Vehicle* dodge;
+    Vehicle* ferrari;
 };
 
 #endif // NULLSTATE_H

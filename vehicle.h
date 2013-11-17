@@ -38,6 +38,7 @@ public:
     virtual void tick(double dt);
     virtual int getGear();
     virtual double getSpins();
+    virtual bool isStaying();
 };
 
 #endif // PHYSICSVEHICLE_H
