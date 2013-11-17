@@ -13,7 +13,7 @@
 #include "QCoreApplication"
 #include "vehiclefactory.h"
 
-static const double scale = 15;
+static const double scale = 3;
 
 InitState::InitState()
 {
@@ -66,9 +66,10 @@ void InitState::tick(double dt)
     ferrariBitmap->setY(ferrari_c.y * scale);
     ferrariBitmap->setRotationZ(ferrari->getAngle());
     Console::print(dodge->getSpeed());
-    Console::print(dodge->isStaying());
+    //Console::print(dodge->isStaying());
     Console::print(ferrari->getSpeed());
-    Console::print(ferrari->isStaying());
+    Console::print(time);
+    //Console::print(ferrari->isStaying());
 }
 
 void InitState::Invoke(const Event &event)

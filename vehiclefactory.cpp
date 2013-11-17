@@ -173,7 +173,7 @@ Vehicle* VehicleFactory::createDodgeChallengerSRT8(Vector2D const & r, double an
     gears.push_back(0.83);
     return createCar(r, angle, v, angular_speed,
                      5.0, 1.923, 1887, 1.45,
-                     1, 0.08, 1, 1.5, M_PI / 6,
+                     0.9, 0.025, 1, 1.5, M_PI / 6,
                      CarTrack(-1.62724, 1.604, revsPerKmToRadius(456), 0.466,
                               true, RotationReaction::NoRotation),
                      CarTrack(1.74552, 1.603, revsPerKmToRadius(456), 0.544,
@@ -194,7 +194,7 @@ Vehicle* VehicleFactory::createFerrari599GTO(Vector2D const & r, double angle,
     gears.push_back(0.76);
     return createCar(r, angle, v, angular_speed,
                      4.710, 1.962, 1605, 1.326,
-                     1, 0.08, 1, 1.5, M_PI / 6,
+                     0.9, 0.025, 1, 1.5, M_PI / 6,
                      CarTrack(-1.328, 1.610, tireSpecsToRadius(315, 35, 20),
                               0.53, true, RotationReaction::NoRotation),
                      CarTrack(1.470, 1.701, tireSpecsToRadius(280, 35, 20),
