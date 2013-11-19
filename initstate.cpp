@@ -37,7 +37,7 @@ void InitState::init()
     dodgeBitmap->setWidth(scale * dodge->getWidth());
     dodgeBitmap->setHeight(scale * dodge->getLength());
     ferrariBitmap = new Bitmap();
-    ferrariBitmap->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.png");
+    ferrariBitmap->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\ferrari.png");
     ferrariBitmap->setRSPointCenter();
     ferrariBitmap->setWidth(scale * ferrari->getWidth());
     ferrariBitmap->setHeight(scale * ferrari->getLength());
@@ -69,6 +69,7 @@ void InitState::tick(double dt)
     //Console::print(dodge->isStaying());
     Console::print(ferrari->getSpeed());
     Console::print(time);
+    Console::print(QCoreApplication::applicationDirPath());
     //Console::print(ferrari->isStaying());
 }
 

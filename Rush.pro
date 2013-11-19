@@ -52,11 +52,6 @@ SOURCES += background.cpp \
     vehicle.cpp \
     vehiclebody.cpp \
     vehicleengine.cpp \
-    position.cpp \
-    realwheel.cpp \
-    realengine.cpp \
-    realbody.cpp \
-    realturret.cpp \
     materialpoint.cpp \
     shape.cpp \
     vehiclefactory.cpp
@@ -101,11 +96,6 @@ HEADERS  += background.h \
     vehiclebody.h \
     vehicleengine.h \
     wheel.h \
-    position.h \
-    realwheel.h \
-    realengine.h \
-    realbody.h \
-    realturret.h \
     materialpoint.h \
     shape.h \
     vehiclefactory.h

@@ -2,10 +2,70 @@
 #define PHYSICSVEHICLE_H
 #include "box.h"
 #include "chassis.h"
-#include "realbody.h"
-#include "realengine.h"
-#include "realturret.h"
-#include "realwheel.h"
+#include "vehiclebody.h"
+#include "turret.h"
+
+struct Position
+{
+    Vector2D r;
+    double mass;
+
+    Position(Vector2D const & r, double mass)
+    {
+        this->r = r;
+        this->mass = mass;
+    }
+    Position(Position const & p)
+    {
+        this->r = p.r;
+        this->mass = p.mass;
+    }
+};
+
+struct RealBody
+{
+    Position p;
+    VehicleBody body;
+
+    RealBody(Position const & p, VehicleBody const & body)
+        : p(p), body(body)
+    {
+    }
+};
+
+struct RealEngine
+{
+    Position p;
+    VehicleEngine engine;
+
+    RealEngine(Position const & p, VehicleEngine const & engine)
+        : p(p), engine(engine)
+    {
+    }
+};
+
+struct RealTurret
+{
+    Position p;
+    Turret turret;
+
+    RealTurret(Position const & p, Turret const & turret)
+        : p(p), turret(turret)
+    {
+    }
+};
+
+struct RealWheel
+{
+    Position p;
+    Wheel * wheel;
+
+    RealWheel(Position const & p, Wheel * wheel)
+        : p(p)
+    {
+        this->wheel = wheel;
+    }
+};
 
 class Vehicle : public Box
 {
