@@ -14,6 +14,7 @@ struct Point2D
     bool equals(Point2D const & other) const;
     Vector2D getVectorTo(Point2D const & other) const;
     Point2D getPoint(Vector2D const & vector) const;
+    Point2D getMiddle(Point2D const& point) const;
 };
 
 struct Line2D
@@ -37,18 +38,15 @@ struct CrossingResult2D
 {
     bool crossing;
     Point2D center;
-    double perimeter;
 
     CrossingResult2D()
+        : crossing(false)
     {
-        this->crossing = false;
     }
 
-    CrossingResult2D(bool crossing, Point2D const & center, double perimeter)
-        : center(center)
+    CrossingResult2D(bool crossing, Point2D const & center)
+        : center(center), crossing(crossing)
     {
-        this->crossing = crossing;
-        this->perimeter = perimeter;
     }
 };
 

@@ -11,13 +11,12 @@ struct Collision
     Vector2D collision_center;
     Vector2D relative_speed;
     Vector2D impulse_change;
-    double perimeter;
     PhysicsObject* source;
 
-    Collision(Vector2D collision_center, double perimeter, Vector2D relative_speed,
+    Collision(Vector2D collision_center, Vector2D relative_speed,
               Vector2D impulse_change, PhysicsObject* source)
         : collision_center(collision_center), relative_speed(relative_speed),
-          impulse_change(impulse_change), perimeter(perimeter)
+          impulse_change(impulse_change)
     {
         this->source = source;
     }

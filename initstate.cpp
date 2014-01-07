@@ -84,7 +84,7 @@ void InitState::tick(double dt)
     }
     static Vector2D center(500, 500);
     static Vector2D dr(0, 0);
-    double d_angle = 0;
+    static double d_angle = 0;
     switch (view)
     {
     case FIXED_COORDINATES:

@@ -47,6 +47,11 @@ Point2D Point2D::getPoint(const Vector2D &vector) const
     return Point2D(this->x + vector.x, this->y + vector.y);
 }
 
+Point2D Point2D::getMiddle(const Point2D &point) const
+{
+    return Point2D((this->x + point.x) / 2, (this->y + point.y) / 2);
+}
+
 Line2D::Line2D(double a, double b, double c)
 {
     this->a = a;
@@ -120,18 +125,16 @@ Vector2D Line2D::getProjection(const Vector2D &vector) const
 
 Segment2D::Segment2D(const Point2D &p1, const Point2D &p2)
     : Shape2D(Point2D((p1.x + p2.x) / 2, (p1.y + p2.y) / 2), atan2(p2.y - p1.y, p2.x - p1.x)),
-      p1(p1), p2(p2), line(p1, p2)
+      p1(p1), p2(p2), line(p1, p2), length(p1.getDistTo(p2))
 {
     //Console::print("Creating segment...");
-    this->length = this->p1.getDistTo(this->p2);
     //Console::print("Segment has been created");
 }
 
 Segment2D::Segment2D(const Point2D &center, double length, double angle)
-    : Shape2D(center, angle)
+    : Shape2D(center, angle), length(length)
 {
     //Console::print("Creating segment...");
-    this->length = length;
     Vector2D v(0, length / 2);
     v.rotate(angle);
     this->p2 = this->geometry_center.getPoint(v);
@@ -200,7 +203,7 @@ CrossingResult2D Segment2D::cross(const Segment2D *segment) const
         if (segment->contains(this->p2)) points[amount++] = this->p2;
         if (amount == 0)
         {
-            return CrossingResult2D(false, Point2D(0, 0), 0);
+            return CrossingResult2D(false, Point2D(0, 0));
         }
         else
         {
@@ -210,7 +213,7 @@ CrossingResult2D Segment2D::cross(const Segment2D *segment) const
             {
                 if (!points[i].equals(first)) second = points[i];
             }
-            return CrossingResult2D(true, Segment2D(first, second).getGeometryCenter(), first.getDistTo(second));
+            return CrossingResult2D(true, first.getMiddle(second));
         }        
     }
     else
@@ -221,11 +224,11 @@ CrossingResult2D Segment2D::cross(const Segment2D *segment) const
         //Console::print(p.toVector());
         if (this->contains(p) && segment->contains(p))
         {
-            return CrossingResult2D(true, p, 0);
+            return CrossingResult2D(true, p);
         }
         else
         {
-            return CrossingResult2D(false, p, 0);
+            return CrossingResult2D(false, p);
         }
     }
 }
@@ -280,7 +283,7 @@ Circle2D::~Circle2D()
 
 bool Circle2D::contains(const Point2D &point) const
 {
-    return this->geometry_center.getDistTo(point) <= this->radius;
+    return this->geometry_center.getDistTo(point) < this->radius + eps;
 }
 
 double Circle2D::getRadius()
@@ -334,7 +337,7 @@ CrossingResult2D Circle2D::cross(const Segment2D *segment) const
 {
     if (segment->line.getDistTo(this->geometry_center) > this->radius)
     {
-        return CrossingResult2D(false, Point2D(0, 0), 0);
+        return CrossingResult2D(false, Point2D(0, 0));
     }
     else
     {
@@ -347,17 +350,15 @@ CrossingResult2D Circle2D::cross(const Circle2D *circle) const
     double l = this->geometry_center.getDistTo(circle->geometry_center);
     if (l > this->radius + circle->radius)
     {
-        return CrossingResult2D(false, Point2D(0, 0), 0);
+        return CrossingResult2D(false, Point2D(0, 0));
     }
     else
     {
         double d1 = (l * l + this->radius * this->radius - circle->radius * circle->radius) / 2 * l;
-        double d2 = l - d1;
         Point2D point = Point2D(
                     this->geometry_center.x + d1 * (circle->geometry_center.x - this->geometry_center.x) / l,
                     this->geometry_center.y + d1 * (circle->geometry_center.y - this->geometry_center.y) / l);
-        double perimeter = 2 * (this->radius * acos(d1 / this->radius) + circle->radius * acos(d2 / circle->radius));
-        return CrossingResult2D(true, point, perimeter);
+        return CrossingResult2D(true, point);
     }
 }
 
@@ -552,43 +553,40 @@ CrossingResult2D Rectangle2D::cross(const Segment2D *segment) const
         switch (head)
         {
         case 0:
-            return CrossingResult2D(false, Point2D(0, 0), 0);
+            return CrossingResult2D(false, Point2D(0, 0));
         case 1:
-            return CrossingResult2D(true, points[0], 0);
+            return CrossingResult2D(true, points[0]);
         case 2:
-            return CrossingResult2D(true, Segment2D(points[0], points[1]).getGeometryCenter(), points[0].getDistTo(points[1]));
+            return CrossingResult2D(true, points[0].getMiddle(points[1]));
         case 3:
             return CrossingResult2D(true,
                     (points[0].equals(points[1])) ?
-                        Segment2D(points[0], points[2]).getGeometryCenter()
-                        : Segment2D(points[0], points[1]).getGeometryCenter(),
-                    (points[0].equals(points[1])) ?
-                        points[0].getDistTo(points[2])
-                        : points[0].getDistTo(points[1]));
+                        points[0].getMiddle(points[2])
+                    : points[0].getMiddle(points[1]));
         default:
-            return CrossingResult2D(true, this->geometry_center, sqrt(width * width + height * height));
+            return CrossingResult2D(true, this->geometry_center);
         }
     }
     else if (amount == 1)
     {
         int head = 0;
         Point2D point_inside = ((last == 1) ? segment->p1 : segment->p2);
-        Point2D points_on_edge[4];
+        Point2D point_on_edge;
         CrossingResult2D result = ab->cross(segment);
-        if (result.crossing) points_on_edge[head++] = result.center;
+        if (result.crossing) point_on_edge = result.center;
         result = bc->cross(segment);
-        if (result.crossing) points_on_edge[head++] = result.center;
+        if (result.crossing) point_on_edge = result.center;
         result = cd->cross(segment);
-        if (result.crossing) points_on_edge[head++] = result.center;
+        if (result.crossing) point_on_edge = result.center;
         result = da->cross(segment);
-        if (result.crossing) points_on_edge[head++] = result.center;
+        if (result.crossing) point_on_edge = result.center;
         //Console::print("Total sides crossings:");
         //Console::print(head);
-        return CrossingResult2D(true, Segment2D(point_inside, points_on_edge[0]).getGeometryCenter(), point_inside.getDistTo(points_on_edge[0]));
+        return CrossingResult2D(true, point_inside.getMiddle(point_on_edge));
     }
     else
     {
-        return CrossingResult2D(true, segment->getGeometryCenter(), segment->p1.getDistTo(segment->p2));
+        return CrossingResult2D(true, segment->getGeometryCenter());
     }
 }
 
@@ -600,31 +598,22 @@ CrossingResult2D Rectangle2D::cross(const Circle2D *circle) const
     results[2] = circle->cross(cd);
     results[3] = circle->cross(da);
     int amount = 0;
-    double x = 0, y = 0, x2 = 0, y2 = 0, perimeter = 0;
+    double x = 0, y = 0;
     for (int i = 0; i < 4; i++) if (results[i].crossing)
     {
         amount++;
-        perimeter += results[i].perimeter;
-        x += results[i].center.x * results[i].perimeter;
-        y += results[i].center.y * results[i].perimeter;
-        x2 += results[i].center.x;
-        y2 += results[i].center.y;
+        x += results[i].center.x;
+        y += results[i].center.y;
     }
     if (amount == 0)
     {
-        return CrossingResult2D(false, Point2D(0, 0), 0);
-    }
-    else if (perimeter > 0)
-    {
-        x /= perimeter;
-        y /= perimeter;
-        return CrossingResult2D(true, Point2D(x, y), perimeter);
-    }
+        return CrossingResult2D(false, Point2D(0, 0));
+    }    
     else
     {
-        x2 /= amount;
-        y2 /= amount;
-        return CrossingResult2D(true, Point2D(x2, y2), perimeter);
+        x /= amount;
+        y /= amount;
+        return CrossingResult2D(true, Point2D(x, y));
     }
 }
 
@@ -640,50 +629,21 @@ CrossingResult2D Rectangle2D::cross(const Rectangle2D *rectangle) const
     results[6] = this->cross(rectangle->cd);
     results[7] = this->cross(rectangle->da);
     int amount = 0;
-    double x = 0, y = 0, x2 = 0, y2 = 0, perimeter = 0;
+    double x = 0, y = 0;
     for (int i = 0; i < 8; i++) if (results[i].crossing)
     {
         amount++;
-        perimeter += results[i].perimeter;
-        x += results[i].center.x * results[i].perimeter;
-        y += results[i].center.y * results[i].perimeter;
-        x2 += results[i].center.x;
-        y2 += results[i].center.y;
+        x += results[i].center.x;
+        y += results[i].center.y;
     }
     if (amount == 0)
     {
-        return CrossingResult2D(false, Point2D(0, 0), 0);
-    }
-    else if (perimeter > 0)
-    {
-        /*Console::print("Rectangle 1:");
-        Console::print(this->ab->p1.toVector());
-        Console::print(this->ab->p2.toVector());
-        Console::print(this->cd->p1.toVector());
-        Console::print(this->cd->p2.toVector());
-        Console::print("Rectangle 2:");
-        Console::print(rectangle->ab->p1.toVector());
-        Console::print(rectangle->ab->p2.toVector());
-        Console::print(rectangle->cd->p1.toVector());
-        Console::print(rectangle->cd->p2.toVector());
-        for (int i = 0; i < 8; i++)
-        {
-            if (results[i].crossing)
-            {
-                Console::print("Segment:");
-                Console::print(results[i].center.toVector());
-                Console::print(results[i].perimeter);
-            }
-        }
-        /**/
-        x /= perimeter;
-        y /= perimeter;
-        return CrossingResult2D(true, Point2D(x, y), perimeter);
-    }
+        return CrossingResult2D(false, Point2D(0, 0));
+    }    
     else
     {
-        x2 /= amount;
-        y2 /= amount;
-        return CrossingResult2D(true, Point2D(x2, y2), perimeter);
+        x /= amount;
+        y /= amount;
+        return CrossingResult2D(true, Point2D(x, y));
     }
 }

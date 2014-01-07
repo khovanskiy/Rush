@@ -186,7 +186,6 @@ Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, double dt)
 {
     CrossingResult2D crossing_result = this->shape->cross(other->shape);
     Vector2D collision_center = crossing_result.center.toVector();
-    double perimeter = crossing_result.perimeter;
     Vector2D relative_speed = this->getSpeedAtPoint(collision_center);
     relative_speed.sub(other->getSpeedAtPoint(collision_center));
     Vector2D collision_direction = relative_speed;
@@ -209,7 +208,7 @@ Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, double dt)
         impulse_change = collision_direction;
         impulse_change.mul(-impulse);
     }
-    return Collision(collision_center, perimeter, relative_speed, impulse_change, other);
+    return Collision(collision_center, relative_speed, impulse_change, other);
 }
 
 void PhysicsObject::applyCollision(const Collision &collision, double dt)
