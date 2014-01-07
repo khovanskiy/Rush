@@ -1,7 +1,7 @@
 #include "physicsobject.h"
 #include "console.h"
 
-static const double pseudo_velocity_koef = 1;
+static const double pseudo_velocity_koef = 0.1;
 static const double angular_speed_koef = 0.3;
 static const double PI = 3.14159265358979323846;
 
