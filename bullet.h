@@ -1,17 +1,16 @@
-#ifndef PHYSICSBULLET_H
-#define PHYSICSBULLET_H
-#include "materialpoint.h"
+#ifndef BULLET_H
+#define BULLET_H
+#include "physicsobject.h"
 
-struct Bullet //: public MaterialPoint
+struct Bullet : public PhysicsObject
 {
-    double damage;
-    double speed;
-    double angle;
-    PhysicsObject * owner;
+    int bullet_id;
+    PhysicsObject* source;
 
-    Bullet();
-    //Bullet(Vector2D const & r, double speed, double angle,
-           //double mass, double damage, PhysicsObject* owner);
+    Bullet(Vector2D r, Vector2D speed, double mass, int bullet_id);
+
+    void setSource(PhysicsObject* source);
+    std::string getType();
 };
 
-#endif // PHYSICSBULLET_H
+#endif // BULLET_H

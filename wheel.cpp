@@ -5,7 +5,7 @@ static const double M_PI = 3.14159265358979323846;
 static const double G = 9.80665;
 static const double eps = 1e-9;
 static const double shaking_koef = 0.5;
-static const double default_surface_friction = 2;
+static const double default_surface_friction = 2.5;
 
 #include <math.h>
 
@@ -41,6 +41,15 @@ double Wheel::getChangedMu(double mu)
 double Wheel::getMaxAccelerationTorque()
 {
     if ((state == WheelState::Forward) || (state == WheelState::Backward)) {
+        /*Console::print("Calculating max acc torque:");
+        Console::print("Distributed weigth:");
+        Console::print(distributed_weight);
+        Console::print("Mu:");
+        Console::print(getChangedMu(mu_parallel_friction));
+        Console::print("Radius:");
+        Console::print(radius);
+        Console::print("Total torque:");
+        Console::print(distributed_weight * getChangedMu(mu_parallel_friction) * radius);/**/
         return distributed_weight * getChangedMu(mu_parallel_friction) * radius;
     }
     else
@@ -68,10 +77,7 @@ void Wheel::calculateForces(double dt)
         mu_par = mu_parallel_friction;
         mu_perp = mu_perpendicular_friction;
         break;
-    case WheelState::Free:
-        mu_par = mu_parallel_roll / radius;
-        mu_perp = mu_perpendicular_friction;
-        break;
+    case WheelState::Free:        
     case WheelState::Forward:
     case WheelState::Backward:
     default:
@@ -104,7 +110,7 @@ void Wheel::calculateForces(double dt)
         {
             f_perp.mul(-1);
         }
-        f_perp.mul(distributed_weight * getChangedMu(mu_perp) * sin(alpha) * sin(alpha));
+        f_perp.mul(distributed_weight * getChangedMu(mu_perp));
         if (f_perp.getLength() > shaking_koef * v_perp * (distributed_weight / G) / dt)
         {
             f_perp.setLength(shaking_koef * v_perp * (distributed_weight / G) / dt);

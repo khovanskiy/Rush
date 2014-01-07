@@ -1,4 +1,5 @@
 #include "chassis.h"
+#include "console.h"
 
 typedef std::vector<Wheel*> vector;
 typedef vector::iterator iterator;
@@ -6,21 +7,66 @@ static const double G = 9.80665;
 static const double M_PI = 3.14159265358979323846;
 static const double rotation_infinity = 1e10;
 static const double eps = 1e-3;
+static const double height_koef = 1/6;
 
 
-Chassis::Chassis(vector const & wheels, VehicleEngine const & engine,
-                               double weight, Vector2D const & mass_center, double height)
-    : wheels(wheels), engine(engine), mass_center(mass_center)
-{
-    this->weight = weight;
-    this->height = height;
+Chassis::Chassis()
+{    
 }
 
 Chassis::Chassis(const Chassis &chassis)
-    : wheels(chassis.wheels), engine(chassis.engine), mass_center(chassis.mass_center)
+    : engine(chassis.engine), mass_center(chassis.mass_center)
 {
     this->weight = chassis.weight;
     this->height = chassis.height;
+}
+
+Chassis::~Chassis()
+{
+    for (iterator i = this->wheels.begin(); i != this->wheels.end(); i++)
+    {
+        delete (*i);
+    }
+}
+
+void Chassis::setWheels(double mass, double height, CarTrack back, CarTrack front)
+{
+    for (iterator i = this->wheels.begin(); i != this->wheels.end(); i++)
+    {
+        delete (*i);
+    }
+    wheels.clear();
+    this->mass_center = Vector2D(0, back.y * back.weigth_percent + front.y * front.weigth_percent);
+    this->height = height * height_koef;
+    this->weight = mass * G;
+    this->wheels.push_back(new CarWheel(front.mu_parallel_friction, front.mu_parallel_roll,
+                                        front.mu_perpendicular_friction, front.mu_broken_friction,
+                                        front.max_angle, Vector2D(-front.width/2, front.y - mass_center.y),
+                                        front.wheel_radius, front.driving, front.braking, front.reaction));
+    this->wheels.push_back(new CarWheel(front.mu_parallel_friction, front.mu_parallel_roll,
+                                        front.mu_perpendicular_friction, front.mu_broken_friction,
+                                        front.max_angle, Vector2D(front.width/2, front.y - mass_center.y),
+                                        front.wheel_radius, front.driving, front.braking, front.reaction));
+    this->wheels.push_back(new CarWheel(back.mu_parallel_friction, back.mu_parallel_roll,
+                                        back.mu_perpendicular_friction, back.mu_broken_friction,
+                                        back.max_angle, Vector2D(-back.width/2, back.y - mass_center.y),
+                                        back.wheel_radius, back.driving, back.braking, back.reaction));
+    this->wheels.push_back(new CarWheel(back.mu_parallel_friction, back.mu_parallel_roll,
+                                        back.mu_perpendicular_friction, back.mu_broken_friction,
+                                        back.max_angle, Vector2D(back.width/2, back.y - mass_center.y),
+                                        back.wheel_radius, back.driving, back.braking, back.reaction));
+}
+
+void Chassis::setEngine(VehicleEngine const & engine)
+{
+    this->engine = engine;
+}
+
+void Chassis::setStructure(double mass, const Vector2D &mass_center, double height)
+{
+    this->weight = mass * G;
+    this->mass_center = mass_center;
+    this->height = height * height_koef;
 }
 
 void Chassis::distributeWeigth()
@@ -85,6 +131,8 @@ void Chassis::distributeWeigth()
             {
                 (*i)->distributed_weight *= right_koef;
             }
+            //Console::print("Distributed weight:");
+            //Console::print((*i)->distributed_weight);
         }        
     }
 }
@@ -120,6 +168,8 @@ void Chassis::distributeTorque()
         {
             min_rotation = cur_rotation;
         }
+        //Console::print("Max acceleration torque:");
+        //Console::print((*i)->getMaxAccelerationTorque());
         total_torque += (*i)->getMaxAccelerationTorque();
     }
     engine.setRotations(min_rotation);
@@ -140,12 +190,13 @@ void Chassis::distributeTorque()
 
 void Chassis::sumForces(double dt)
 {
-    f.x = 0;
-    f.y = 0;
+    f.mul(0);
     force_moment = 0;
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
         (*i)->calculateForces(dt);
+        //Console::print("Wheel force:");
+        //Console::print((*i)->f);
         f.add((*i)->f);
         force_moment += ((*i)->force_moment);        
     }
@@ -165,11 +216,14 @@ void Chassis::setTotalState(Vector2D const & v, Vector2D const & a, double angul
 
 void Chassis::calculateForces(double dt)
 {
-    distributeWeigth();
-    setWheelsSpeed();
-    setWheelsReaction();
-    distributeTorque();
-    sumForces(dt);    
+    if (wheels.size() > 0)
+    {
+        distributeWeigth();
+        setWheelsSpeed();
+        setWheelsReaction();
+        distributeTorque();
+    }
+    sumForces(dt);
 }
 
 int Chassis::getGear()
@@ -182,13 +236,9 @@ double Chassis::getSpins()
     return engine.getSpins();
 }
 
-void Chassis::deleteWheels()
+Vector2D Chassis::getMassCenter()
 {
-    for (iterator i = wheels.begin(); i != wheels.end(); i++)
-    {
-        delete (*i);
-    }
-    wheels.clear();
+    return this->mass_center;
 }
 
 

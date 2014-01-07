@@ -13,7 +13,7 @@
 #include "QCoreApplication"
 #include "vehiclefactory.h"
 
-static const double scale = 3;
+static const double scale = 15;
 
 InitState::InitState()
 {
@@ -25,12 +25,12 @@ InitState::~InitState()
 
 void InitState::init()
 {
-    dodge = VehicleFactory::createDodgeChallengerSRT8(Vector2D(20,20), -asin(1), Vector2D(0, 0), 0);
-    ferrari = VehicleFactory::createFerrari599GTO(Vector2D(20, 30), -asin(1), Vector2D(0, 0), 0);
+    dodge = VehicleFactory::createDodgeChallengerSRT8();
+    dodge->setCoordinates(Vector2D(5, 5));
     dodge->setTorquePercent(1);
-    ferrari->setTorquePercent(1);
-    dodge->setAccelerationState(ForwardAcc);
-    ferrari->setAccelerationState(ForwardAcc);
+    ferrari = VehicleFactory::createFerrari599GTO();
+    ferrari->setCoordinates(Vector2D(5, 25));
+    ferrari->rotate(-asin(1));
     dodgeBitmap = new Bitmap();
     dodgeBitmap->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.png");
     dodgeBitmap->setRSPointCenter();
@@ -55,22 +55,28 @@ void InitState::tick(double dt)
 {
     static double time = 0;
     time += dt;
-    dodge->tick(dt);
-    ferrari->tick(dt);
+    PhysicsWorld::getInstance().tick(dt);
     Vector2D dodge_c = dodge->getCoordinates();
-    dodgeBitmap->setX(dodge_c.x  * scale);
-    dodgeBitmap->setY(dodge_c.y * scale);
+    dodge_c.mul(scale);
+    dodgeBitmap->setX(dodge_c.x);
+    dodgeBitmap->setY(dodge_c.y);
     dodgeBitmap->setRotationZ(dodge->getAngle());
     Vector2D ferrari_c = ferrari->getCoordinates();
-    ferrariBitmap->setX(ferrari_c.x  * scale);
-    ferrariBitmap->setY(ferrari_c.y * scale);
+    ferrari_c.mul(scale);
+    ferrariBitmap->setX(ferrari_c.x);
+    ferrariBitmap->setY(ferrari_c.y);
     ferrariBitmap->setRotationZ(ferrari->getAngle());
-    Console::print(dodge->getSpeed());
+    //Console::print(dodge->getMassCenter());
+    //Console::print(dodge->getSpeed());
+    //Console::print(dodge->getAngularSpeed());
     //Console::print(dodge->isStaying());
-    Console::print(ferrari->getSpeed());
-    Console::print(time);
-    Console::print(QCoreApplication::applicationDirPath());
+    //Console::print(dodge->getGear());
+    //Console::print(ferrari->getSpeed());
+    //Console::print(ferrari->getAngularSpeed());
+    //Console::print(time);
+    //Console::print(QCoreApplication::applicationDirPath());
     //Console::print(ferrari->isStaying());
+    /**/
 }
 
 void InitState::Invoke(const Event &event)
@@ -142,8 +148,7 @@ void InitState::defocus()
 
 void InitState::release()
 {
-    delete dodge;
-    delete ferrari;
+    PhysicsWorld::getInstance().clear();
     Stage::gi()->removeChild(dodgeBitmap);
     Stage::gi()->removeChild(ferrariBitmap);
     Keyboard::gi()->removeEventListener(this);

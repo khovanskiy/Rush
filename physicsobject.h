@@ -1,23 +1,62 @@
 #ifndef PHYSICSOBJECT_H
 #define PHYSICSOBJECT_H
-#include "vector2d.h"
+#include "geometry2d.h"
 #include <vector>
+#include <string>
+
+class PhysicsObject;
+
+struct Collision
+{
+    Vector2D collision_center;
+    Vector2D relative_speed;
+    Vector2D impulse_change;
+    double perimeter;
+    PhysicsObject* source;
+
+    Collision(Vector2D collision_center, double perimeter, Vector2D relative_speed,
+              Vector2D impulse_change, PhysicsObject* source)
+        : collision_center(collision_center), relative_speed(relative_speed),
+          impulse_change(impulse_change), perimeter(perimeter)
+    {
+        this->source = source;
+    }
+};
 
 class PhysicsObject
 {
+protected:
+    Shape2D * shape;
+    Vector2D v, a, f, pseudo_v;
+    double mass, inertia_moment, force_moment;
+    double angular_speed, angular_acceleration;
+
+    Vector2D getSpeedAtPoint(Point2D const & point);
+    void addImpulseAtPoint(Vector2D const & impulse, Point2D const & point, double dt);
+    void pushAwayFromPoint(Point2D const & point);
+
 public:
-    PhysicsObject();
-    virtual void tick(double dt) = 0;
-    virtual Vector2D getCoordinates() = 0;
-    virtual Vector2D getSpeed() = 0;
-    virtual double getAngle() = 0;
-    virtual double getAngularSpeed() = 0;
-    virtual void setCoordinates(Vector2D const & r) = 0;
-    virtual void setSpeed(Vector2D const & v) = 0;
-    //virtual bool collidesWithItem(PhysicsObject* other) = 0;
-    //virtual bool collidesWithBox(Box * box) = 0;
-    //virtual bool collidesWithCircle(Circle * circle) = 0;
-    //virtual bool collidesWithBullet(Bullet* bullet) = 0;
+    PhysicsObject(Shape2D* shape, double mass, double inertia_moment);
+    virtual std::string getType();
+    virtual std::vector<PhysicsObject*> calculateInnerState(double dt);
+    virtual void tick(double dt);
+    virtual Vector2D getCoordinates();
+    virtual void setCoordinates(Vector2D const & r);
+    virtual void move(Vector2D const & dr);
+    virtual Vector2D getSpeed();
+    virtual void setSpeed(Vector2D const & v);
+    virtual double getAngle();
+    virtual void setAngle(double angle);
+    virtual void rotate(double angle);
+    virtual double getAngularSpeed();
+    virtual void setAngularSpeed(double angular_speed);
+    virtual Vector2D getMassCenter();
+    virtual void setMassCenter(Vector2D mass_center);
+    virtual Shape2D * getShape();
+    virtual void setShape(Shape2D* shape);
+    virtual bool collidesWith(PhysicsObject* other, double dt);
+    virtual Collision solveCollisionWith(PhysicsObject* other, double dt);
+    virtual void applyCollision(Collision const & collision, double dt);
 };
 
 #endif // PHYSICSOBJECT_H

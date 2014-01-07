@@ -3,6 +3,11 @@
 
 static const double M_PI = 3.14159265358979323846;
 
+VehicleEngine::VehicleEngine()
+{
+    setRotations(0);
+}
+
 VehicleEngine::VehicleEngine(std::vector<Gear> const & gears)
     : gears(gears)
 {
@@ -12,6 +17,19 @@ VehicleEngine::VehicleEngine(std::vector<Gear> const & gears)
 VehicleEngine::VehicleEngine(VehicleEngine const & engine)
     : gears(engine.gears)
 {
+    setRotations(0);
+}
+
+VehicleEngine::VehicleEngine(double max_torque, double max_spins_per_minute,
+                             std::vector<double> ratios, double final_ratio)
+{
+    int n = 0;
+    for (std::vector<double>::iterator i = ratios.begin(); i != ratios.end(); i++)
+    {
+        n++;
+        gears.push_back(Gear(max_spins_per_minute * (2 * M_PI / 60) / ((*i) * final_ratio),
+                             max_torque * (*i) * final_ratio, n, (*i) * final_ratio));
+    }
     setRotations(0);
 }
 

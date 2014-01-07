@@ -14,13 +14,17 @@ TEMPLATE = app
 
 SOURCES += background.cpp \
     bitmap.cpp \
+    bullet.cpp \
     camera.cpp \
     console.cpp \
+    carwheel.cpp \
+    chassis.cpp \
     displayobject.cpp \
     displayobjectcontainer.cpp \
     event.cpp \
     eventdispatcher.cpp \
     game.cpp \
+    geometry2d.cpp\
     graphiccore.cpp \
     initstate.cpp \
     interactiveobject.cpp \
@@ -33,32 +37,29 @@ SOURCES += background.cpp \
     mouseevent.cpp \
     mouse.cpp \
     physicsobject.cpp \
-    physicssystem.cpp \
+    physicsworld.cpp \
     program.cpp \
-    vector2d.cpp \
     stage.cpp \
     statecontext.cpp \
     statefactory.cpp \
     stateevent.cpp \
     state.cpp \
-    carwheel.cpp \
     track.cpp \
-    box.cpp \
-    bullet.cpp \
-    chassis.cpp \
-    circle.cpp \
-    wheel.cpp \
     turret.cpp \
+    vector2d.cpp \
     vehicle.cpp \
     vehiclebody.cpp \
     vehicleengine.cpp \
-    materialpoint.cpp \
-    shape.cpp \
-    vehiclefactory.cpp
+    vehiclefactory.cpp \
+    wheel.cpp
+
 
 HEADERS  += background.h \
     bitmap.h \
+    bullet.h \
     camera.h \
+    carwheel.h \
+    chassis.h \
     console.h \
     displayobject.h \
     displayobjectcontainer.h \
@@ -66,6 +67,7 @@ HEADERS  += background.h \
     eventhandler.h \
     eventdispatcher.h \
     game.h \
+    geometry2d.h \
     graphiccore.h \
     initstate.h \
     interactiveobject.h \
@@ -77,25 +79,19 @@ HEADERS  += background.h \
     mouseevent.h \
     mouse.h \
     physicsobject.h \
-    physicssystem.h \
+    physicsworld.h \
     program.h \
     stage.h \
-    vector2d.h \
     statecontext.h \
     statefactory.h \
     stateevent.h \
     state.h \
-    carwheel.h \
     track.h \
-    box.h \
-    bullet.h \
-    chassis.h \
-    circle.h \
     turret.h \
+    vector2d.h \
     vehicle.h \
     vehiclebody.h \
     vehicleengine.h \
-    wheel.h \
-    materialpoint.h \
-    shape.h \
-    vehiclefactory.h
+    vehiclefactory.h \
+    wheel.h
+

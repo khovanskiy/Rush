@@ -1,17 +1,31 @@
 #include "turret.h"
+#include "physicsworld.h"
 
-Turret::Turret(Vector2D const & r, double max_angle)
-    : r(r)
+static const double eps = 1e-3;
+
+Turret::Turret()
 {
-    this->max_angle = max_angle;
     this->firing = false;
 }
 
-Turret::Turret(Turret const & turret)
-    : r(turret.r)
+Turret::Turret(Turret const & turret)    
 {
-    this->max_angle = turret.max_angle;
-    this->firing = turret.firing;
+    this->setAngle(0);
+    this->setBullet(turret.bullet_mass, turret.bullet_speed, turret.bullet_id);
+    this->setFireDelay(turret.fire_delay);
+    this->setFiring(false);
+    this->setMaxAngle(turret.max_angle);
+    this->setPosition(turret.r);
+}
+
+void Turret::setPosition(Vector2D r)
+{
+    this->r = r;
+}
+
+void Turret::setMaxAngle(double max_angle)
+{
+    this->max_angle = max_angle;
 }
 
 void Turret::setAngle(double percent)
@@ -19,9 +33,11 @@ void Turret::setAngle(double percent)
     this->angle = this->max_angle * percent;
 }
 
-void Turret::setBullet(Bullet const & bullet)
+void Turret::setBullet(double bullet_mass, double bullet_speed, int bullet_id)
 {
-    this->bullet = bullet;
+    this->bullet_id = bullet_id;
+    this->bullet_mass = bullet_mass;
+    this->bullet_speed = bullet_speed;
 }
 
 void Turret::setFireDelay(double fire_delay)
@@ -35,30 +51,35 @@ void Turret::setFiring(bool firing)
     this->firing = firing;
 }
 
-void Turret::calculateFireAndForces(double dt)
+std::vector<Bullet*> Turret::calculateFireAndForces(double dt)
 {
+    next_shot = (dt > next_shot ? 0 : next_shot - dt);
     if (!firing)
     {
-        next_shot = (dt > next_shot ? 0 : next_shot - dt);
         f.x = 0;
         f.y = 0;
         force_moment = 0;
+        return std::vector<Bullet*>();
     }
     else
     {
-        while (dt > 0)
+        if (next_shot < eps)
         {
-            if (next_shot < dt)
-            {
-                dt -= next_shot;
-                next_shot = fire_delay;
-                //Create bullet.
-
-            }
-            else
-            {
-
-            }
+            next_shot = fire_delay;
+            Vector2D speed(0, bullet_speed);
+            speed.rotate(angle);
+            f = speed;
+            f.mul(-bullet_mass / dt);
+            force_moment = r.cross(f);
+            std::vector<Bullet*> result;
+            Bullet* bullet = new Bullet(r, speed, bullet_mass, bullet_id);
+            PhysicsWorld::getInstance().addObject(bullet);
+            result.push_back(bullet);
+            return result;
+        }
+        else
+        {
+            return std::vector<Bullet*>();
         }
     }
 }
