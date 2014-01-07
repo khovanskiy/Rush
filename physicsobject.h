@@ -30,16 +30,20 @@ protected:
     double mass, inertia_moment, force_moment;
     double angular_speed, angular_acceleration;
     std::string type;
+    bool valid;
+    double time_to_live;
 
     Vector2D getSpeedAtPoint(Point2D const & point);
     void addImpulseAtPoint(Vector2D const & impulse, Point2D const & point, double dt);
-    void pushAwayFromPoint(Point2D const & point);
+    void pushAwayFromPoint(Point2D const & point);    
 
 public:
     PhysicsObject(Shape2D* shape, double mass, double inertia_moment);
     virtual ~PhysicsObject();
     virtual std::string getType();
     virtual std::vector<PhysicsObject*> calculateInnerState(double dt);
+    virtual bool isValid();
+    virtual void invalidate();
     virtual void tick(double dt);
     virtual Vector2D getCoordinates();
     virtual void setCoordinates(Vector2D const & r);

@@ -58,6 +58,11 @@ void Vehicle::setEngine(const VehicleEngine &engine)
     this->chassis.setEngine(engine);
 }
 
+void Vehicle::addTurret(Turret const &turret)
+{
+    this->turrets.push_back(Turret(turret));
+}
+
 void Vehicle::setAccelerationState(AccelerationState const & acc_state)
 {
     this->acc_state = acc_state;
@@ -142,15 +147,21 @@ std::vector<PhysicsObject*> Vehicle::calculateFireAndForces(double dt)
         std::vector<Bullet*> bullets = (*i).calculateFireAndForces(dt);
         for (std::vector<Bullet*>::iterator j = bullets.begin(); j != bullets.end(); j++)
         {
+            Vector2D v = (*j)->getSpeed();
+            v.rotate(this->getAngle());
+            (*j)->setSpeed(v);
             (*j)->setSource(this);
-            (*j)->setMassCenter((*i).r);
-            (*j)->move(this->getCoordinates());
+            Vector2D r = (*i).r;
+            (*j)->setMassCenter(r);
             (*j)->rotate(this->getAngle());
+            r.rotate(this->getAngle());
+            r.add(this->getMassCenter());
+            (*j)->setCoordinates(r);
             result.push_back(*j);
         }
         (*i).f.rotate(this->getAngle());
         f.add((*i).f);
-        force_moment += (*i).force_moment;
+        //force_moment += (*i).force_moment;
     }    
     //Console::print("Total force:");
     //Console::print(f);

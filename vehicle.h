@@ -34,6 +34,7 @@ public:
     virtual void setVehicleBody(VehicleBody const & body);
     virtual void setEngine(VehicleEngine const & engine);
     virtual void setWheels(CarTrack back, CarTrack front, double height);
+    virtual void addTurret(Turret const& turret);
     virtual void setAccelerationState(AccelerationState const & acc_state);
     virtual void setTorquePercent(double torque_percent);
     virtual void setRotationPercent(double rotation_percent);

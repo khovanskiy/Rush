@@ -7,13 +7,17 @@ typedef std::vector<CollidingPair>::const_iterator pair_iterator;
 typedef std::vector<Collision>::const_iterator collision_iterator;
 typedef std::pair<ObjectData*, AABB> pair;
 
-static const int calc_koef = 3;
+static const int calc_koef = 1;
 static const double INFINITY = 1e6;
 static const double eps = 1e-3;
 
 PhysicsWorld::~PhysicsWorld()
 {
     clear();
+    for (auto i = to_delete.begin(); i != to_delete.end(); i++)
+    {
+        delete (*i);
+    }
 }
 
 void PhysicsWorld::addObject(PhysicsObject *object)
@@ -24,19 +28,7 @@ void PhysicsWorld::addObject(PhysicsObject *object)
 
 void PhysicsWorld::removeObject(PhysicsObject *object)
 {
-    iterator r = objects.end();
-    for (iterator i = objects.begin(); i != objects.end(); i++)
-    {
-       if ((*i)->object == object)
-       {
-           r = i;
-       }
-    }
-    if (r != objects.end())
-    {
-        delete (*r);
-        objects.erase(r);
-    }
+    object->invalidate();
 }
 
 std::vector<ObjectData*> PhysicsWorld::getObjectDatas()
@@ -54,7 +46,8 @@ std::vector<PhysicsObject*> PhysicsWorld::popNewObjects()
 void PhysicsWorld::clear()
 {
     for (iterator i = objects.begin(); i != objects.end(); i++) {
-        delete (*i);
+        (*i)->object->invalidate();
+        to_delete.push_back((*i)->object);
     }
     objects.clear();
     new_objects.clear();
@@ -142,8 +135,6 @@ void PhysicsWorld::narrowCollisionSearch(double dt)
     {
         if ((*i).o1->object->collidesWith((*i).o2->object, dt))
         {
-            //std::string string = (*i).o1->object->getType() + " collides with " + (*i).o2->object->getType();
-            //Console::print(string.data());
             colliding_pairs.push_back(CollidingPair((*i).o1, (*i).o2));
         }
     }
@@ -167,20 +158,32 @@ void PhysicsWorld::collisionSolving(double dt)
     }
 }
 
-void PhysicsWorld::changingStates(double dt)
+std::vector<PhysicsObject*> PhysicsWorld::changingStates(double dt)
 {
+    std::vector<PhysicsObject*> n_objects;
+    std::vector<ObjectData*> data;
     for (iterator i = objects.begin(); i != objects.end(); i++)
     {
         std::vector<PhysicsObject*> result = (*i)->object->calculateInnerState(dt);
-        for (std::vector<PhysicsObject*>::iterator j = result.begin(); j != result.end(); j++)
+        for (auto ii = result.begin(); ii != result.end(); ii++)
         {
-            addObject(*j);
+            n_objects.push_back(*ii);
         }
-        for (collision_iterator it = (*i)->collisions.begin(); it != (*i)->collisions.end(); it++)
+        if ((*i)->object->isValid())
         {
-            (*i)->object->applyCollision(*it, dt);
+            for (collision_iterator it = (*i)->collisions.begin(); it != (*i)->collisions.end(); it++)
+            {
+                (*i)->object->applyCollision(*it, dt);
+            }
+            data.push_back(*i);
+        }
+        else
+        {
+            to_delete.push_back((*i)->object);
         }
     }
+    this->objects = data;
+    return n_objects;
 }
 
 void PhysicsWorld::integrating(double dt)
@@ -193,13 +196,32 @@ void PhysicsWorld::integrating(double dt)
 
 void PhysicsWorld::tick(double dt)
 {
+    deleteInvalidObjects();
     double ddt = dt / calc_koef;
     for (int i = 0; i < calc_koef; i++)
     {
         broadCollisionSearch(ddt);
         narrowCollisionSearch(ddt);
         collisionSolving(ddt);
-        changingStates(ddt);
+        std::vector<PhysicsObject*> n_objects = changingStates(ddt);
         integrating(ddt);
+        addingObjects(n_objects);
     }
+}
+
+void PhysicsWorld::addingObjects(const std::vector<PhysicsObject *> &n_objects)
+{
+    for (auto i = n_objects.begin(); i != n_objects.end(); i++)
+    {
+        addObject(*i);
+    }
+}
+
+void PhysicsWorld::deleteInvalidObjects()
+{
+    for (auto i = to_delete.begin(); i != to_delete.end(); i++)
+    {
+        delete *i;
+    }
+    to_delete.clear();
 }

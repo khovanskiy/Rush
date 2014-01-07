@@ -13,12 +13,17 @@
 #include "QCoreApplication"
 #include "vehiclefactory.h"
 
-static const double scale = 5;
+static const double scale = 15;
 static const int FREE_VIEW = 0;
 static const int FIXED_COORDINATES_FIXED_ANGLE = 1;
 static const int FIXED_COORDINATES = 2;
 static const int TOTAL_VIEWS = 3;
 static int view = 0;
+static Vector2D mouse_pointer(0, 0);
+static Vector2D r_center(500, 500);
+static Vector2D dr(0, 0);
+static double d_angle = 0;
+static bool firing = false;
 
 InitState::InitState()
 {
@@ -34,6 +39,17 @@ void InitState::init()
     dodge->setCoordinates(Vector2D(5, 0));
     dodge->setAngle(2 * asin(1));
     dodge->setTorquePercent(1);
+    Turret turret;
+    turret.setFireDelay(0.25);
+    //turret.setMaxAngle(asin(1));
+    turret.setMaxAngle(0);
+    turret.setPosition(Vector2D(0, 0));
+    turret.setBullet(10, 50, BulletType::Simple);
+    dodge->addTurret(turret);
+    turret.setPosition(Vector2D(-0.5, 0));
+    dodge->addTurret(turret);
+    turret.setPosition(Vector2D(0.5, 0));
+    dodge->addTurret(turret);
     for (int i = 0; i < 10; i++)
     {
         for (int j = 0; j < 10; j++)
@@ -41,12 +57,8 @@ void InitState::init()
             Vehicle* ferrari = VehicleFactory::createFerrari599GTO();
             ferrari->setCoordinates(Vector2D(5 + 6 * j, -15 - 5 * i));
             ferrari->setAngle(-asin(1));
-            /*AABB aabb = ferrari->getAABB();
-            Console::print("Ferrari");
-            Console::print(Vector2D(aabb.left, aabb.right));
-            Console::print(Vector2D(aabb.bottom, aabb.top));/**/
         }
-    }/**/
+    }
     Keyboard::gi()->addEventListener(this);
 }
 
@@ -60,6 +72,20 @@ void InitState::tick(double dt)
     static double time = 0;
     time += dt;
     PhysicsWorld::getInstance().tick(dt);
+    std::vector<std::pair<Bitmap*, PhysicsObject*>> remained;
+    for (auto i = game_objects.begin(); i != game_objects.end(); i++)
+    {
+        if (i->second->isValid())
+        {
+            remained.push_back(*i);
+        }
+        else
+        {
+            Stage::gi()->removeChild(i->first);
+            delete i->first;
+        }
+    }
+    game_objects = remained;
     std::vector<PhysicsObject*> new_objects = PhysicsWorld::getInstance().popNewObjects();
     for (auto i = new_objects.begin(); i != new_objects.end(); i++)
     {
@@ -75,6 +101,17 @@ void InitState::tick(double dt)
         {
             path.append("\\DATA\\Textures\\Vehicles\\ferrari_small.png");
         }
+        else if (type == "Bullet")
+        {
+            Bullet* bullet = dynamic_cast<Bullet*>(object);
+            switch (bullet->bullet_type)
+            {
+            case BulletType::Simple:
+            default:
+                path.append("\\DATA\\Textures\\Bullets\\bullet.png");
+                break;
+            }
+        }
         bitmap->load(path);
         bitmap->setRSPointCenter();
         bitmap->setWidth(scale * object->getWidth());
@@ -82,9 +119,6 @@ void InitState::tick(double dt)
         Stage::gi()->addChild(bitmap);
         game_objects.push_back(std::pair<Bitmap*, PhysicsObject*>(bitmap, object));
     }
-    static Vector2D center(500, 500);
-    static Vector2D dr(0, 0);
-    static double d_angle = 0;
     switch (view)
     {
     case FIXED_COORDINATES:
@@ -103,7 +137,7 @@ void InitState::tick(double dt)
         r.sub(dr);
         r.rotate(-d_angle);
         r.mul(scale);
-        r.add(center);
+        r.add(r_center);
         i->first->setX(r.x);
         i->first->setY(r.y);
         i->first->setRotationZ(i->second->getAngle() - d_angle);
@@ -112,24 +146,39 @@ void InitState::tick(double dt)
 
 void InitState::Invoke(const Event &event)
 {
-    if (event.type == KeyboardEvent::KEY_DOWN)
+    if (event.type == MouseEvent::CLICK)
+    {
+        MouseEvent* me = (MouseEvent*) (&event);
+        firing = !firing;
+        Vector2D r = dodge->getCoordinates();
+        r.sub(dr);
+        r.rotate(-d_angle);
+        r.mul(scale);
+        r.add(r_center);
+        int xr = me->getX() - r.x;
+        int yr = me->getY() - r.y;
+        double angle = atan2(yr, xr);
+        dodge->setFiring(firing, angle);
+        //Console::print(Vector2D(me->getX(), me->getY()));
+    }
+    else if (event.type == KeyboardEvent::KEY_DOWN)
     {
         KeyboardEvent* st = (KeyboardEvent*)(&event);
         switch (st->keyCode)
         {
-            case Qt::Key_Up:
+            case Qt::Key_W:
             {
                 dodge->setAccelerationState(ForwardAcc);
             } break;
-            case Qt::Key_Down:
+            case Qt::Key_S:
             {
                 dodge->setAccelerationState(BackwardAcc);
             } break;
-            case Qt::Key_Left:
+            case Qt::Key_A:
             {
                 dodge->setRotationPercent(-1);
             } break;
-            case Qt::Key_Right:
+            case Qt::Key_D:
             {
                     dodge->setRotationPercent(1);
             } break;
@@ -137,14 +186,14 @@ void InitState::Invoke(const Event &event)
             {
                     dodge->setAccelerationState(Brakes);
             } break;
-            case Qt::Key_W:
+            case Qt::Key_Escape:
             {
-            Console::print("Enter");
+            //Console::print("Enter");
                 context->changeState(StateEnum::INIT);
             } break;
             case Qt::Key_Q:
             {
-                Console::print("Changed view.");
+                //Console::print("Changed view.");
                 view = (view + 1) % TOTAL_VIEWS;
             }
         }
@@ -154,19 +203,19 @@ void InitState::Invoke(const Event &event)
         KeyboardEvent* st = (KeyboardEvent*)(&event);
         switch (st->keyCode)
         {
-            case Qt::Key_Up:
+            case Qt::Key_W:
             {
                     dodge->setAccelerationState(NoAcc);
             } break;
-            case Qt::Key_Down:
+            case Qt::Key_S:
             {
                     dodge->setAccelerationState(NoAcc);
             } break;
-            case Qt::Key_Left:
+            case Qt::Key_A:
             {
                     dodge->setRotationPercent(0);
             } break;
-            case Qt::Key_Right:
+            case Qt::Key_D:
             {
                     dodge->setRotationPercent(0);
             } break;
@@ -192,5 +241,5 @@ void InitState::release()
     }
     PhysicsWorld::getInstance().clear();
     game_objects.clear();
-    Console::print("RELEASE");
+    //Console::print("RELEASE");
 }

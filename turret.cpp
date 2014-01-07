@@ -11,7 +11,7 @@ Turret::Turret()
 Turret::Turret(Turret const & turret)    
 {
     this->setAngle(0);
-    this->setBullet(turret.bullet_mass, turret.bullet_speed, turret.bullet_id);
+    this->setBullet(turret.bullet_mass, turret.bullet_speed, turret.bullet_type);
     this->setFireDelay(turret.fire_delay);
     this->setFiring(false);
     this->setMaxAngle(turret.max_angle);
@@ -33,9 +33,9 @@ void Turret::setAngle(double percent)
     this->angle = this->max_angle * percent;
 }
 
-void Turret::setBullet(double bullet_mass, double bullet_speed, int bullet_id)
+void Turret::setBullet(double bullet_mass, double bullet_speed, BulletType bullet_type)
 {
-    this->bullet_id = bullet_id;
+    this->bullet_type = bullet_type;
     this->bullet_mass = bullet_mass;
     this->bullet_speed = bullet_speed;
 }
@@ -72,8 +72,7 @@ std::vector<Bullet*> Turret::calculateFireAndForces(double dt)
             f.mul(-bullet_mass / dt);
             force_moment = r.cross(f);
             std::vector<Bullet*> result;
-            Bullet* bullet = new Bullet(r, speed, bullet_mass, bullet_id);
-            PhysicsWorld::getInstance().addObject(bullet);
+            Bullet* bullet = new Bullet(r, speed, bullet_mass, bullet_type, dt);
             result.push_back(bullet);
             return result;
         }

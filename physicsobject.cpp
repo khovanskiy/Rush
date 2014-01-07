@@ -4,10 +4,11 @@
 static const double pseudo_velocity_koef = 0.2;
 static const double angular_speed_koef = 0.3;
 static const double PI = 3.14159265358979323846;
+static const double INFINITE_TIME = 1e100;
 
 PhysicsObject::PhysicsObject(Shape2D * shape, double mass, double inertia_moment)
     : shape(shape), mass(mass), inertia_moment(inertia_moment), v(0, 0), a(0, 0), pseudo_v(0, 0),
-       f(0, 0), force_moment(0), angular_speed(0), angular_acceleration(0)
+      f(0, 0), force_moment(0), angular_speed(0), angular_acceleration(0), valid(true), time_to_live(INFINITE_TIME)
 {    
     this->type = "PhysicsObject";
     //Console::print("Creating physics object...");
@@ -59,6 +60,16 @@ std::vector<PhysicsObject*> PhysicsObject::calculateInnerState(double dt)
     return std::vector<PhysicsObject*>();
 }
 
+bool PhysicsObject::isValid()
+{
+    return this->valid;
+}
+
+void PhysicsObject::invalidate()
+{
+    this->valid = false;
+}
+
 void PhysicsObject::tick(double dt)
 {
     Vector2D dr = v;
@@ -73,6 +84,8 @@ void PhysicsObject::tick(double dt)
     rotate(angular_speed * dt);
     angular_speed += angular_acceleration * dt;
     angular_acceleration = (force_moment / inertia_moment) * dt;
+    time_to_live -= dt;
+    if (time_to_live < 0) invalidate();
 }
 
 Vector2D PhysicsObject::getCoordinates()
@@ -165,21 +178,14 @@ double PhysicsObject::getWidth()
 
 bool PhysicsObject::collidesWith(PhysicsObject *other, double dt)
 {
-    /*Console::print("First:");
-    Console::print("Center:");
-    Console::print(this->shape->getGeometryCenter().toVector());
-    Console::print("Mass center:");
-    Console::print(this->shape->getRotatingPoint().toVector());
-    Console::print("Angle:");
-    Console::print(this->shape->getAngle());
-    Console::print("Second:");
-    Console::print("Center:");
-    Console::print(other->shape->getGeometryCenter().toVector());
-    Console::print("Mass center:");
-    Console::print(other->shape->getRotatingPoint().toVector());
-    Console::print("Angle:");
-    Console::print(other->shape->getAngle());/**/
-    return this->shape->cross(other->shape).crossing;
+    if (other->getType() == "Bullet")
+    {
+        return other->collidesWith(this, dt);
+    }
+    else
+    {
+        return this->shape->cross(other->shape).crossing;
+    }
 }
 
 Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, double dt)

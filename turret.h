@@ -7,8 +7,7 @@ struct Turret
     Vector2D r;
     double max_angle;
     double bullet_mass, bullet_speed;
-    int bullet_id;
-
+    BulletType bullet_type;
     double angle;
     double fire_delay, next_shot;
     bool firing;
@@ -20,7 +19,7 @@ struct Turret
     Turret(Turret const & turret);
     void setPosition(Vector2D r);
     void setMaxAngle(double max_angle);
-    void setBullet(double bullet_mass, double bullet_speed, int bullet_id);
+    void setBullet(double bullet_mass, double bullet_speed, BulletType bullet_type);
     void setFireDelay(double fire_delay);
     void setFiring(bool firing);
     void setAngle(double percent);

@@ -124,7 +124,7 @@ Vector2D Line2D::getProjection(const Vector2D &vector) const
 }
 
 Segment2D::Segment2D(const Point2D &p1, const Point2D &p2)
-    : Shape2D(Point2D((p1.x + p2.x) / 2, (p1.y + p2.y) / 2), atan2(p2.y - p1.y, p2.x - p1.x)),
+    : Shape2D(Point2D((p1.x + p2.x) / 2, (p1.y + p2.y) / 2), -asin(1) + atan2(p2.y - p1.y, p2.x - p1.x)),
       p1(p1), p2(p2), line(p1, p2), length(p1.getDistTo(p2))
 {
     //Console::print("Creating segment...");

@@ -38,6 +38,7 @@ class PhysicsWorld
     void operator=(PhysicsWorld const&);
     ~PhysicsWorld();
 
+    std::vector<PhysicsObject*> to_delete;
     std::vector<PhysicsObject*> new_objects;
     std::vector<CollidingPair> colliding_pairs;
     std::vector<CollidingPair> potentially_colliding;
@@ -48,8 +49,10 @@ class PhysicsWorld
     void addColliding(std::vector<std::pair<ObjectData*, AABB>> colliding);
     void narrowCollisionSearch(double dt);
     void collisionSolving(double dt);
-    void changingStates(double dt);
+    std::vector<PhysicsObject*> changingStates(double dt);
     void integrating(double dt);
+    void addingObjects(std::vector<PhysicsObject*> const & n_objects);
+    void deleteInvalidObjects();
 
 public:
     static PhysicsWorld& getInstance()
