@@ -5,7 +5,7 @@ static const double M_PI = 3.14159265358979323846;
 static const double G = 9.80665;
 static const double eps = 1e-9;
 static const double shaking_koef = 0.5;
-static const double default_surface_friction = 2.5;
+static const double default_surface_friction = 1;
 
 #include <math.h>
 

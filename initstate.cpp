@@ -13,7 +13,12 @@
 #include "QCoreApplication"
 #include "vehiclefactory.h"
 
-static const double scale = 15;
+static const double scale = 5;
+static const int FREE_VIEW = 0;
+static const int FIXED_COORDINATES_FIXED_ANGLE = 1;
+static const int FIXED_COORDINATES = 2;
+static const int TOTAL_VIEWS = 3;
+static int view = 0;
 
 InitState::InitState()
 {
@@ -26,14 +31,15 @@ InitState::~InitState()
 void InitState::init()
 {
     dodge = VehicleFactory::createDodgeChallengerSRT8();
-    dodge->setCoordinates(Vector2D(5, 5));
+    dodge->setCoordinates(Vector2D(5, 0));
+    dodge->setAngle(2 * asin(1));
     dodge->setTorquePercent(1);
     for (int i = 0; i < 10; i++)
     {
         for (int j = 0; j < 10; j++)
         {
             Vehicle* ferrari = VehicleFactory::createFerrari599GTO();
-            ferrari->setCoordinates(Vector2D(5 + 6 * j, 15 + 5 * i));
+            ferrari->setCoordinates(Vector2D(5 + 6 * j, -15 - 5 * i));
             ferrari->setAngle(-asin(1));
             /*AABB aabb = ferrari->getAABB();
             Console::print("Ferrari");
@@ -76,13 +82,31 @@ void InitState::tick(double dt)
         Stage::gi()->addChild(bitmap);
         game_objects.push_back(std::pair<Bitmap*, PhysicsObject*>(bitmap, object));
     }
+    static Vector2D center(500, 500);
+    static Vector2D dr(0, 0);
+    double d_angle = 0;
+    switch (view)
+    {
+    case FIXED_COORDINATES:
+    {
+        dr = dodge->getCoordinates();
+    } break;
+    case FIXED_COORDINATES_FIXED_ANGLE:
+    {
+        dr = dodge->getCoordinates();
+        d_angle = 2 * asin(1) + dodge->getAngle();
+    } break;
+    }
     for (auto i = game_objects.begin(); i != game_objects.end(); i++)
     {
         Vector2D r = i->second->getCoordinates();
+        r.sub(dr);
+        r.rotate(-d_angle);
         r.mul(scale);
+        r.add(center);
         i->first->setX(r.x);
         i->first->setY(r.y);
-        i->first->setRotationZ(i->second->getAngle());
+        i->first->setRotationZ(i->second->getAngle() - d_angle);
     }/**/
 }
 
@@ -118,6 +142,11 @@ void InitState::Invoke(const Event &event)
             Console::print("Enter");
                 context->changeState(StateEnum::INIT);
             } break;
+            case Qt::Key_Q:
+            {
+                Console::print("Changed view.");
+                view = (view + 1) % TOTAL_VIEWS;
+            }
         }
     }
     else if (event.type == KeyboardEvent::KEY_UP)
