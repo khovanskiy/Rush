@@ -52,6 +52,20 @@ struct CrossingResult2D
     }
 };
 
+struct AABB
+{
+    double left, right;
+    double top, bottom;
+
+    AABB(double left, double right, double bottom, double top)
+    {
+        this->left = left;
+        this->right = right;
+        this->bottom = bottom;
+        this->top = top;
+    }
+};
+
 struct Segment2D;
 struct Rectangle2D;
 struct Circle2D;
@@ -67,6 +81,10 @@ protected:
 public:
     Shape2D(Point2D const & geometry_center, double angle)
         : geometry_center(geometry_center), rotating_point(geometry_center), angle(angle)
+    {
+    }
+
+    virtual ~Shape2D()
     {
     }
 
@@ -111,7 +129,7 @@ public:
     virtual double getDepth(Point2D const & point) = 0;
     virtual double getWidth() = 0;
     virtual double getHeight() = 0;
-
+    virtual AABB getAABB() = 0;
     virtual bool contains(Point2D const & point) const = 0;
     virtual CrossingResult2D cross(const Shape2D* shape) const = 0;
     virtual CrossingResult2D cross(const Segment2D* segment) const = 0;
@@ -127,6 +145,7 @@ struct Segment2D : public Shape2D
 
     Segment2D(Point2D const& p1, Point2D const& p2);
     Segment2D(Point2D const & center, double length, double angle);
+    virtual ~Segment2D();
     virtual void rotate(double angle);
     virtual void move(double x, double y);
     virtual bool contains(Point2D const & point) const;
@@ -134,6 +153,7 @@ struct Segment2D : public Shape2D
     virtual double getDepth(const Point2D &point);
     virtual double getWidth();
     virtual double getHeight();
+    virtual AABB getAABB();
     virtual CrossingResult2D cross(const Shape2D* shape) const;
     virtual CrossingResult2D cross(const Segment2D* segment) const;
     virtual CrossingResult2D cross(const Circle2D* circle) const;
@@ -145,6 +165,7 @@ struct Circle2D : public Shape2D
     double radius;
 
     Circle2D(Point2D const & center, double radius, double angle);
+    virtual ~Circle2D();
     virtual bool contains(Point2D const & point) const;
     virtual double getRadius();
     virtual void setRadius(double radius);
@@ -152,6 +173,7 @@ struct Circle2D : public Shape2D
     virtual double getDepth(const Point2D &point);
     virtual double getWidth();
     virtual double getHeight();
+    virtual AABB getAABB();
     virtual CrossingResult2D cross(const Shape2D* shape) const;
     virtual CrossingResult2D cross(const Segment2D* segment) const;
     virtual CrossingResult2D cross(const Circle2D* circle) const;
@@ -166,6 +188,7 @@ struct Rectangle2D : public Shape2D
 
     Rectangle2D(Point2D const & center, double width, double height, double angle);
     Rectangle2D(Point2D const & a, Point2D const & b, Point2D const & c, Point2D const & d);
+    virtual ~Rectangle2D();
     virtual bool contains(Point2D const & point) const;
     virtual void rotate(double angle);
     virtual void move(double x, double y);
@@ -174,6 +197,7 @@ struct Rectangle2D : public Shape2D
     virtual double getHeight();
     virtual void setHeight(double height);
     virtual double getDepth(const Point2D &point);
+    virtual AABB getAABB();
     virtual CrossingResult2D cross(const Shape2D* shape) const;
     virtual CrossingResult2D cross(const Segment2D* segment) const;
     virtual CrossingResult2D cross(const Circle2D* circle) const;

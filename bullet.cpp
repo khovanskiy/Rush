@@ -13,3 +13,7 @@ void Bullet::setSource(PhysicsObject *source)
 {
     this->source = source;
 }
+
+Bullet::~Bullet()
+{
+}

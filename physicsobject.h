@@ -38,6 +38,7 @@ protected:
 
 public:
     PhysicsObject(Shape2D* shape, double mass, double inertia_moment);
+    virtual ~PhysicsObject();
     virtual std::string getType();
     virtual std::vector<PhysicsObject*> calculateInnerState(double dt);
     virtual void tick(double dt);
@@ -55,6 +56,7 @@ public:
     virtual void setMassCenter(Vector2D mass_center);
     virtual Shape2D * getShape();
     virtual void setShape(Shape2D* shape);
+    virtual AABB getAABB();
     virtual double getHeight();
     virtual double getWidth();
     virtual bool collidesWith(PhysicsObject* other, double dt);

@@ -20,6 +20,10 @@ Track::Track(Track * track)
     this->track_type = track->track_type;
 }
 
+Track::~Track()
+{
+}
+
 
 double Track::getRotatingSpeed()
 {

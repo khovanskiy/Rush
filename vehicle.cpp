@@ -33,6 +33,10 @@ Vehicle::Vehicle(Rectangle2D * shape, double mass, double inertia_moment)
     //Console::print("Vehicle has been created.");
 }
 
+Vehicle::~Vehicle()
+{
+}
+
 void Vehicle::setVehicleBody(const VehicleBody &body)
 {
     this->body = body;

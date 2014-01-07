@@ -14,6 +14,11 @@ PhysicsObject::PhysicsObject(Shape2D * shape, double mass, double inertia_moment
     //Console::print("Physics object has been created");
 }
 
+PhysicsObject::~PhysicsObject()
+{
+    delete shape;
+}
+
 Vector2D PhysicsObject::getSpeedAtPoint(const Point2D &point)
 {
     Vector2D result = point.toVector();
@@ -141,6 +146,11 @@ void PhysicsObject::setShape(Shape2D * shape)
 {
     delete this->shape;
     this->shape = shape;
+}
+
+AABB PhysicsObject::getAABB()
+{
+    return this->shape->getAABB();
 }
 
 double PhysicsObject::getHeight()

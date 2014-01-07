@@ -14,6 +14,7 @@ struct CarWheel : public Wheel
              double max_angle, Vector2D const & r, double radius,
              bool driving, bool braking, RotationReaction const & reaction);
     CarWheel(CarWheel * carWheel);
+    virtual ~CarWheel();
     virtual void changeState(AccelerationState const & acc_state,
                              double rotation);
     virtual double getRotatingSpeed();

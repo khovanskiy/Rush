@@ -8,8 +8,9 @@ struct Bullet : public PhysicsObject
     PhysicsObject* source;
 
     Bullet(Vector2D r, Vector2D speed, double mass, int bullet_id);
+    virtual ~Bullet();
+    void setSource(PhysicsObject* source);
 
-    void setSource(PhysicsObject* source);    
 };
 
 #endif // BULLET_H

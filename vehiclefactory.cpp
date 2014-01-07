@@ -48,7 +48,7 @@ Vehicle* VehicleFactory::createDodgeChallengerSRT8()
     vehicle->setWheels(back, front, 1.45);
     vehicle->setVehicleBody(VehicleBody(0.356, 5.0, 1.923, 1.45, vehicle->chassis.getMassCenter()));
     vehicle->type = "DodgeChallengerSRT8";
-    //Console::print("Dodge Challenger SRT8 has been created.");    
+    //Console::print("Dodge Challenger SRT8 has been created.");
     return vehicle;
 }
 
@@ -61,10 +61,10 @@ Vehicle* VehicleFactory::createFerrari599GTO()
     vehicle->setEngine(VehicleEngine(620, 8400, ratios, 4.18));
     CarTrack back(-1.328, 1.610, tireSpecsToRadius(315, 35, 20),
                   0.53, true, true, RotationReaction::NoRotation,
-                  0.9, 0.025, 1.5, 1.5, M_PI / 6);
+                  0.9, 0.025, 1, 1.5, M_PI / 6);
     CarTrack front(1.470, 1.701, tireSpecsToRadius(280, 35, 20),
                    0.47, false, true, RotationReaction::StraightRot,
-                   0.9, 0.025, 1.5, 1.5, M_PI / 6);
+                   0.9, 0.025, 1, 1.5, M_PI / 6);
     vehicle->setWheels(back, front, 1.326);
     vehicle->setVehicleBody(VehicleBody(0.356, 4.710, 1.962, 1.326, vehicle->chassis.getMassCenter()));
     vehicle->type = "Ferrari599GTO";

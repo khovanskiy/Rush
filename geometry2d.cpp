@@ -141,6 +141,10 @@ Segment2D::Segment2D(const Point2D &center, double length, double angle)
     //Console::print("Segment has been created");
 }
 
+Segment2D::~Segment2D()
+{
+}
+
 double Segment2D::getLength()
 {
     return this->length;
@@ -207,7 +211,7 @@ CrossingResult2D Segment2D::cross(const Segment2D *segment) const
                 if (!points[i].equals(first)) second = points[i];
             }
             return CrossingResult2D(true, Segment2D(first, second).getGeometryCenter(), first.getDistTo(second));
-        }
+        }        
     }
     else
     {
@@ -254,12 +258,24 @@ double Segment2D::getHeight()
     return getLength();
 }
 
+AABB Segment2D::getAABB()
+{
+    double w = abs(this->p1.x - this->geometry_center.x);
+    double h = abs(this->p1.y - this->geometry_center.y);
+    return AABB(this->geometry_center.x - w, this->geometry_center.x + w,
+                this->geometry_center.y - h, this->geometry_center.y + h);
+}
+
 Circle2D::Circle2D(const Point2D &center, double radius, double angle)
     : Shape2D(center, angle)
 {
     //Console::print("Creating circle...");
     this->radius = radius;
     //Console::print("Circle has been created.");
+}
+
+Circle2D::~Circle2D()
+{
 }
 
 bool Circle2D::contains(const Point2D &point) const
@@ -301,6 +317,12 @@ double Circle2D::getWidth()
 double Circle2D::getHeight()
 {
     return radius;
+}
+
+AABB Circle2D::getAABB()
+{
+    return AABB(this->geometry_center.x - this->radius, this->geometry_center.x + this->radius,
+                this->geometry_center.y - this->radius, this->geometry_center.y + this->radius);
 }
 
 CrossingResult2D Circle2D::cross(const Shape2D* shape) const
@@ -402,6 +424,14 @@ Rectangle2D::Rectangle2D(const Point2D &a, const Point2D &b, const Point2D &c, c
     //Console::print("Rectangle has been created.");
 }
 
+Rectangle2D::~Rectangle2D()
+{
+    delete ab;
+    delete bc;
+    delete cd;
+    delete da;
+}
+
 bool Rectangle2D::contains(const Point2D &point) const
 {
     Vector2D v = point.toVector();
@@ -409,7 +439,6 @@ bool Rectangle2D::contains(const Point2D &point) const
     v.rotate(-this->angle);
     return (v.x > -width / 2 - eps) && (v.x < width / 2 + eps)
             && (v.y > -height / 2 - eps) && (v.y < height / 2 + eps);
-
 }
 
 void Rectangle2D::rotate(double angle)
@@ -462,6 +491,18 @@ double Rectangle2D::getDepth(const Point2D &point)
     {
         return height / 2 - p2;
     }
+}
+
+AABB Rectangle2D::getAABB()
+{
+    double w = abs(this->a.x - this->geometry_center.x);
+    double w1 = abs(this->b.x - this->geometry_center.x);
+    if (w1 > w) w = w1;
+    double h = abs(this->a.y - this->geometry_center.y);
+    double h1 = abs(this->b.y - this->geometry_center.y);
+    if (h1 > h) h = h1;
+    return AABB(this->geometry_center.x - w, this->geometry_center.x + w,
+                this->geometry_center.y - h, this->geometry_center.y + h);
 }
 
 CrossingResult2D Rectangle2D::cross(const Shape2D *shape) const
@@ -644,5 +685,5 @@ CrossingResult2D Rectangle2D::cross(const Rectangle2D *rectangle) const
         x2 /= amount;
         y2 /= amount;
         return CrossingResult2D(true, Point2D(x2, y2), perimeter);
-    }    
+    }
 }

@@ -30,6 +30,7 @@ protected:
 public:
     double rotation_percent;
     Vehicle(Rectangle2D * shape, double mass, double inertia_moment);
+    virtual ~Vehicle();
     virtual void setVehicleBody(VehicleBody const & body);
     virtual void setEngine(VehicleEngine const & engine);
     virtual void setWheels(CarTrack back, CarTrack front, double height);

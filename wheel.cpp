@@ -23,6 +23,10 @@ Wheel::Wheel(double mu_parallel_friction, double mu_parallel_roll,
     this->surface_friction = default_surface_friction;
 }
 
+Wheel::~Wheel()
+{
+}
+
 void Wheel::setWheelAngle(double percent)
 {
     this->angle = this->max_angle * percent;

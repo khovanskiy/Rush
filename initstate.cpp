@@ -28,15 +28,19 @@ void InitState::init()
     dodge = VehicleFactory::createDodgeChallengerSRT8();
     dodge->setCoordinates(Vector2D(5, 5));
     dodge->setTorquePercent(1);
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 10; i++)
     {
-        for (int j = 0; j < 3; j++)
+        for (int j = 0; j < 10; j++)
         {
             Vehicle* ferrari = VehicleFactory::createFerrari599GTO();
-            ferrari->setCoordinates(Vector2D(5 + 5 * j, 10 + 5 * i));
+            ferrari->setCoordinates(Vector2D(5 + 6 * j, 15 + 5 * i));
             ferrari->setAngle(-asin(1));
+            /*AABB aabb = ferrari->getAABB();
+            Console::print("Ferrari");
+            Console::print(Vector2D(aabb.left, aabb.right));
+            Console::print(Vector2D(aabb.bottom, aabb.top));/**/
         }
-    }
+    }/**/
     Keyboard::gi()->addEventListener(this);
 }
 
@@ -59,11 +63,11 @@ void InitState::tick(double dt)
         QString path = QCoreApplication::applicationDirPath();
         if (type == "DodgeChallengerSRT8")
         {
-            path.append("\\DATA\\Textures\\Vehicles\\dodge.png");
+            path.append("\\DATA\\Textures\\Vehicles\\dodge_small.png");
         }
         else if (type == "Ferrari599GTO")
         {
-            path.append("\\DATA\\Textures\\Vehicles\\ferrari.png");
+            path.append("\\DATA\\Textures\\Vehicles\\ferrari_small.png");
         }
         bitmap->load(path);
         bitmap->setRSPointCenter();
@@ -79,16 +83,7 @@ void InitState::tick(double dt)
         i->first->setX(r.x);
         i->first->setY(r.y);
         i->first->setRotationZ(i->second->getAngle());
-    }
-    //Console::print(dodge->getMassCenter());
-    //Console::print(dodge->getSpeed());
-    //Console::print(dodge->getAngularSpeed());
-    //Console::print(dodge->isStaying());
-    //Console::print(dodge->getGear());
-    //Console::print(time);
-    //Console::print(QCoreApplication::applicationDirPath());
-    //Console::print(ferrari->isStaying());
-    /**/
+    }/**/
 }
 
 void InitState::Invoke(const Event &event)

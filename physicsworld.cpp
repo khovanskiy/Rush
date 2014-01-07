@@ -5,8 +5,11 @@
 typedef std::vector<ObjectData*>::const_iterator iterator;
 typedef std::vector<CollidingPair>::const_iterator pair_iterator;
 typedef std::vector<Collision>::const_iterator collision_iterator;
+typedef std::pair<ObjectData*, AABB> pair;
 
-static const int calc_koef = 5;
+static const int calc_koef = 3;
+static const double INFINITY = 1e6;
+static const double eps = 1e-3;
 
 PhysicsWorld::~PhysicsWorld()
 {
@@ -15,16 +18,8 @@ PhysicsWorld::~PhysicsWorld()
 
 void PhysicsWorld::addObject(PhysicsObject *object)
 {
-    bool found = false;
-    for (iterator i = objects.begin(); i != objects.end(); i++)
-    {
-        found |= ((*i)->object == object);
-    }
-    if (!found)
-    {
-        objects.push_back(new ObjectData(object));
-        new_objects.push_back(object);
-    }
+    objects.push_back(new ObjectData(object));
+    new_objects.push_back(object);
 }
 
 void PhysicsWorld::removeObject(PhysicsObject *object)
@@ -62,15 +57,79 @@ void PhysicsWorld::clear()
         delete (*i);
     }
     objects.clear();
+    new_objects.clear();
 }
 
 void PhysicsWorld::broadCollisionSearch(double dt)
 {
     potentially_colliding.clear();
-    for (iterator i = objects.begin(); i != objects.end(); i++) {
-        for (iterator j = objects.begin(); j != objects.end(); j++) {
-            if (i < j) {
-                potentially_colliding.push_back(CollidingPair((*i), (*j)));
+    std::vector<pair> x_vector;
+    for (iterator i = objects.begin(); i != objects.end(); i++)
+    {
+        x_vector.push_back(pair((*i), (*i)->object->getAABB()));
+    }
+    std::sort(x_vector.begin(), x_vector.end(),
+              [](const pair & a, const pair & b)
+    {
+       return a.second.left < b.second.left;
+    });
+    std::vector<pair> y_vector;
+    double max_right = -INFINITY;
+    for (auto i = x_vector.begin(); i != x_vector.end(); i++)
+    {
+        if ((y_vector.size() == 0) || (i->second.left < max_right - eps))
+        {
+            y_vector.push_back(*i);
+            if (i->second.right > max_right) max_right = i->second.right;
+        }
+        else
+        {
+            PhysicsWorld::yCollisionSearch(y_vector);
+            y_vector.clear();
+            y_vector.push_back(*i);
+            if (i->second.right > max_right) max_right = i->second.right;
+        }
+    }
+    PhysicsWorld::yCollisionSearch(y_vector);
+}
+
+void PhysicsWorld::yCollisionSearch(std::vector<pair> y_colliding)
+{
+    std::sort(y_colliding.begin(), y_colliding.end(),
+              [](const pair & a, const pair & b)
+    {
+       return a.second.bottom < b.second.bottom;
+    });
+    double max_top = -INFINITY;
+    std::vector<pair> colliding;
+    for (auto j = y_colliding.begin(); j != y_colliding.end(); j++)
+    {
+        if ((colliding.size() == 0) || (j->second.bottom < max_top - eps))
+        {
+            colliding.push_back(*j);
+            if (j->second.top > max_top) max_top = j->second.top;
+        }
+        else
+        {
+            addColliding(colliding);
+            colliding.clear();
+            colliding.push_back(*j);
+            if (j->second.top > max_top) max_top = j->second.top;
+        }
+    }
+    addColliding(colliding);
+}
+
+void PhysicsWorld::addColliding(std::vector<pair> colliding)
+{
+    for (auto ii = colliding.begin(); ii != colliding.end(); ii++)
+    {
+        for (auto jj = ii; jj != colliding.end();)
+        {
+            jj++;
+            if (jj != colliding.end())
+            {
+                potentially_colliding.push_back(CollidingPair(ii->first, jj->first));
             }
         }
     }

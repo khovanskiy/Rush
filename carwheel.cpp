@@ -21,6 +21,10 @@ CarWheel::CarWheel(double mu_parallel_friction, double mu_parallel_roll,
     this->reaction = reaction;
 }
 
+CarWheel::~CarWheel()
+{
+}
+
 CarWheel::CarWheel(CarWheel * carWheel)
     : Wheel(carWheel->mu_parallel_friction, carWheel->mu_parallel_roll,
             carWheel->mu_perpendicular_friction, carWheel->mu_broken_friction,

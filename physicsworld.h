@@ -8,8 +8,14 @@ struct ObjectData
     PhysicsObject* object;
     std::vector<Collision> collisions;
 
-    ObjectData(PhysicsObject* object) {
+    ObjectData(PhysicsObject* object)
+    {
         this->object = object;
+    }
+
+    ~ObjectData()
+    {
+        delete this->object;
     }
 };
 
@@ -32,13 +38,14 @@ class PhysicsWorld
     void operator=(PhysicsWorld const&);
     ~PhysicsWorld();
 
-
     std::vector<PhysicsObject*> new_objects;
     std::vector<CollidingPair> colliding_pairs;
     std::vector<CollidingPair> potentially_colliding;
     std::vector<ObjectData*> objects;
 
     void broadCollisionSearch(double dt);
+    void yCollisionSearch(std::vector<std::pair<ObjectData*, AABB>> y_colliding);
+    void addColliding(std::vector<std::pair<ObjectData*, AABB>> colliding);
     void narrowCollisionSearch(double dt);
     void collisionSolving(double dt);
     void changingStates(double dt);
