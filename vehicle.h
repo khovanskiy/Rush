@@ -30,7 +30,6 @@ protected:
 public:
     double rotation_percent;
     Vehicle(Rectangle2D * shape, double mass, double inertia_moment);
-    virtual std::string getType();
     virtual void setVehicleBody(VehicleBody const & body);
     virtual void setEngine(VehicleEngine const & engine);
     virtual void setWheels(CarTrack back, CarTrack front, double height);
@@ -41,9 +40,7 @@ public:
     virtual int getGear();
     virtual double getSpins();
     virtual bool isStaying();
-    virtual double getWidth();
-    virtual double getLength();
-    virtual std::vector<PhysicsObject*> calculateInnerState(double dt);    
+    virtual std::vector<PhysicsObject*> calculateInnerState(double dt);
 };
 
 #endif // VEHICLE_H

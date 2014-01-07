@@ -9,6 +9,7 @@ PhysicsObject::PhysicsObject(Shape2D * shape, double mass, double inertia_moment
     : shape(shape), mass(mass), inertia_moment(inertia_moment), v(0, 0), a(0, 0), pseudo_v(0, 0),
        f(0, 0), force_moment(0), angular_speed(0), angular_acceleration(0)
 {    
+    this->type = "PhysicsObject";
     //Console::print("Creating physics object...");
     //Console::print("Physics object has been created");
 }
@@ -44,7 +45,7 @@ void PhysicsObject::pushAwayFromPoint(const Point2D &point)
 
 std::string PhysicsObject::getType()
 {
-    return "PhysicsObject";
+    return this->type;
 }
 
 std::vector<PhysicsObject*> PhysicsObject::calculateInnerState(double dt)
@@ -140,6 +141,16 @@ void PhysicsObject::setShape(Shape2D * shape)
 {
     delete this->shape;
     this->shape = shape;
+}
+
+double PhysicsObject::getHeight()
+{
+    return shape->getHeight();
+}
+
+double PhysicsObject::getWidth()
+{
+    return shape->getWidth();
 }
 
 bool PhysicsObject::collidesWith(PhysicsObject *other, double dt)

@@ -244,6 +244,16 @@ double Segment2D::getDepth(const Point2D &point)
     return max - this->getRotatingPoint().getDistTo(point);
 }
 
+double Segment2D::getWidth()
+{
+    return 0;
+}
+
+double Segment2D::getHeight()
+{
+    return getLength();
+}
+
 Circle2D::Circle2D(const Point2D &center, double radius, double angle)
     : Shape2D(center, angle)
 {
@@ -281,6 +291,16 @@ Segment2D Circle2D::getCrossBy(const Line2D &line) const
 double Circle2D::getDepth(const Point2D &point)
 {
     return this->radius - this->getGeometryCenter().getDistTo(point);
+}
+
+double Circle2D::getWidth()
+{
+    return radius;
+}
+
+double Circle2D::getHeight()
+{
+    return radius;
 }
 
 CrossingResult2D Circle2D::cross(const Shape2D* shape) const

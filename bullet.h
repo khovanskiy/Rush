@@ -9,8 +9,7 @@ struct Bullet : public PhysicsObject
 
     Bullet(Vector2D r, Vector2D speed, double mass, int bullet_id);
 
-    void setSource(PhysicsObject* source);
-    std::string getType();
+    void setSource(PhysicsObject* source);    
 };
 
 #endif // BULLET_H

@@ -23,6 +23,7 @@ void PhysicsWorld::addObject(PhysicsObject *object)
     if (!found)
     {
         objects.push_back(new ObjectData(object));
+        new_objects.push_back(object);
     }
 }
 
@@ -46,6 +47,13 @@ void PhysicsWorld::removeObject(PhysicsObject *object)
 std::vector<ObjectData*> PhysicsWorld::getObjectDatas()
 {
     return objects;
+}
+
+std::vector<PhysicsObject*> PhysicsWorld::popNewObjects()
+{
+    std::vector<PhysicsObject*> result(this->new_objects);
+    this->new_objects.clear();
+    return result;
 }
 
 void PhysicsWorld::clear()

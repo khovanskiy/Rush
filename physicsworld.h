@@ -33,6 +33,7 @@ class PhysicsWorld
     ~PhysicsWorld();
 
 
+    std::vector<PhysicsObject*> new_objects;
     std::vector<CollidingPair> colliding_pairs;
     std::vector<CollidingPair> potentially_colliding;
     std::vector<ObjectData*> objects;
@@ -53,6 +54,7 @@ public:
     void addObject(PhysicsObject* object);
     void removeObject(PhysicsObject* object);
     std::vector<ObjectData*> getObjectDatas();
+    std::vector<PhysicsObject*> popNewObjects();
     void clear();
     void tick(double dt);
 };

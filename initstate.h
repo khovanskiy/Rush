@@ -21,10 +21,8 @@ public:
     void Invoke(const Event &event);
 
 private:
-    Bitmap* dodgeBitmap;
-    Bitmap* ferrariBitmap;
-    Vehicle* dodge;
-    Vehicle* ferrari;    
+    std::vector<std::pair<Bitmap*, PhysicsObject*>> game_objects;
+    Vehicle* dodge;        
 };
 
 #endif // NULLSTATE_H

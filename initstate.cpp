@@ -28,21 +28,15 @@ void InitState::init()
     dodge = VehicleFactory::createDodgeChallengerSRT8();
     dodge->setCoordinates(Vector2D(5, 5));
     dodge->setTorquePercent(1);
-    ferrari = VehicleFactory::createFerrari599GTO();
-    ferrari->setCoordinates(Vector2D(5, 25));
-    ferrari->rotate(-asin(1));
-    dodgeBitmap = new Bitmap();
-    dodgeBitmap->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.png");
-    dodgeBitmap->setRSPointCenter();
-    dodgeBitmap->setWidth(scale * dodge->getWidth());
-    dodgeBitmap->setHeight(scale * dodge->getLength());
-    ferrariBitmap = new Bitmap();
-    ferrariBitmap->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\ferrari.png");
-    ferrariBitmap->setRSPointCenter();
-    ferrariBitmap->setWidth(scale * ferrari->getWidth());
-    ferrariBitmap->setHeight(scale * ferrari->getLength());
-    Stage::gi()->addChild(dodgeBitmap);
-    Stage::gi()->addChild(ferrariBitmap);
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            Vehicle* ferrari = VehicleFactory::createFerrari599GTO();
+            ferrari->setCoordinates(Vector2D(5 + 5 * j, 10 + 5 * i));
+            ferrari->setAngle(-asin(1));
+        }
+    }
     Keyboard::gi()->addEventListener(this);
 }
 
@@ -56,23 +50,41 @@ void InitState::tick(double dt)
     static double time = 0;
     time += dt;
     PhysicsWorld::getInstance().tick(dt);
-    Vector2D dodge_c = dodge->getCoordinates();
-    dodge_c.mul(scale);
-    dodgeBitmap->setX(dodge_c.x);
-    dodgeBitmap->setY(dodge_c.y);
-    dodgeBitmap->setRotationZ(dodge->getAngle());
-    Vector2D ferrari_c = ferrari->getCoordinates();
-    ferrari_c.mul(scale);
-    ferrariBitmap->setX(ferrari_c.x);
-    ferrariBitmap->setY(ferrari_c.y);
-    ferrariBitmap->setRotationZ(ferrari->getAngle());
+    std::vector<PhysicsObject*> new_objects = PhysicsWorld::getInstance().popNewObjects();
+    for (auto i = new_objects.begin(); i != new_objects.end(); i++)
+    {
+        PhysicsObject* object = (*i);
+        Bitmap* bitmap = new Bitmap();
+        std::string type = object->getType();
+        QString path = QCoreApplication::applicationDirPath();
+        if (type == "DodgeChallengerSRT8")
+        {
+            path.append("\\DATA\\Textures\\Vehicles\\dodge.png");
+        }
+        else if (type == "Ferrari599GTO")
+        {
+            path.append("\\DATA\\Textures\\Vehicles\\ferrari.png");
+        }
+        bitmap->load(path);
+        bitmap->setRSPointCenter();
+        bitmap->setWidth(scale * object->getWidth());
+        bitmap->setHeight(scale * object->getHeight());
+        Stage::gi()->addChild(bitmap);
+        game_objects.push_back(std::pair<Bitmap*, PhysicsObject*>(bitmap, object));
+    }
+    for (auto i = game_objects.begin(); i != game_objects.end(); i++)
+    {
+        Vector2D r = i->second->getCoordinates();
+        r.mul(scale);
+        i->first->setX(r.x);
+        i->first->setY(r.y);
+        i->first->setRotationZ(i->second->getAngle());
+    }
     //Console::print(dodge->getMassCenter());
     //Console::print(dodge->getSpeed());
     //Console::print(dodge->getAngularSpeed());
     //Console::print(dodge->isStaying());
     //Console::print(dodge->getGear());
-    //Console::print(ferrari->getSpeed());
-    //Console::print(ferrari->getAngularSpeed());
     //Console::print(time);
     //Console::print(QCoreApplication::applicationDirPath());
     //Console::print(ferrari->isStaying());
@@ -149,10 +161,11 @@ void InitState::defocus()
 void InitState::release()
 {
     PhysicsWorld::getInstance().clear();
-    Stage::gi()->removeChild(dodgeBitmap);
-    Stage::gi()->removeChild(ferrariBitmap);
     Keyboard::gi()->removeEventListener(this);
-    delete dodgeBitmap;
-    delete ferrariBitmap;
+    for (auto i = game_objects.begin(); i != game_objects.end(); i++)
+    {
+        Stage::gi()->removeChild(i->first);
+        delete i->first;
+    }
     Console::print("RELEASE");
 }

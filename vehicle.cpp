@@ -29,12 +29,8 @@ Vehicle::Vehicle(Rectangle2D * shape, double mass, double inertia_moment)
     this->setTorquePercent(0);
     this->width = shape->getWidth();
     this->length = shape->getHeight();
+    this->type = "Vehicle";
     //Console::print("Vehicle has been created.");
-}
-
-std::string Vehicle::getType()
-{
-    return "Vehicle";
 }
 
 void Vehicle::setVehicleBody(const VehicleBody &body)
@@ -92,16 +88,6 @@ double Vehicle::getSpins()
 bool Vehicle::isStaying()
 {
     return ((v.getLength() < eps) && (angular_speed < eps));
-}
-
-double Vehicle::getWidth()
-{
-    return this->width;
-}
-
-double Vehicle::getLength()
-{
-    return this->length;
 }
 
 std::vector<PhysicsObject*> Vehicle::calculateFireAndForces(double dt)

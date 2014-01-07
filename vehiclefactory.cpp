@@ -26,6 +26,7 @@ Vehicle* VehicleFactory::createCar(double length, double width, double mass)
     //Console::print("Creating simple car...");
     Vehicle* result = new Vehicle(new Rectangle2D(Point2D(0, 0), width, length, 0), mass,
                    mass * (width * width + length * length) / 12);
+    result->type = "Car";
     //Console::print("Simple car has been created.");
     PhysicsWorld::getInstance().addObject(result);
     return result;
@@ -46,6 +47,7 @@ Vehicle* VehicleFactory::createDodgeChallengerSRT8()
                    0.9, 0.025, 1.5, 1.5, M_PI / 6);
     vehicle->setWheels(back, front, 1.45);
     vehicle->setVehicleBody(VehicleBody(0.356, 5.0, 1.923, 1.45, vehicle->chassis.getMassCenter()));
+    vehicle->type = "DodgeChallengerSRT8";
     //Console::print("Dodge Challenger SRT8 has been created.");    
     return vehicle;
 }
@@ -65,6 +67,7 @@ Vehicle* VehicleFactory::createFerrari599GTO()
                    0.9, 0.025, 1.5, 1.5, M_PI / 6);
     vehicle->setWheels(back, front, 1.326);
     vehicle->setVehicleBody(VehicleBody(0.356, 4.710, 1.962, 1.326, vehicle->chassis.getMassCenter()));
+    vehicle->type = "Ferrari599GTO";
     //Console::print("Ferrari 599 GTO has been created.");
     return vehicle;
 }

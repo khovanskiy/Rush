@@ -30,6 +30,7 @@ protected:
     Vector2D v, a, f, pseudo_v;
     double mass, inertia_moment, force_moment;
     double angular_speed, angular_acceleration;
+    std::string type;
 
     Vector2D getSpeedAtPoint(Point2D const & point);
     void addImpulseAtPoint(Vector2D const & impulse, Point2D const & point, double dt);
@@ -54,6 +55,8 @@ public:
     virtual void setMassCenter(Vector2D mass_center);
     virtual Shape2D * getShape();
     virtual void setShape(Shape2D* shape);
+    virtual double getHeight();
+    virtual double getWidth();
     virtual bool collidesWith(PhysicsObject* other, double dt);
     virtual Collision solveCollisionWith(PhysicsObject* other, double dt);
     virtual void applyCollision(Collision const & collision, double dt);
