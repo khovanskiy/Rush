@@ -160,12 +160,13 @@ void InitState::defocus()
 
 void InitState::release()
 {
-    PhysicsWorld::getInstance().clear();
     Keyboard::gi()->removeEventListener(this);
     for (auto i = game_objects.begin(); i != game_objects.end(); i++)
     {
         Stage::gi()->removeChild(i->first);
         delete i->first;
     }
+    PhysicsWorld::getInstance().clear();
+    game_objects.clear();
     Console::print("RELEASE");
 }
