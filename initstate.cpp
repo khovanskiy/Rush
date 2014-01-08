@@ -11,9 +11,9 @@
 #include "keyboardevent.h"
 #include "random"
 #include "QCoreApplication"
-#include "vehiclefactory.h"
+#include "physicsobjectfactory.h"
 
-static const double scale = 15;
+static double scale = 15;
 static const int FREE_VIEW = 0;
 static const int FIXED_COORDINATES_FIXED_ANGLE = 1;
 static const int FIXED_COORDINATES = 2;
@@ -35,26 +35,30 @@ InitState::~InitState()
 
 void InitState::init()
 {
-    dodge = VehicleFactory::createDodgeChallengerSRT8();
+    dodge = PhysicsObjectFactory::createDodgeChallengerSRT8();
     dodge->setCoordinates(Vector2D(5, 0));
     dodge->setAngle(2 * asin(1));
     dodge->setTorquePercent(1);
-    Turret turret;
-    turret.setFireDelay(0.25);
-    //turret.setMaxAngle(asin(1));
-    turret.setMaxAngle(0);
-    turret.setPosition(Vector2D(0, 0));
-    turret.setBullet(10, 50, BulletType::Simple);
+    Turret * turret = PhysicsObjectFactory::createVehicleTurret(Turret::MACHINEGUN);
+    turret->setPosition(Vector2D(0.5, 1));
     dodge->addTurret(turret);
-    turret.setPosition(Vector2D(-0.5, 0));
+    turret = PhysicsObjectFactory::createVehicleTurret(Turret::MACHINEGUN);
+    turret->setPosition(Vector2D(-0.5, 1));
     dodge->addTurret(turret);
-    turret.setPosition(Vector2D(0.5, 0));
+    turret = PhysicsObjectFactory::createVehicleTurret(Turret::ROCKET_LAUNCHER);
+    turret->setPosition(Vector2D(0, -0.5));
+    dodge->addTurret(turret);
+    turret = PhysicsObjectFactory::createVehicleTurret(Turret::SAW);
+    turret->setPosition(Vector2D(-0.5, 2.0));
+    dodge->addTurret(turret);
+    turret = PhysicsObjectFactory::createVehicleTurret(Turret::SAW);
+    turret->setPosition(Vector2D(0.5, 2.0));/**/
     dodge->addTurret(turret);
     for (int i = 0; i < 10; i++)
     {
         for (int j = 0; j < 10; j++)
         {
-            Vehicle* ferrari = VehicleFactory::createFerrari599GTO();
+            Vehicle* ferrari = PhysicsObjectFactory::createFerrari599GTO();
             ferrari->setCoordinates(Vector2D(5 + 6 * j, -15 - 5 * i));
             ferrari->setAngle(-asin(1));
         }
@@ -71,7 +75,7 @@ void InitState::tick(double dt)
 {
     static double time = 0;
     time += dt;
-    PhysicsWorld::getInstance().tick(dt);
+    PhysicsWorld::gi().tick(dt);
     std::vector<std::pair<Bitmap*, PhysicsObject*>> remained;
     for (auto i = game_objects.begin(); i != game_objects.end(); i++)
     {
@@ -86,38 +90,78 @@ void InitState::tick(double dt)
         }
     }
     game_objects = remained;
-    std::vector<PhysicsObject*> new_objects = PhysicsWorld::getInstance().popNewObjects();
+    std::vector<PhysicsObject*> new_objects = PhysicsWorld::gi().popNewObjects();
     for (auto i = new_objects.begin(); i != new_objects.end(); i++)
     {
         PhysicsObject* object = (*i);
         Bitmap* bitmap = new Bitmap();
-        std::string type = object->getType();
+        QString type = object->getType();
         QString path = QCoreApplication::applicationDirPath();
-        if (type == "DodgeChallengerSRT8")
+        if (type == PhysicsObject::VEHICLE)
         {
-            path.append("\\DATA\\Textures\\Vehicles\\dodge_small.png");
-        }
-        else if (type == "Ferrari599GTO")
-        {
-            path.append("\\DATA\\Textures\\Vehicles\\ferrari_small.png");
-        }
-        else if (type == "Bullet")
-        {
-            Bullet* bullet = dynamic_cast<Bullet*>(object);
-            switch (bullet->bullet_type)
+            Vehicle* vehicle = dynamic_cast<Vehicle*>(object);
+            QString model = vehicle->getCarModel();
+            if (model == Vehicle::DODGE_CHALLENGER_SRT8)
             {
-            case BulletType::Simple:
-            default:
-                path.append("\\DATA\\Textures\\Bullets\\bullet.png");
-                break;
+                bitmap->load(path + "\\DATA\\Textures\\Vehicles\\dodge_small.png");
+            }
+            else if (model == Vehicle::FERRARI_599GTO)
+            {
+                bitmap->load(path + "\\DATA\\Textures\\Vehicles\\ferrari_small.png");
+            }
+            bitmap->setRSPointCenter();
+            bitmap->setWidth(scale * object->getWidth());
+            bitmap->setHeight(scale * object->getHeight());
+            Stage::gi()->addChild(bitmap);
+            game_objects.push_back(std::pair<Bitmap*, PhysicsObject*>(bitmap, object));
+            std::vector<Turret*> turrets = vehicle->getTurrets();
+            for (auto j = turrets.begin(); j != turrets.end(); j++)
+            {
+                QString turret_path = QCoreApplication::applicationDirPath();
+                QString turret_type = (*j)->getTurretType();
+                if (turret_type == Turret::MACHINEGUN)
+                {
+                    turret_path.append("\\DATA\\Textures\\Turrets\\machinegun.png");
+                }
+                else if (turret_type == Turret::ROCKET_LAUNCHER)
+                {
+                    turret_path.append("\\DATA\\Textures\\Turrets\\rocket_launcher.png");
+                }
+                else if (turret_type == Turret::SAW)
+                {
+                    turret_path.append("\\DATA\\Textures\\Turrets\\saw.png");
+                }
+                Bitmap* bmp = new Bitmap();
+                bmp->load(turret_path);
+                bmp->setRSPointCenter();
+                bmp->setWidth(scale * (*j)->getWidth());
+                bmp->setHeight(scale * (*j)->getHeight());
+                Stage::gi()->addChild(bmp);
+                game_objects.push_back(std::pair<Bitmap*, PhysicsObject*>(bmp, *j));
             }
         }
-        bitmap->load(path);
-        bitmap->setRSPointCenter();
-        bitmap->setWidth(scale * object->getWidth());
-        bitmap->setHeight(scale * object->getHeight());
-        Stage::gi()->addChild(bitmap);
-        game_objects.push_back(std::pair<Bitmap*, PhysicsObject*>(bitmap, object));
+        else if (type == PhysicsObject::BULLET)
+        {
+            Bullet* bullet = dynamic_cast<Bullet*>(object);
+            QString bullet_type = bullet->getBulletType();
+            if (bullet_type == Bullet::BULLET)
+            {
+                bitmap->load(path + "\\DATA\\Textures\\Bullets\\bullet.png");
+            }
+            else if (bullet_type == Bullet::MISSILE)
+            {
+                bitmap->load(path + "\\DATA\\Textures\\Bullets\\missile.png");
+            }
+            else if (bullet_type == Bullet::CUT)
+            {
+                bitmap->load(path + "\\DATA\\Textures\\Bullets\\cut.png");
+            }
+            bitmap->setRSPointCenter();
+            bitmap->setWidth(scale * object->getWidth());
+            bitmap->setHeight(scale * object->getHeight());
+            Stage::gi()->addChild(bitmap);
+            game_objects.push_back(std::pair<Bitmap*, PhysicsObject*>(bitmap, object));
+        }        
     }
     switch (view)
     {
@@ -138,10 +182,13 @@ void InitState::tick(double dt)
         r.rotate(-d_angle);
         r.mul(scale);
         r.add(r_center);
+        i->first->setWidth(scale * i->second->getWidth());
+        i->first->setHeight(scale * i->second->getHeight());
         i->first->setX(r.x);
         i->first->setY(r.y);
         i->first->setRotationZ(i->second->getAngle() - d_angle);
-    }/**/
+    }
+    Console::print(time);/**/
 }
 
 void InitState::Invoke(const Event &event)
@@ -159,7 +206,7 @@ void InitState::Invoke(const Event &event)
         int yr = me->getY() - r.y;
         double angle = atan2(yr, xr);
         dodge->setFiring(firing, angle);
-        //Console::print(Vector2D(me->getX(), me->getY()));
+        Console::print(Vector2D(me->getX(), me->getY()));
     }
     else if (event.type == KeyboardEvent::KEY_DOWN)
     {
@@ -195,6 +242,18 @@ void InitState::Invoke(const Event &event)
             {
                 //Console::print("Changed view.");
                 view = (view + 1) % TOTAL_VIEWS;
+            } break;
+            case Qt::Key_Plus:
+            {
+                scale *= 1.5;
+            } break;
+            case Qt::Key_Equal:
+            {
+                scale *= 1.5;
+            } break;
+            case Qt::Key_Minus:
+            {
+                scale /= 1.5;
             }
         }
     }
@@ -239,7 +298,7 @@ void InitState::release()
         Stage::gi()->removeChild(i->first);
         delete i->first;
     }
-    PhysicsWorld::getInstance().clear();
+    PhysicsWorld::gi().clear();
     game_objects.clear();
     //Console::print("RELEASE");
 }

@@ -37,6 +37,7 @@ SOURCES += background.cpp \
     mouseevent.cpp \
     mouse.cpp \
     physicsobject.cpp \
+    physicsobjectfactory.cpp \
     physicsworld.cpp \
     program.cpp \
     stage.cpp \
@@ -50,8 +51,9 @@ SOURCES += background.cpp \
     vehicle.cpp \
     vehiclebody.cpp \
     vehicleengine.cpp \
-    vehiclefactory.cpp \
-    wheel.cpp
+    wheel.cpp \
+    randomgenerator.cpp
+
 
 
 HEADERS  += background.h \
@@ -79,6 +81,7 @@ HEADERS  += background.h \
     mouseevent.h \
     mouse.h \
     physicsobject.h \
+    physicsobjectfactory.h \
     physicsworld.h \
     program.h \
     stage.h \
@@ -92,6 +95,7 @@ HEADERS  += background.h \
     vehicle.h \
     vehiclebody.h \
     vehicleengine.h \
-    vehiclefactory.h \
-    wheel.h
+    wheel.h \
+    randomgenerator.h
+
 

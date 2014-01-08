@@ -2,7 +2,7 @@
 #define PHYSICSOBJECT_H
 #include "geometry2d.h"
 #include <vector>
-#include <string>
+#include <QString>
 
 class PhysicsObject;
 
@@ -29,7 +29,8 @@ protected:
     Vector2D v, a, f, pseudo_v;
     double mass, inertia_moment, force_moment;
     double angular_speed, angular_acceleration;
-    std::string type;
+    QString physics_object_type;
+    bool dynamic;
     bool valid;
     double time_to_live;
 
@@ -38,18 +39,26 @@ protected:
     void pushAwayFromPoint(Point2D const & point);    
 
 public:
+    static const QString TURRET;
+    static const QString VEHICLE;
+    static const QString BULLET;
+
     PhysicsObject(Shape2D* shape, double mass, double inertia_moment);
     virtual ~PhysicsObject();
-    virtual std::string getType();
+    virtual QString getType();
     virtual std::vector<PhysicsObject*> calculateInnerState(double dt);
     virtual bool isValid();
     virtual void invalidate();
+    virtual bool isDynamic();
+    virtual void setStatic();
+    virtual void setDynamic();
     virtual void tick(double dt);
     virtual Vector2D getCoordinates();
     virtual void setCoordinates(Vector2D const & r);
     virtual void move(Vector2D const & dr);
     virtual Vector2D getSpeed();
     virtual void setSpeed(Vector2D const & v);
+    virtual Vector2D getImpulse();
     virtual double getAngle();
     virtual void setAngle(double angle);
     virtual void rotate(double angle);

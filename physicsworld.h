@@ -33,7 +33,7 @@ struct CollidingPair
 
 class PhysicsWorld
 {
-    PhysicsWorld(){};
+    PhysicsWorld(){}
     PhysicsWorld(PhysicsWorld const &);
     void operator=(PhysicsWorld const&);
     ~PhysicsWorld();
@@ -55,7 +55,7 @@ class PhysicsWorld
     void deleteInvalidObjects();
 
 public:
-    static PhysicsWorld& getInstance()
+    static PhysicsWorld& gi()
     {
         static PhysicsWorld instance;
         return instance;

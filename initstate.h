@@ -22,7 +22,7 @@ public:
 
 private:
     std::vector<std::pair<Bitmap*, PhysicsObject*>> game_objects;
-    Vehicle* dodge;        
+    Vehicle* dodge;
 };
 
 #endif // NULLSTATE_H

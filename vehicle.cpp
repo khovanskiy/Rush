@@ -3,6 +3,9 @@
 
 static const double eps = 2e-4;
 
+const QString Vehicle::DODGE_CHALLENGER_SRT8 = "dodge_challenger_srt8";
+const QString Vehicle::FERRARI_599GTO = "ferrari_599_gto";
+
 void Vehicle::recalculateMassCenter()
 {
     this->mass_center = this->shape->getRotatingPoint().toVector();
@@ -21,7 +24,6 @@ void Vehicle::setMassCenter(Vector2D mass_center)
 Vehicle::Vehicle(Rectangle2D * shape, double mass, double inertia_moment)
     : PhysicsObject(shape, mass, inertia_moment)
 {
-    //Console::print("Creating vehicle...");
     this->recalculateMassCenter();
     this->setFiring(false, 0);
     this->setAccelerationState(AccelerationState::NoAcc);
@@ -29,12 +31,15 @@ Vehicle::Vehicle(Rectangle2D * shape, double mass, double inertia_moment)
     this->setTorquePercent(0);
     this->width = shape->getWidth();
     this->length = shape->getHeight();
-    this->type = "Vehicle";
-    //Console::print("Vehicle has been created.");
+    this->physics_object_type = PhysicsObject::VEHICLE;
 }
 
 Vehicle::~Vehicle()
 {
+    for (auto i = turrets.begin(); i != turrets.end(); i++)
+    {
+        delete *i;
+    }
 }
 
 void Vehicle::setVehicleBody(const VehicleBody &body)
@@ -58,9 +63,9 @@ void Vehicle::setEngine(const VehicleEngine &engine)
     this->chassis.setEngine(engine);
 }
 
-void Vehicle::addTurret(Turret const &turret)
+void Vehicle::addTurret(Turret * turret)
 {
-    this->turrets.push_back(Turret(turret));
+    this->turrets.push_back(turret);
 }
 
 void Vehicle::setAccelerationState(AccelerationState const & acc_state)
@@ -113,59 +118,46 @@ std::vector<PhysicsObject*> Vehicle::calculateFireAndForces(double dt)
                           acc_state, rotation_percent);
     chassis.calculateForces(dt);
     chassis.f.rotate(angle);
-    //Console::print("Chassis force:");
-    //Console::print(chassis.f);
     f.add(chassis.f);
-    //Console::print("Chassis force moment:");
-    //Console::print(chassis.force_moment);
     force_moment += chassis.force_moment;
     body.setSpeed(vr, angular_speed);
     body.calculateForces();
     body.f.rotate(angle);
-    //Console::print("Vehicle body force:");
-    //Console::print(body.f);
     f.add(body.f);
-    //Console::print("Vehicle body force moment:");
-    //Console::print(body.force_moment);
     force_moment += body.force_moment;
-    double percent;
     std::vector<PhysicsObject*> result;
-    for (std::vector<Turret>::iterator i = turrets.begin(); i != turrets.end(); i++)
+    for (std::vector<Turret*>::iterator i = turrets.begin(); i != turrets.end(); i++)
     {
-        if ((*i).max_angle > 0)
+        (*i)->setLocalAngle(firing_angle);
+        (*i)->setFiring(firing_state);
+        std::vector<PhysicsObject*> bullets = (*i)->calculateInnerState(dt);
+        double angle = this->getAngle();
+        Vector2D r = (*i)->getPosition();
+        r.rotate(angle);
+        r.add(this->getMassCenter());
+        (*i)->setCoordinates(r);
+        (*i)->setAngle((*i)->getLocalAngle() + angle);
+        for (std::vector<PhysicsObject*>::iterator j = bullets.begin(); j != bullets.end(); j++)
         {
-            percent = firing_angle / (*i).max_angle;
-            if (percent > 1) percent = 1;
-            else if (percent < -1) percent = -1;
-            (*i).setAngle(percent);
-        }
-        else
-        {
-            (*i).setAngle(0);
-        }
-        (*i).setFiring(firing_state);
-        std::vector<Bullet*> bullets = (*i).calculateFireAndForces(dt);
-        for (std::vector<Bullet*>::iterator j = bullets.begin(); j != bullets.end(); j++)
-        {
+            (dynamic_cast<Bullet*>(*j))->setSource(this);
             Vector2D v = (*j)->getSpeed();
-            v.rotate(this->getAngle());
+            v.rotate(angle);
             (*j)->setSpeed(v);
-            (*j)->setSource(this);
-            Vector2D r = (*i).r;
-            (*j)->setMassCenter(r);
-            (*j)->rotate(this->getAngle());
-            r.rotate(this->getAngle());
-            r.add(this->getMassCenter());
-            (*j)->setCoordinates(r);
+            Vector2D ddr = (*j)->getCoordinates();
+            ddr.sub((*i)->getPosition());
+            ddr.rotate((*i)->getLocalAngle());
+            ddr.add((*i)->getPosition());
+            ddr.rotate(angle);
+            ddr.add(this->getCoordinates());
+            (*j)->setMassCenter((*j)->getCoordinates());
+            (*j)->rotate(angle);
+            (*j)->setCoordinates(ddr);
+            Vector2D impulse = (*j)->getImpulse();
+            impulse.mul(-1);
+            this->addImpulseAtPoint(impulse, r, dt);
             result.push_back(*j);
         }
-        (*i).f.rotate(this->getAngle());
-        f.add((*i).f);
-        //force_moment += (*i).force_moment;
-    }    
-    //Console::print("Total force:");
-    //Console::print(f);
-    //Console::print(force_moment);
+    }        
     return result;
 }
 
@@ -173,4 +165,22 @@ std::vector<PhysicsObject*> Vehicle::calculateInnerState(double dt)
 {
     this->pseudo_v.mul(0);    
     return calculateFireAndForces(dt);
+}
+
+QString Vehicle::getCarModel()
+{
+    return this->carModel;
+}
+
+std::vector<Turret*> Vehicle::getTurrets()
+{
+    return this->turrets;
+}
+
+void Vehicle::invalidate()
+{
+    for (auto i = turrets.begin(); i != turrets.end(); i++)
+    {
+        (*i)->invalidate();
+    }
 }

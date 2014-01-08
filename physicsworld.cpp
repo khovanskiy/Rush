@@ -7,7 +7,7 @@ typedef std::vector<CollidingPair>::const_iterator pair_iterator;
 typedef std::vector<Collision>::const_iterator collision_iterator;
 typedef std::pair<ObjectData*, AABB> pair;
 
-static const int calc_koef = 1;
+static const int calc_koef = 3;
 static const double INFINITY = 1e6;
 static const double eps = 1e-3;
 

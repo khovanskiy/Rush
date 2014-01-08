@@ -6,13 +6,16 @@ static const double angular_speed_koef = 0.3;
 static const double PI = 3.14159265358979323846;
 static const double INFINITE_TIME = 1e100;
 
+const QString PhysicsObject::TURRET = "turret";
+const QString PhysicsObject::VEHICLE = "vehicle";
+const QString PhysicsObject::BULLET = "bullet";
+
+
 PhysicsObject::PhysicsObject(Shape2D * shape, double mass, double inertia_moment)
     : shape(shape), mass(mass), inertia_moment(inertia_moment), v(0, 0), a(0, 0), pseudo_v(0, 0),
       f(0, 0), force_moment(0), angular_speed(0), angular_acceleration(0), valid(true), time_to_live(INFINITE_TIME)
 {    
-    this->type = "PhysicsObject";
-    //Console::print("Creating physics object...");
-    //Console::print("Physics object has been created");
+    this->dynamic = true;
 }
 
 PhysicsObject::~PhysicsObject()
@@ -49,9 +52,9 @@ void PhysicsObject::pushAwayFromPoint(const Point2D &point)
     pseudo_v.add(d_p_v);
 }
 
-std::string PhysicsObject::getType()
+QString PhysicsObject::getType()
 {
-    return this->type;
+    return this->physics_object_type;
 }
 
 std::vector<PhysicsObject*> PhysicsObject::calculateInnerState(double dt)
@@ -70,22 +73,40 @@ void PhysicsObject::invalidate()
     this->valid = false;
 }
 
+bool PhysicsObject::isDynamic()
+{
+    return this->dynamic;
+}
+
+void PhysicsObject::setStatic()
+{
+    this->dynamic = false;
+}
+
+void PhysicsObject::setDynamic()
+{
+    this->dynamic = true;
+}
+
 void PhysicsObject::tick(double dt)
 {
-    Vector2D dr = v;
-    dr.add(pseudo_v);
-    dr.mul(dt);
-    move(dr);
-    Vector2D dv = a;
-    dv.mul(dt);
-    v.add(dv);
-    a = f;
-    a.div(mass);
-    rotate(angular_speed * dt);
-    angular_speed += angular_acceleration * dt;
-    angular_acceleration = (force_moment / inertia_moment) * dt;
+    if (this->dynamic)
+    {
+        Vector2D dr = v;
+        dr.add(pseudo_v);
+        dr.mul(dt);
+        move(dr);
+        Vector2D dv = a;
+        dv.mul(dt);
+        v.add(dv);
+        a = f;
+        a.div(mass);
+        rotate(angular_speed * dt);
+        angular_speed += angular_acceleration * dt;
+        angular_acceleration = (force_moment / inertia_moment) * dt;
+    }
     time_to_live -= dt;
-    if (time_to_live < 0) invalidate();
+    if (time_to_live <= 0) invalidate();
 }
 
 Vector2D PhysicsObject::getCoordinates()
@@ -113,6 +134,11 @@ Vector2D PhysicsObject::getSpeed()
 void PhysicsObject::setSpeed(const Vector2D &v)
 {
     this->v = v;
+}
+
+Vector2D PhysicsObject::getImpulse()
+{
+    return this->v.getMul(this->mass);
 }
 
 double PhysicsObject::getAngle()
@@ -178,7 +204,7 @@ double PhysicsObject::getWidth()
 
 bool PhysicsObject::collidesWith(PhysicsObject *other, double dt)
 {
-    if (other->getType() == "Bullet")
+    if (other->getType() == PhysicsObject::BULLET)
     {
         return other->collidesWith(this, dt);
     }

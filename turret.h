@@ -1,29 +1,42 @@
 #ifndef PHYSICSTURRET_H
 #define PHYSICSTURRET_H
 #include "bullet.h"
+#include <QString>
 #include <vector>
-struct Turret
+
+class Turret : public PhysicsObject
 {
-    Vector2D r;
+    friend class PhysicsObjectFactory;
+
+    QString turret_type;
     double max_angle;
-    double bullet_mass, bullet_speed;
-    BulletType bullet_type;
-    double angle;
+    QString bullet_type;
     double fire_delay, next_shot;
+
+    double scatter;
+    Vector2D local_r;
+    double local_angle;
     bool firing;
-    Vector2D f;
-    double force_moment;
 
+    double d_angle;
 
-    Turret();
-    Turret(Turret const & turret);
-    void setPosition(Vector2D r);
-    void setMaxAngle(double max_angle);
-    void setBullet(double bullet_mass, double bullet_speed, BulletType bullet_type);
-    void setFireDelay(double fire_delay);
+public:
+    static const QString MACHINEGUN;
+    static const QString ROCKET_LAUNCHER;
+    static const QString SAW;
+
+    Turret(Shape2D * shape, double mass, double inertia_moment,
+           double fire_delay, double max_angle, QString bullet_type, double scatter);
+    virtual ~Turret();
+    void setPosition(Vector2D local_r);
+    Vector2D getPosition() const;
+    QString getTurretType() const;
     void setFiring(bool firing);
-    void setAngle(double percent);
-    std::vector<Bullet*> calculateFireAndForces(double dt);
+    bool getFiring() const;
+    void setLocalAngle(double local_angle);
+    double getLocalAngle() const;
+    virtual double getAngle();
+    virtual std::vector<PhysicsObject*> calculateInnerState(double dt);
 };
 
 #endif // PHYSICSTURRET_H
