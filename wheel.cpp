@@ -45,15 +45,6 @@ double Wheel::getChangedMu(double mu)
 double Wheel::getMaxAccelerationTorque()
 {
     if ((state == WheelState::Forward) || (state == WheelState::Backward)) {
-        /*Console::print("Calculating max acc torque:");
-        Console::print("Distributed weigth:");
-        Console::print(distributed_weight);
-        Console::print("Mu:");
-        Console::print(getChangedMu(mu_parallel_friction));
-        Console::print("Radius:");
-        Console::print(radius);
-        Console::print("Total torque:");
-        Console::print(distributed_weight * getChangedMu(mu_parallel_friction) * radius);/**/
         return distributed_weight * getChangedMu(mu_parallel_friction) * radius;
     }
     else
@@ -91,7 +82,6 @@ void Wheel::calculateForces(double dt)
     }
     double vl = v.getLength();
     Vector2D w = getWheelDirection();
-    double alpha = Vector2D::angleBetween(w, v);
     double v_par = abs(v.scalar(w));
     double v_perp = sqrt(abs(vl * vl - v_par * v_par));
     if (v_par > eps) {
@@ -100,11 +90,11 @@ void Wheel::calculateForces(double dt)
         {
             f_par.mul(-1);
         }
-        f_par.mul(distributed_weight * getChangedMu(mu_par) * cos(alpha) * cos(alpha));
+        f_par.mul(distributed_weight * getChangedMu(mu_par));
         if (f_par.getLength() > shaking_koef * v_par * (distributed_weight / G) / dt)
         {
             f_par.setLength(shaking_koef * v_par * (distributed_weight / G) / dt);
-        }
+        }/**/
         f.add(f_par);
     }
     if (v_perp > eps) {
@@ -118,7 +108,7 @@ void Wheel::calculateForces(double dt)
         if (f_perp.getLength() > shaking_koef * v_perp * (distributed_weight / G) / dt)
         {
             f_perp.setLength(shaking_koef * v_perp * (distributed_weight / G) / dt);
-        }
+        }/**/
         f.add(f_perp);
     }
     if ((state == WheelState::Forward) || (state == WheelState::Backward))

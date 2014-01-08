@@ -55,10 +55,10 @@ Vehicle* PhysicsObjectFactory::createFerrari599GTO()
     vehicle->setEngine(VehicleEngine(620, 8400, ratios, 4.18));
     CarTrack back(-1.328, 1.610, tireSpecsToRadius(315, 35, 20),
                   0.53, true, true, RotationReaction::NoRotation,
-                  0.9, 0.025, 1, 1.5, M_PI / 6);
+                  0.9, 0.025, 0.9, 1.5, M_PI / 6);
     CarTrack front(1.470, 1.701, tireSpecsToRadius(280, 35, 20),
                    0.47, false, true, RotationReaction::StraightRot,
-                   0.9, 0.025, 1, 1.5, M_PI / 6);
+                   0.9, 0.025, 0.9, 1.5, M_PI / 6);
     vehicle->setWheels(back, front, 1.326);
     vehicle->setVehicleBody(VehicleBody(0.356, 4.710, 1.962, 1.326, vehicle->chassis.getMassCenter()));
     vehicle->carModel = Vehicle::FERRARI_599GTO;
@@ -81,8 +81,8 @@ Bullet* PhysicsObjectFactory::createBullet(Vector2D r, double angle, QString bul
         width = 0.03;
         height = 0.03;
         mass = 0.00001;
-        speed = 2.7;
-        time_to_live = 0.2;
+        speed = 1;
+        time_to_live = 0.5;
     }
     else if (bullet_type == Bullet::MISSILE)
     {

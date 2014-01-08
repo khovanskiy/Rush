@@ -210,7 +210,10 @@ bool PhysicsObject::collidesWith(PhysicsObject *other, double dt)
     }
     else
     {
-        return this->shape->cross(other->shape).crossing;
+        if (this->getAABB().cross(other->getAABB()))
+            return this->shape->cross(other->shape).crossing;
+        else
+            return false;
     }
 }
 

@@ -135,8 +135,6 @@ std::vector<PhysicsObject*> Vehicle::calculateFireAndForces(double dt)
         Vector2D r = (*i)->getPosition();
         r.rotate(angle);
         r.add(this->getMassCenter());
-        (*i)->setCoordinates(r);
-        (*i)->setAngle((*i)->getLocalAngle() + angle);
         for (std::vector<PhysicsObject*>::iterator j = bullets.begin(); j != bullets.end(); j++)
         {
             (dynamic_cast<Bullet*>(*j))->setSource(this);
@@ -182,5 +180,19 @@ void Vehicle::invalidate()
     for (auto i = turrets.begin(); i != turrets.end(); i++)
     {
         (*i)->invalidate();
+    }
+}
+
+void Vehicle::tick(double dt)
+{
+    this->PhysicsObject::tick(dt);
+    for (auto i = turrets.begin(); i != turrets.end(); i++)
+    {
+        double angle = this->getAngle();
+        Vector2D r = (*i)->getPosition();
+        r.rotate(angle);
+        r.add(this->getMassCenter());
+        (*i)->setCoordinates(r);
+        (*i)->setAngle((*i)->getLocalAngle() + angle);
     }
 }

@@ -97,5 +97,3 @@ HEADERS  += background.h \
     vehicleengine.h \
     wheel.h \
     randomgenerator.h
-
-

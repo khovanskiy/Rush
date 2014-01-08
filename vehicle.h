@@ -50,6 +50,7 @@ public:
     virtual void invalidate();
     virtual std::vector<PhysicsObject*> calculateInnerState(double dt);
     virtual std::vector<Turret*> getTurrets();
+    virtual void tick(double dt);
 };
 
 #endif // VEHICLE_H

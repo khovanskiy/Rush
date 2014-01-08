@@ -39,7 +39,13 @@ void InitState::init()
     dodge->setCoordinates(Vector2D(5, 0));
     dodge->setAngle(2 * asin(1));
     dodge->setTorquePercent(1);
-    Turret * turret = PhysicsObjectFactory::createVehicleTurret(Turret::MACHINEGUN);
+    Turret * turret = PhysicsObjectFactory::createVehicleTurret(Turret::SAW);
+    turret->setPosition(Vector2D(-0.5, 2.0));
+    dodge->addTurret(turret);
+    turret = PhysicsObjectFactory::createVehicleTurret(Turret::SAW);
+    turret->setPosition(Vector2D(0.5, 2.0));
+    dodge->addTurret(turret);
+    turret = PhysicsObjectFactory::createVehicleTurret(Turret::MACHINEGUN);
     turret->setPosition(Vector2D(0.5, 1));
     dodge->addTurret(turret);
     turret = PhysicsObjectFactory::createVehicleTurret(Turret::MACHINEGUN);
@@ -48,12 +54,7 @@ void InitState::init()
     turret = PhysicsObjectFactory::createVehicleTurret(Turret::ROCKET_LAUNCHER);
     turret->setPosition(Vector2D(0, -0.5));
     dodge->addTurret(turret);
-    turret = PhysicsObjectFactory::createVehicleTurret(Turret::SAW);
-    turret->setPosition(Vector2D(-0.5, 2.0));
-    dodge->addTurret(turret);
-    turret = PhysicsObjectFactory::createVehicleTurret(Turret::SAW);
-    turret->setPosition(Vector2D(0.5, 2.0));/**/
-    dodge->addTurret(turret);
+    /**/
     for (int i = 0; i < 10; i++)
     {
         for (int j = 0; j < 10; j++)
@@ -177,7 +178,7 @@ void InitState::tick(double dt)
     }
     for (auto i = game_objects.begin(); i != game_objects.end(); i++)
     {
-        Vector2D r = i->second->getCoordinates();
+        Vector2D r = i->second->getMassCenter();
         r.sub(dr);
         r.rotate(-d_angle);
         r.mul(scale);

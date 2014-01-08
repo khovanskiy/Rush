@@ -62,6 +62,12 @@ struct AABB
         this->bottom = bottom;
         this->top = top;
     }
+
+    bool cross(AABB const & other)
+    {
+        return (this->left < other.right) && (other.left < this->right)
+                && (this->bottom < other.top) && (other.bottom < this->top);
+    }
 };
 
 struct Segment2D;
