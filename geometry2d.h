@@ -135,6 +135,7 @@ public:
     virtual double getHeight() = 0;
     virtual AABB getAABB() = 0;
     virtual bool contains(Point2D const & point) const = 0;
+    virtual Point2D segmentCrossBorder(const Segment2D* segment) const = 0;
     virtual CrossingResult2D cross(const Shape2D* shape) const = 0;
     virtual CrossingResult2D cross(const Segment2D* segment) const = 0;
     virtual CrossingResult2D cross(const Circle2D* circle) const = 0;
@@ -158,6 +159,7 @@ struct Segment2D : public Shape2D
     virtual double getWidth();
     virtual double getHeight();
     virtual AABB getAABB();
+    virtual Point2D segmentCrossBorder(const Segment2D* segment) const;
     virtual CrossingResult2D cross(const Shape2D* shape) const;
     virtual CrossingResult2D cross(const Segment2D* segment) const;
     virtual CrossingResult2D cross(const Circle2D* circle) const;
@@ -178,6 +180,7 @@ struct Circle2D : public Shape2D
     virtual double getWidth();
     virtual double getHeight();
     virtual AABB getAABB();
+    virtual Point2D segmentCrossBorder(const Segment2D* segment) const;
     virtual CrossingResult2D cross(const Shape2D* shape) const;
     virtual CrossingResult2D cross(const Segment2D* segment) const;
     virtual CrossingResult2D cross(const Circle2D* circle) const;
@@ -202,6 +205,7 @@ struct Rectangle2D : public Shape2D
     virtual void setHeight(double height);
     virtual double getDepth(const Point2D &point);
     virtual AABB getAABB();
+    virtual Point2D segmentCrossBorder(const Segment2D* segment) const;
     virtual CrossingResult2D cross(const Shape2D* shape) const;
     virtual CrossingResult2D cross(const Segment2D* segment) const;
     virtual CrossingResult2D cross(const Circle2D* circle) const;

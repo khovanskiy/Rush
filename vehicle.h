@@ -25,7 +25,6 @@ protected:
     double length;
     double height;
 
-    virtual std::vector<PhysicsObject*> calculateFireAndForces(double dt);
     virtual void recalculateMassCenter();
     virtual void setMassCenter(Vector2D mass_center);
 

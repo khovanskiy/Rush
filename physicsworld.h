@@ -33,7 +33,10 @@ struct CollidingPair
 
 class PhysicsWorld
 {
-    PhysicsWorld(){}
+    PhysicsWorld()
+    {
+        this->closed = false;
+    }
     PhysicsWorld(PhysicsWorld const &);
     void operator=(PhysicsWorld const&);
     ~PhysicsWorld();
@@ -44,11 +47,14 @@ class PhysicsWorld
     std::vector<CollidingPair> potentially_colliding;
     std::vector<ObjectData*> objects;
 
-    void broadCollisionSearch(double dt);
-    void yCollisionSearch(std::vector<std::pair<ObjectData*, AABB>> y_colliding);
+    bool closed;
+
+    void broadCollisionSearch();
+    void xCollisionSearch(std::vector<std::pair<ObjectData*, AABB>> x_colliding, int iteration);
+    void yCollisionSearch(std::vector<std::pair<ObjectData*, AABB>> y_colliding, int iteration);
     void addColliding(std::vector<std::pair<ObjectData*, AABB>> colliding);
-    void narrowCollisionSearch(double dt);
-    void collisionSolving(double dt);
+    void narrowCollisionSearch();
+    void collisionSolving();
     std::vector<PhysicsObject*> changingStates(double dt);
     void integrating(double dt);
     void addingObjects(std::vector<PhysicsObject*> const & n_objects);
@@ -67,6 +73,7 @@ public:
     std::vector<PhysicsObject*> popNewObjects();
     void clear();
     void tick(double dt);
+    bool isClosed();
 };
 
 #endif // PHYSICSWORLD_H

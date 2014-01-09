@@ -7,6 +7,7 @@
 #include "vehicle.h"
 #include "physicsworld.h"
 #include "statecontext.h"
+#include "gameobject.h"
 
 class InitState : virtual public State
 {
@@ -21,7 +22,14 @@ public:
     void Invoke(const Event &event);
 
 private:
-    std::vector<std::pair<Bitmap*, PhysicsObject*>> game_objects;
+    double time;
+    void addPhysicsObject(PhysicsObject* object);
+    void addGameObject(GameObject* game_object);
+    void addAllBitmaps(GameObject* game_object);
+    void removeAllBitmaps(GameObject* game_object);
+    void getNewPhysicsObjects();
+    void renewGameObjects();
+    std::vector<GameObject*> game_objects;
     Vehicle* dodge;
 };
 

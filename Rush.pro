@@ -52,7 +52,9 @@ SOURCES += background.cpp \
     vehiclebody.cpp \
     vehicleengine.cpp \
     wheel.cpp \
-    randomgenerator.cpp
+    randomgenerator.cpp \
+    explosion.cpp \
+    gameobject.cpp
 
 
 
@@ -96,4 +98,6 @@ HEADERS  += background.h \
     vehiclebody.h \
     vehicleengine.h \
     wheel.h \
-    randomgenerator.h
+    randomgenerator.h \
+    explosion.h \
+    gameobject.h

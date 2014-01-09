@@ -7,7 +7,7 @@ Game::Game()
     loop = new QTimer();
     connect(loop, SIGNAL(timeout()), this, SLOT(onLoop()));
 
-    TICKS_PER_SECOND = 40;
+    TICKS_PER_SECOND = 25;
     SKIP_TICKS = 1000 / TICKS_PER_SECOND;
     MAX_FRAMESKIP = 5;
     counter->start();

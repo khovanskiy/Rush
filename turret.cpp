@@ -86,15 +86,17 @@ std::vector<PhysicsObject*> Turret::calculateInnerState(double dt)
             {
                 double d_a = scatter * RandomGenerator::gi().getRandom(-1, 1);
                 Vector2D r = local_r;
-                Vector2D dr = Vector2D(this->getWidth() * 0.3, -this->getHeight() / 2);
-                r.sub(dr);
+                Vector2D dr = Vector2D(this->getWidth() * 0.3, this->getHeight() / 2);
+                dr.rotate(local_angle);
+                r.add(dr);
                 Bullet* bullet = PhysicsObjectFactory::createBullet(r, local_angle + d_a, bullet_type, dt);
                 bullet->setSource(this);
                 result.push_back(bullet);
                 d_a = scatter * RandomGenerator::gi().getRandom(-1, 1);
                 r = local_r;
-                dr = Vector2D(-this->getWidth() * 0.3, -this->getHeight() / 2);
-                r.sub(dr);
+                dr = Vector2D(-this->getWidth() * 0.3, this->getHeight() / 2);
+                dr.rotate(local_angle);
+                r.add(dr);
                 bullet = PhysicsObjectFactory::createBullet(r, local_angle + d_a, bullet_type, dt);
                 bullet->setSource(this);
                 result.push_back(bullet);
@@ -102,7 +104,9 @@ std::vector<PhysicsObject*> Turret::calculateInnerState(double dt)
             else if (turret_type == Turret::ROCKET_LAUNCHER)
             {
                 Vector2D r = local_r;
-                r.add(Vector2D(0.1 * this->getWidth(), 0.5 * this->getHeight()));
+                Vector2D dr = Vector2D(0.1 * this->getWidth(), 0.5 * this->getHeight());
+                dr.rotate(local_angle);
+                r.add(dr);
                 double d_a = scatter * RandomGenerator::gi().getRandom(-1, 1);
                 Bullet* bullet = PhysicsObjectFactory::createBullet(r, local_angle + d_a, bullet_type, dt);
                 bullet->setSource(this);
@@ -112,11 +116,9 @@ std::vector<PhysicsObject*> Turret::calculateInnerState(double dt)
             {
                 d_angle += 200 * dt;
                 Vector2D r = local_r;
-                r.add(Vector2D(0, this->getHeight() / 4));
-
                 double cur_a = atan2(local_r.y, local_r.x);
                 cur_a += 2.3 * asin(1);
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 17; i++)
                 {
                     Vector2D nr = r;
                     Vector2D dr(0, 1);
@@ -126,7 +128,7 @@ std::vector<PhysicsObject*> Turret::calculateInnerState(double dt)
                     Bullet* bullet = PhysicsObjectFactory::createBullet(nr, cur_a, bullet_type, dt);
                     bullet->setSource(this);
                     result.push_back(bullet);
-                    cur_a += asin(1) / 2;
+                    cur_a += asin(1) / 4;
                 }
             }
             return result;

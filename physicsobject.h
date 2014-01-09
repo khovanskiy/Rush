@@ -35,13 +35,14 @@ protected:
     double time_to_live;
 
     Vector2D getSpeedAtPoint(Point2D const & point);
-    void addImpulseAtPoint(Vector2D const & impulse, Point2D const & point, double dt);
-    void pushAwayFromPoint(Point2D const & point);    
+    void addImpulseAtPoint(Vector2D const & impulse, Point2D const & point);
+    void pushAwayFromPoint(Point2D const & point, double pseudo_velocity_koef);
 
 public:
     static const QString TURRET;
     static const QString VEHICLE;
     static const QString BULLET;
+    static const QString EXPLOSION;
 
     PhysicsObject(Shape2D* shape, double mass, double inertia_moment);
     virtual ~PhysicsObject();
@@ -71,9 +72,9 @@ public:
     virtual AABB getAABB();
     virtual double getHeight();
     virtual double getWidth();
-    virtual bool collidesWith(PhysicsObject* other, double dt);
-    virtual Collision solveCollisionWith(PhysicsObject* other, double dt);
-    virtual void applyCollision(Collision const & collision, double dt);
+    virtual bool collidesWith(PhysicsObject* other);
+    virtual Collision solveCollisionWith(PhysicsObject* other);
+    virtual void applyCollisions(std::vector<Collision> const & collisions);
 };
 
 #endif // PHYSICSOBJECT_H

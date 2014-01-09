@@ -72,8 +72,8 @@ Bullet* PhysicsObjectFactory::createBullet(Vector2D r, double angle, QString bul
     {
         width = 0.15;
         height = 0.43;
-        mass = 0.1;
-        speed = 30;
+        mass = 1;
+        speed = 50;
         time_to_live = 3;
     }
     else if (bullet_type == Bullet::CUT)
@@ -81,14 +81,14 @@ Bullet* PhysicsObjectFactory::createBullet(Vector2D r, double angle, QString bul
         width = 0.03;
         height = 0.03;
         mass = 0.00001;
-        speed = 1;
-        time_to_live = 0.5;
+        speed = 12;
+        time_to_live = 0.05;
     }
     else if (bullet_type == Bullet::MISSILE)
     {
         width = 0.5;
         height = 1.9;
-        mass = 50;
+        mass = 100;
         speed = 40;
         time_to_live = 3;
     }
@@ -106,7 +106,7 @@ Turret* PhysicsObjectFactory::createVehicleTurret(QString turret_type)
     {
         bullet_type = Bullet::BULLET;
         fire_delay = 0.1;
-        max_angle = 0;
+        max_angle = 2 * asin(1);
         width = 1.09;
         height = 1.5;
         mass = 100;
@@ -117,7 +117,7 @@ Turret* PhysicsObjectFactory::createVehicleTurret(QString turret_type)
     {
         bullet_type = Bullet::MISSILE;
         fire_delay = 2;
-        max_angle = 0;
+        max_angle = asin(1);
         width = 1.3;
         height = 2.10;
         mass = 150;
@@ -127,7 +127,7 @@ Turret* PhysicsObjectFactory::createVehicleTurret(QString turret_type)
     else if (turret_type == Turret::SAW)
     {
         bullet_type = Bullet::CUT;
-        fire_delay = 0.2;
+        fire_delay = 0.05;
         max_angle = 0;
         width = 1;
         height = 1;
@@ -139,5 +139,33 @@ Turret* PhysicsObjectFactory::createVehicleTurret(QString turret_type)
     Turret* result = new Turret(shape, mass, inertia_moment, fire_delay, max_angle, bullet_type, scatter);
     result->setStatic();
     result->turret_type = turret_type;
+    return result;
+}
+
+Explosion* PhysicsObjectFactory::createExplosion(Vector2D r, double angle, QString explosion_type)
+{
+    double start_radius = 0.1, end_radius = 1, time = 0.5;
+    if (explosion_type == Explosion::SMALL)
+    {
+        start_radius = 0.1;
+        end_radius = 1;
+        time = 0.05;
+    }
+    else if (explosion_type == Explosion::MEDIUM)
+    {
+        start_radius = 0.2;
+        end_radius = 3;
+        time = 0.1;
+    }
+    else if (explosion_type == Explosion::LARGE)
+    {
+        start_radius = 0.5;
+        end_radius = 10;
+        time = 0.2;
+    }
+    Shape2D* shape = new Circle2D(r, start_radius, angle);
+    Explosion* result = new Explosion(shape, 1e10, 1e10, start_radius, end_radius, time, explosion_type);
+    result->setStatic();
+    PhysicsWorld::gi().addObject(result);
     return result;
 }

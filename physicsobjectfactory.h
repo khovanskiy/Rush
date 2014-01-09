@@ -2,6 +2,7 @@
 #define VEHICLEFACTORY_H
 #include "vehicle.h"
 #include "carwheel.h"
+#include "explosion.h"
 
 class PhysicsObjectFactory
 {
@@ -25,6 +26,8 @@ public:
     static Bullet* createBullet(Vector2D r, double angle, QString bullet_type, double dt);
 
     static Turret* createVehicleTurret(QString turret_type);
+
+    static Explosion* createExplosion(Vector2D r, double angle, QString explosion_type);
 };
 
 #endif // VEHICLEFACTORY_H

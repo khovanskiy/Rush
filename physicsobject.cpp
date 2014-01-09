@@ -1,7 +1,8 @@
 #include "physicsobject.h"
 #include "console.h"
 
-static const double pseudo_velocity_koef = 0.2;
+static const double common_pseudo_v_koef = 0.5;
+static const double explosion_pseudo_v_koef = 5;
 static const double angular_speed_koef = 0.3;
 static const double PI = 3.14159265358979323846;
 static const double INFINITE_TIME = 1e100;
@@ -9,7 +10,7 @@ static const double INFINITE_TIME = 1e100;
 const QString PhysicsObject::TURRET = "turret";
 const QString PhysicsObject::VEHICLE = "vehicle";
 const QString PhysicsObject::BULLET = "bullet";
-
+const QString PhysicsObject::EXPLOSION = "explosion";
 
 PhysicsObject::PhysicsObject(Shape2D * shape, double mass, double inertia_moment)
     : shape(shape), mass(mass), inertia_moment(inertia_moment), v(0, 0), a(0, 0), pseudo_v(0, 0),
@@ -33,7 +34,7 @@ Vector2D PhysicsObject::getSpeedAtPoint(const Point2D &point)
     return result;
 }
 
-void PhysicsObject::addImpulseAtPoint(const Vector2D &impulse, const Point2D &point, double dt)
+void PhysicsObject::addImpulseAtPoint(const Vector2D &impulse, const Point2D &point)
 {
     Vector2D dv = impulse;
     dv.div(this->mass);
@@ -44,7 +45,7 @@ void PhysicsObject::addImpulseAtPoint(const Vector2D &impulse, const Point2D &po
     this->angular_speed += d_ang_speed;
 }
 
-void PhysicsObject::pushAwayFromPoint(const Point2D &point)
+void PhysicsObject::pushAwayFromPoint(const Point2D &point, double pseudo_velocity_koef)
 {
     Vector2D d_p_v = this->getMassCenter();
     d_p_v.sub(point.toVector());
@@ -59,7 +60,6 @@ QString PhysicsObject::getType()
 
 std::vector<PhysicsObject*> PhysicsObject::calculateInnerState(double dt)
 {
-    pseudo_v.mul(0);
     return std::vector<PhysicsObject*>();
 }
 
@@ -90,7 +90,7 @@ void PhysicsObject::setDynamic()
 
 void PhysicsObject::tick(double dt)
 {
-    if (this->dynamic)
+    if ((this->dynamic) && (this->isValid()))
     {
         Vector2D dr = v;
         dr.add(pseudo_v);
@@ -202,22 +202,19 @@ double PhysicsObject::getWidth()
     return shape->getWidth();
 }
 
-bool PhysicsObject::collidesWith(PhysicsObject *other, double dt)
+bool PhysicsObject::collidesWith(PhysicsObject *other)
 {
-    if (other->getType() == PhysicsObject::BULLET)
+    if ((other->getType() == PhysicsObject::BULLET) || (other->getType() == PhysicsObject::EXPLOSION))
     {
-        return other->collidesWith(this, dt);
+        return other->collidesWith(this);
     }
     else
     {
-        if (this->getAABB().cross(other->getAABB()))
-            return this->shape->cross(other->shape).crossing;
-        else
-            return false;
+        return (this->shape->cross(other->shape).crossing);
     }
 }
 
-Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, double dt)
+Collision PhysicsObject::solveCollisionWith(PhysicsObject *other)
 {
     CrossingResult2D crossing_result = this->shape->cross(other->shape);
     Vector2D collision_center = crossing_result.center.toVector();
@@ -246,8 +243,26 @@ Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, double dt)
     return Collision(collision_center, relative_speed, impulse_change, other);
 }
 
-void PhysicsObject::applyCollision(const Collision &collision, double dt)
+void PhysicsObject::applyCollisions(const std::vector<Collision> &collisions)
 {
-    addImpulseAtPoint(collision.impulse_change, collision.collision_center, dt);
-    pushAwayFromPoint(collision.collision_center);
+    pseudo_v.mul(0);
+    for (auto i = collisions.begin(); i != collisions.end(); i++)
+    {
+        QString source_type = i->source->getType();
+        if (source_type != PhysicsObject::EXPLOSION)
+        {
+            addImpulseAtPoint(i->impulse_change, i->collision_center);
+        }
+        if (source_type != PhysicsObject::BULLET)
+        {
+            if (source_type == PhysicsObject::EXPLOSION)
+            {
+                pushAwayFromPoint(i->collision_center, explosion_pseudo_v_koef);
+            }
+            else
+            {
+                pushAwayFromPoint(i->collision_center, common_pseudo_v_koef);
+            }
+        }
+    }
 }

@@ -104,7 +104,7 @@ bool Vehicle::isStaying()
     return ((v.getLength() < eps) && (angular_speed < eps));
 }
 
-std::vector<PhysicsObject*> Vehicle::calculateFireAndForces(double dt)
+std::vector<PhysicsObject*> Vehicle::calculateInnerState(double dt)
 {
     double angle = this->shape->getAngle();
     f.x = 0;
@@ -138,31 +138,26 @@ std::vector<PhysicsObject*> Vehicle::calculateFireAndForces(double dt)
         for (std::vector<PhysicsObject*>::iterator j = bullets.begin(); j != bullets.end(); j++)
         {
             (dynamic_cast<Bullet*>(*j))->setSource(this);
-            Vector2D v = (*j)->getSpeed();
-            v.rotate(angle);
-            (*j)->setSpeed(v);
             Vector2D ddr = (*j)->getCoordinates();
-            ddr.sub((*i)->getPosition());
-            ddr.rotate((*i)->getLocalAngle());
-            ddr.add((*i)->getPosition());
             ddr.rotate(angle);
-            ddr.add(this->getCoordinates());
+            ddr.add(this->getMassCenter());
+            Vector2D cv = this->v;
+            cv.mul(dt);
+            ddr.add(cv);
             (*j)->setMassCenter((*j)->getCoordinates());
             (*j)->rotate(angle);
             (*j)->setCoordinates(ddr);
+            Vector2D v = (*j)->getSpeed();
+            v.rotate(angle);
+            v.add(this->getSpeed());
+            (*j)->setSpeed(v);
             Vector2D impulse = (*j)->getImpulse();
             impulse.mul(-1);
-            this->addImpulseAtPoint(impulse, r, dt);
+            this->addImpulseAtPoint(impulse, r);
             result.push_back(*j);
         }
-    }        
+    }
     return result;
-}
-
-std::vector<PhysicsObject*> Vehicle::calculateInnerState(double dt)
-{
-    this->pseudo_v.mul(0);    
-    return calculateFireAndForces(dt);
 }
 
 QString Vehicle::getCarModel()

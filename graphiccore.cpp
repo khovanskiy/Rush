@@ -23,7 +23,7 @@ GraphicCore* GraphicCore::instance = 0;
 GraphicCore::GraphicCore() : QGLWidget(QGLFormat(QGL::SampleBuffers), 0)
 {
     render2d = new QPainter();
-    pen = new QPen(QColor(0,0,0));
+    pen = new QPen(QColor(255,255,255));
     setWindowTitle("Rush game");
     resize(1200, 800);
     move(50,50);
@@ -49,7 +49,7 @@ GraphicCore* GraphicCore::gi()
 void GraphicCore::paintEvent(QPaintEvent*)
 {
     render2d->begin(this);
-    render2d->setBackground(QBrush(QColor(0,0,0)));
+    render2d->setBackground(QBrush(QColor(8,26,0)));
     render2d->eraseRect(QRect(this->rect()));
     render2d->setRenderHint(QPainter::Antialiasing);
     Background::gi()->render(render2d);

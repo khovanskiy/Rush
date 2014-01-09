@@ -1,5 +1,8 @@
 #include "bullet.h"
 #include "math.h"
+#include "physicsworld.h"
+#include "explosion.h"
+#include "physicsobjectfactory.h"
 
 static const double infinity = 1e100;
 
@@ -27,23 +30,33 @@ Bullet::~Bullet()
 {
 }
 
-bool Bullet::collidesWith(PhysicsObject *other, double dt)
+void Bullet::invalidate()
 {
-    if ((this->source != other) && (other->getType() != PhysicsObject::BULLET))
+    this->PhysicsObject::invalidate();
+    if (bullet_type == Bullet::MISSILE)
     {
-        bool result = (this->PhysicsObject::collidesWith(other, dt));
-        if (result) invalidate();
-        return result;
-    }
-    else
-    {
-        return false;
+        if (!PhysicsWorld::gi().isClosed())
+        {
+            PhysicsObjectFactory::createExplosion(this->getCoordinates(), this->getAngle(), Explosion::MEDIUM);
+        }
     }
 }
 
-Collision Bullet::solveCollisionWith(PhysicsObject *other, double dt)
+bool Bullet::collidesWith(PhysicsObject *other)
 {
-    return this->PhysicsObject::solveCollisionWith(other, dt);
+    bool result = (this->source != other) && (other->getType() != PhysicsObject::BULLET)
+            && (other->getType() != PhysicsObject::EXPLOSION)
+            && (this->shape->cross(other->getShape()).crossing);
+    if (result)
+    {
+        Vector2D q = this->getCoordinates();
+        q.add(this->getSpeed());
+        Segment2D * segment = new Segment2D(Point2D(this->getCoordinates()), Point2D(q));
+        setCoordinates(other->getShape()->segmentCrossBorder(segment).toVector());
+        delete segment;
+        invalidate();
+    }
+    return result;
 }
 
 double Bullet::getWidth()
@@ -61,4 +74,6 @@ QString Bullet::getBulletType()
     return this->bullet_type;
 }
 
-
+void Bullet::applyCollisions(const std::vector<Collision> &collisions)
+{
+}

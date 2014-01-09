@@ -269,12 +269,15 @@ AABB Segment2D::getAABB()
                 this->geometry_center.y - h, this->geometry_center.y + h);
 }
 
+Point2D Segment2D::segmentCrossBorder(const Segment2D *segment) const
+{
+    return this->line.getCrossBy(segment->line);
+}
+
 Circle2D::Circle2D(const Point2D &center, double radius, double angle)
     : Shape2D(center, angle)
 {
-    //Console::print("Creating circle...");
     this->radius = radius;
-    //Console::print("Circle has been created.");
 }
 
 Circle2D::~Circle2D()
@@ -314,12 +317,12 @@ double Circle2D::getDepth(const Point2D &point)
 
 double Circle2D::getWidth()
 {
-    return radius;
+    return 2 * radius;
 }
 
 double Circle2D::getHeight()
 {
-    return radius;
+    return 2 * radius;
 }
 
 AABB Circle2D::getAABB()
@@ -367,6 +370,19 @@ CrossingResult2D Circle2D::cross(const Rectangle2D *rectangle) const
     return rectangle->cross(this);
 }
 
+Point2D Circle2D::segmentCrossBorder(const Segment2D *segment) const
+{
+    Segment2D seg = getCrossBy(segment->line);
+    if (seg.p1.getDistTo(segment->p1) < seg.p2.getDistTo(segment->p1))
+    {
+        return seg.p1;
+    }
+    else
+    {
+        return seg.p2;
+    }
+}
+
 void Rectangle2D::recalculatePoints()
 {
     Vector2D va(-width / 2, -height / 2);
@@ -377,12 +393,6 @@ void Rectangle2D::recalculatePoints()
     vb.rotate(angle);
     vc.rotate(angle);
     vd.rotate(angle);
-    //Console::print(angle);
-    //Console::print(geometry_center.toVector());
-    //Console::print(va);
-    //Console::print(vb);
-    //Console::print(vc);
-    //Console::print(vd);
     a = Point2D(geometry_center.x + va.x, geometry_center.y + va.y);
     b = Point2D(geometry_center.x + vb.x, geometry_center.y + vb.y);
     c = Point2D(geometry_center.x + vc.x, geometry_center.y + vc.y);
@@ -569,7 +579,6 @@ CrossingResult2D Rectangle2D::cross(const Segment2D *segment) const
     }
     else if (amount == 1)
     {
-        int head = 0;
         Point2D point_inside = ((last == 1) ? segment->p1 : segment->p2);
         Point2D point_on_edge;
         CrossingResult2D result = ab->cross(segment);
@@ -646,4 +655,35 @@ CrossingResult2D Rectangle2D::cross(const Rectangle2D *rectangle) const
         y /= amount;
         return CrossingResult2D(true, Point2D(x, y));
     }
+}
+
+Point2D Rectangle2D::segmentCrossBorder(const Segment2D *segment) const
+{
+    Point2D points[4];
+    bool found = false;
+    Point2D closest(0, 0);
+    int head = 0;
+    CrossingResult2D result = ab->cross(segment);
+    if (result.crossing) points[head++] = result.center;
+    result = bc->cross(segment);
+    if (result.crossing) points[head++] = result.center;
+    result = cd->cross(segment);
+    if (result.crossing) points[head++] = result.center;
+    result = da->cross(segment);
+    if (result.crossing) points[head++] = result.center;
+    Vector2D dir = segment->p1.getVectorTo(segment->p2);
+    dir.mul(-10);
+    Point2D p = segment->p1.getPoint(dir);
+    for (int i = 0; i < head; i++)
+    {
+        if (this->contains(points[i]))
+        {
+            if (!found || points[i].getDistTo(p) < closest.getDistTo(p))
+            {
+                closest = points[i];
+                found = true;
+            }
+        }
+    }
+    return closest;
 }

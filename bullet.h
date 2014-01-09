@@ -21,12 +21,12 @@ public:
     virtual ~Bullet();
 
     void setSource(PhysicsObject* source);
-    virtual bool collidesWith(PhysicsObject *other, double dt);
-    virtual Collision solveCollisionWith(PhysicsObject *other, double dt);
+    virtual bool collidesWith(PhysicsObject *other);
     virtual double getWidth();
     virtual double getHeight();
     virtual QString getBulletType();
-
+    virtual void invalidate();
+    virtual void applyCollisions(const std::vector<Collision> &collisions);
 };
 
 #endif // BULLET_H
