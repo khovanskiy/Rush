@@ -46,7 +46,7 @@ void Matrix::swap(const Matrix &other)
 
 QMatrix Matrix::toQMatrix()
 {
-    return QMatrix();
+    return QMatrix(M11, M12, M21, M22, M31, M32);
 }
 
 Matrix Matrix::translation(const Vector2D &v)
@@ -79,5 +79,5 @@ Matrix Matrix::mul(const Matrix &a, const Matrix &b)
 
 void Matrix::mul(const Matrix& other)
 {
-    Matrix::mul(*this, other);
+    swap(Matrix::mul(*this, other));
 }

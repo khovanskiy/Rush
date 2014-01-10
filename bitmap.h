@@ -13,7 +13,7 @@ public:
     ~Bitmap();
     QImage* getSource() const;
     void load(QString);
-    void render(QPainter*);
+    void render(QPainter*, const Matrix&);
 private:
     QImage* source;
 };

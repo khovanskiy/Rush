@@ -21,7 +21,9 @@ public:
     void render(float interpolation);
 protected:
     void paintEvent(QPaintEvent *event);
+    void mouseMoveEvent(QMouseEvent *);
     void mousePressEvent(QMouseEvent *);
+    void mouseReleaseEvent(QMouseEvent *);
     void keyPressEvent(QKeyEvent *);
     void keyReleaseEvent(QKeyEvent *);
     void resizeEvent(QResizeEvent *);

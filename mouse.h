@@ -6,13 +6,15 @@
 class Mouse : public EventDispatcher, public EventHandler
 {
 public:
-    static Mouse* getInstance();
+    static Mouse* gi();
     void Invoke(const Event&);
 private:
     Mouse();
     ~Mouse();
     void bubbleEvent(const Event&);
     static Mouse* instance;
+    int x;
+    int y;
 };
 
 #endif // MOUSE_H

@@ -196,8 +196,8 @@ Vehicle* VehicleFactory::createFerrari599GTO(Vector2D const & r, double angle,
                      4.710, 1.962, 1605, 1.326,
                      0.9, 0.025, 1, 1.5, M_PI / 6,
                      CarTrack(-1.328, 1.610, tireSpecsToRadius(315, 35, 20),
-                              0.53, true, RotationReaction::NoRotation),
+                              0.53, false, RotationReaction::NoRotation),
                      CarTrack(1.470, 1.701, tireSpecsToRadius(280, 35, 20),
-                              0.47, false, RotationReaction::StraightRot),
+                              0.47, true, RotationReaction::StraightRot),
                      0.356, 620, 8400, gears, 4.18, turrets);
 }

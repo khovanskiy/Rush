@@ -59,7 +59,12 @@ SOURCES += background.cpp \
     realturret.cpp \
     materialpoint.cpp \
     shape.cpp \
-    vehiclefactory.cpp
+    vehiclefactory.cpp \
+    exitstate.cpp \
+    vehicleview.cpp \
+    sprite.cpp \
+    gameobject.cpp \
+    view.cpp
 
 HEADERS  += background.h \
     bitmap.h \
@@ -108,4 +113,9 @@ HEADERS  += background.h \
     realturret.h \
     materialpoint.h \
     shape.h \
-    vehiclefactory.h
+    vehiclefactory.h \
+    exitstate.h \
+    vehicleview.h \
+    sprite.h \
+    gameobject.h \
+    view.h

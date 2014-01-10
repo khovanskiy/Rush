@@ -23,6 +23,7 @@ private:
     Bitmap* ferrariBitmap;
     Vehicle* dodge;
     Vehicle* ferrari;
+    Vehicle* current;
 };
 
 #endif // NULLSTATE_H

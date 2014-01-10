@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "interactiveobject.h"
+#include "matrix.h"
 
 class DisplayObjectContainer : public InteractiveObject
 {
@@ -19,7 +20,7 @@ public:
     void removeChild(DisplayObject* child);
     bool hasChild(DisplayObject* child) const;
     //LIST* getChildrenList() const;
-    void render(QPainter*);
+    void render(QPainter*, const Matrix&);
     void handleEvent(const Event &);
 private:
     LIST children;
