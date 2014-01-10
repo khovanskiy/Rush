@@ -22,7 +22,7 @@ public:
 
 private:
     double time;
-    void addPhysicsObject(PhysicsObject* object);
+    void addPhysicsObject(ObjectData* object);
     void addGameObject(GameObject* game_object);
     void addAllBitmaps(GameObject* game_object);
     void removeAllBitmaps(GameObject* game_object);

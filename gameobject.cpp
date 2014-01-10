@@ -2,10 +2,15 @@
 #include "stage.h"
 #include <QCoreApplication>
 
-GameObject::GameObject(PhysicsObject *object)
+static const double collision_damage_koef = 1e-2;
+static const double bullet_damage_koef = 1;
+static const double explosion_damage_koef = 2;
+
+GameObject::GameObject(ObjectData *object_data)
 {
-    bitmap = new Bitmap();
-    physics_object = object;
+    this->bitmap = new Bitmap();
+    this->object_data = object_data;
+    PhysicsObject* object = object_data->object;
     QString type = object->getType();
     QString path = QCoreApplication::applicationDirPath();
     if (type == PhysicsObject::VEHICLE)
@@ -15,15 +20,17 @@ GameObject::GameObject(PhysicsObject *object)
         if (model == Vehicle::DODGE_CHALLENGER_SRT8)
         {
             bitmap->load(path + "\\DATA\\Textures\\Vehicles\\dodge_small.png");
+            health = 1000;
         }
         else if (model == Vehicle::FERRARI_599GTO)
         {
             bitmap->load(path + "\\DATA\\Textures\\Vehicles\\ferrari_small.png");
+            health = 1000;
         }
         std::vector<Turret*> turrets = vehicle->getTurrets();
         for (auto j = turrets.begin(); j != turrets.end(); j++)
         {
-            inner_objects.push_back(new GameObject(*j));
+            inner_objects.push_back(new GameObject(new ObjectData(*j)));
         }
     }
     else if (type == PhysicsObject::BULLET)
@@ -32,19 +39,23 @@ GameObject::GameObject(PhysicsObject *object)
         if (bullet_type == Bullet::BULLET)
         {
             bitmap->load(path + "\\DATA\\Textures\\Bullets\\bullet.png");
+            health = 1000;
         }
         else if (bullet_type == Bullet::MISSILE)
         {
             bitmap->load(path + "\\DATA\\Textures\\Bullets\\missile.png");
+            health = 1000;
         }
         else if (bullet_type == Bullet::CUT)
         {
             bitmap->load(path + "\\DATA\\Textures\\Bullets\\cut.png");
+            health = 1000;
         }
     }
     else if (type == PhysicsObject::EXPLOSION)
     {
         bitmap->load(path + "\\DATA\\Textures\\Bullets\\explosion.png");
+        health = 1000;
     }
     else if (type == PhysicsObject::TURRET)
     {
@@ -52,14 +63,17 @@ GameObject::GameObject(PhysicsObject *object)
         if (turret_type == Turret::MACHINEGUN)
         {
             bitmap->load(path + "\\DATA\\Textures\\Turrets\\machinegun.png");
+            health = 1000;
         }
         else if (turret_type == Turret::ROCKET_LAUNCHER)
         {
             bitmap->load(path + "\\DATA\\Textures\\Turrets\\rocket_launcher.png");
+            health = 1000;
         }
         else if (turret_type == Turret::SAW)
         {
             bitmap->load(path + "\\DATA\\Textures\\Turrets\\saw.png");
+            health = 1000;
         }
     }
     else if (type == PhysicsObject::OBSTACLE)
@@ -68,14 +82,17 @@ GameObject::GameObject(PhysicsObject *object)
         if (obstacle_type == Obstacle::STONE_WALL)
         {
             bitmap->load(path + "\\DATA\\Textures\\Obstacles\\stone_wall.png");
+            health = 1e100;
         }
         else if (obstacle_type == Obstacle::WOODEN_BARREL)
         {
             bitmap->load(path + "\\DATA\\Textures\\Obstacles\\wooden_barrel.png");
+            health = 100;
         }
         else if (obstacle_type == Obstacle::WOODEN_BOX)
         {
             bitmap->load(path + "\\DATA\\Textures\\Obstacles\\wooden_box.png");
+            health = 100;
         }
     }
     bitmap->setRSPointCenter();
@@ -92,6 +109,7 @@ GameObject::~GameObject()
 
 void GameObject::update(double scale, double angle, Vector2D dr, Vector2D center)
 {
+    PhysicsObject* physics_object = object_data->object;
     Vector2D r = physics_object->getMassCenter();
     r.add(dr);
     r.rotate(angle);
@@ -101,9 +119,23 @@ void GameObject::update(double scale, double angle, Vector2D dr, Vector2D center
     bitmap->setHeight(scale * physics_object->getHeight());
     bitmap->setX(r.x);
     bitmap->setY(r.y);
-    if (physics_object->getType() != PhysicsObject::EXPLOSION)
+    bitmap->setRotationZ(physics_object->getAngle() + angle);
+    for (auto i = object_data->collisions.begin(); i != object_data->collisions.end(); i++)
     {
-        bitmap->setRotationZ(physics_object->getAngle() + angle);
+        health -= collision_damage_koef * i->impulse_change.getLength();
+        QString source_type = i->source->getType();
+        if (source_type == PhysicsObject::BULLET)
+        {
+            health -= bullet_damage_koef;
+        }
+        else if (source_type == PhysicsObject::EXPLOSION)
+        {
+            health -= explosion_damage_koef;
+        }
+    }
+    if (health < 0)
+    {
+        physics_object->invalidate();
     }
     for (auto i = inner_objects.begin(); i != inner_objects.end(); i++)
     {

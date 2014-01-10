@@ -46,7 +46,7 @@ void InitState::init()
     turret = PhysicsObjectFactory::createVehicleTurret(Turret::SAW);
     turret->setPosition(Vector2D(0.5, 2.2));
     dodge->addTurret(turret);
-    turret = PhysicsObjectFactory::createVehicleTurret(Turret::MACHINEGUN);
+    /*turret = PhysicsObjectFactory::createVehicleTurret(Turret::MACHINEGUN);
     turret->setPosition(Vector2D(0.5, 1));
     dodge->addTurret(turret);
     turret = PhysicsObjectFactory::createVehicleTurret(Turret::MACHINEGUN);
@@ -54,7 +54,7 @@ void InitState::init()
     dodge->addTurret(turret);
     turret = PhysicsObjectFactory::createVehicleTurret(Turret::ROCKET_LAUNCHER);
     turret->setPosition(Vector2D(0, -0.5));
-    dodge->addTurret(turret);
+    dodge->addTurret(turret);/**/
     /*for (int i = 0; i < 10; i++)
     {
         for (int j = 0; j < 10; j++)
@@ -93,9 +93,9 @@ void InitState::addGameObject(GameObject *game_object)
     addAllBitmaps(game_object);
 }
 
-void InitState::addPhysicsObject(PhysicsObject *object)
+void InitState::addPhysicsObject(ObjectData *object_data)
 {
-    addGameObject(new GameObject(object));
+    addGameObject(new GameObject(object_data));
 }
 
 void InitState::addAllBitmaps(GameObject *game_object)
@@ -121,7 +121,7 @@ void InitState::removeAllBitmaps(GameObject *game_object)
 
 void InitState::getNewPhysicsObjects()
 {
-    std::vector<PhysicsObject*> new_objects = PhysicsWorld::gi().popNewObjects();
+    std::vector<ObjectData*> new_objects = PhysicsWorld::gi().popNewObjects();
     for (auto i = new_objects.begin(); i != new_objects.end(); i++)
     {
         addPhysicsObject(*i);
@@ -133,7 +133,7 @@ void InitState::renewGameObjects()
     std::vector<GameObject*> remained;
     for (auto i = game_objects.begin(); i != game_objects.end(); i++)
     {
-        if ((*i)->physics_object->isValid())
+        if ((*i)->object_data->object->isValid())
         {
             remained.push_back(*i);
         }

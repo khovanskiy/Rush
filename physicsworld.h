@@ -44,7 +44,7 @@ class PhysicsWorld
     ~PhysicsWorld();
 
     std::vector<PhysicsObject*> to_delete;
-    std::vector<PhysicsObject*> new_objects;
+    std::vector<ObjectData*> new_objects;
     std::vector<CollidingPair> colliding_pairs;
     std::vector<std::pair<ObjectData*, ObjectData*>> potentially_colliding;
     std::vector<ObjectData*> objects;
@@ -73,7 +73,7 @@ public:
     void addObject(PhysicsObject* object);
     void removeObject(PhysicsObject* object);
     std::vector<ObjectData*> getObjectDatas();
-    std::vector<PhysicsObject*> popNewObjects();
+    std::vector<ObjectData*> popNewObjects();
     void clear();
     void tick(double dt);
     bool isClosed();

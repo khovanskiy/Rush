@@ -1,19 +1,19 @@
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 #include "bitmap.h"
-#include "physicsobject.h"
-#include "vehicle.h"
-#include "obstacle.h"
+#include "physicsworld.h"
+#include "physicsobjectfactory.h"
 
 class GameObject
 {
     std::vector<GameObject*> inner_objects;
+    double health;
 
 public:
     Bitmap* bitmap;
-    PhysicsObject* physics_object;
+    ObjectData* object_data;
 
-    GameObject(PhysicsObject* object);
+    GameObject(ObjectData* object_data);
     ~GameObject();
 
     void update(double scale, double angle, Vector2D dr, Vector2D center);

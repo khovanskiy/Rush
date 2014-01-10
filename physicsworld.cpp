@@ -17,8 +17,9 @@ PhysicsWorld::~PhysicsWorld()
 
 void PhysicsWorld::addObject(PhysicsObject *object)
 {
-    objects.push_back(new ObjectData(object));
-    new_objects.push_back(object);
+    ObjectData* object_data = new ObjectData(object);
+    objects.push_back(object_data);
+    new_objects.push_back(object_data);
 }
 
 void PhysicsWorld::removeObject(PhysicsObject *object)
@@ -31,9 +32,9 @@ std::vector<ObjectData*> PhysicsWorld::getObjectDatas()
     return objects;
 }
 
-std::vector<PhysicsObject*> PhysicsWorld::popNewObjects()
+std::vector<ObjectData*> PhysicsWorld::popNewObjects()
 {
-    std::vector<PhysicsObject*> result(this->new_objects);
+    std::vector<ObjectData*> result(this->new_objects);
     this->new_objects.clear();
     return result;
 }
