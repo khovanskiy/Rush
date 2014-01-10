@@ -3,6 +3,7 @@
 #include "bitmap.h"
 #include "physicsobject.h"
 #include "vehicle.h"
+#include "obstacle.h"
 
 class GameObject
 {

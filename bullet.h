@@ -11,22 +11,22 @@ class Bullet : public PhysicsObject
     PhysicsObject* source;
     double width, height;
 
+    Bullet(Vector2D r, Vector2D speed, double mass, QString bullet_type,
+           double width, double height, double dt, double time_to_live);
+    virtual ~Bullet();
+
 public:
     static const QString BULLET;
     static const QString MISSILE;
     static const QString CUT;
 
-    Bullet(Vector2D r, Vector2D speed, double mass, QString bullet_type,
-           double width, double height, double dt, double time_to_live);
-    virtual ~Bullet();
-
     void setSource(PhysicsObject* source);
-    virtual bool collidesWith(PhysicsObject *other);
+    virtual CrossingResult2D collidesWith(PhysicsObject *other);
     virtual double getWidth();
     virtual double getHeight();
     virtual QString getBulletType();
     virtual void invalidate();
-    virtual void applyCollisions(const std::vector<Collision> &collisions);
+    virtual void applyCollision(const Collision &collision);
 };
 
 #endif // BULLET_H

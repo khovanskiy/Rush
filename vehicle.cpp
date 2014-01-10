@@ -21,8 +21,8 @@ void Vehicle::setMassCenter(Vector2D mass_center)
     this->recalculateMassCenter();
 }
 
-Vehicle::Vehicle(Rectangle2D * shape, double mass, double inertia_moment)
-    : PhysicsObject(shape, mass, inertia_moment)
+Vehicle::Vehicle(Rectangle2D * shape, double mass, double inertia_moment, QString vehicle_type)
+    : PhysicsObject(shape, mass, inertia_moment, PhysicsObject::VEHICLE)
 {
     this->recalculateMassCenter();
     this->setFiring(false, 0);
@@ -31,7 +31,7 @@ Vehicle::Vehicle(Rectangle2D * shape, double mass, double inertia_moment)
     this->setTorquePercent(0);
     this->width = shape->getWidth();
     this->length = shape->getHeight();
-    this->physics_object_type = PhysicsObject::VEHICLE;
+    this->vehicle_type = vehicle_type;
 }
 
 Vehicle::~Vehicle()
@@ -106,6 +106,7 @@ bool Vehicle::isStaying()
 
 std::vector<PhysicsObject*> Vehicle::calculateInnerState(double dt)
 {
+    PhysicsObject::calculateInnerState(dt);
     double angle = this->shape->getAngle();
     f.x = 0;
     f.y = 0;
@@ -160,9 +161,9 @@ std::vector<PhysicsObject*> Vehicle::calculateInnerState(double dt)
     return result;
 }
 
-QString Vehicle::getCarModel()
+QString Vehicle::getVehicleType()
 {
-    return this->carModel;
+    return this->vehicle_type;
 }
 
 std::vector<Turret*> Vehicle::getTurrets()

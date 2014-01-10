@@ -174,8 +174,8 @@ void Segment2D::move(double x, double y)
 bool Segment2D::contains(const Point2D &point) const
 {
     return line.contains(point) &&
-            ((p1.x - point.x) * (p2.x - point.x) <= eps * abs((p1.x - point.x) * (p2.x - point.x)))
-            && ((p1.y - point.y) * (p2.y - point.y) <= eps * abs((p1.y - point.y) * (p2.y - point.y)));
+            ((p1.x - point.x) * (p2.x - point.x) <= eps)
+            && ((p1.y - point.y) * (p2.y - point.y) <= eps);
 }
 
 CrossingResult2D Segment2D::cross(const Shape2D *other) const
@@ -357,10 +357,10 @@ CrossingResult2D Circle2D::cross(const Circle2D *circle) const
     }
     else
     {
-        double d1 = (l * l + this->radius * this->radius - circle->radius * circle->radius) / 2 * l;
+        double d = (l * l + this->radius * this->radius - circle->radius * circle->radius) / (2 * l);
         Point2D point = Point2D(
-                    this->geometry_center.x + d1 * (circle->geometry_center.x - this->geometry_center.x) / l,
-                    this->geometry_center.y + d1 * (circle->geometry_center.y - this->geometry_center.y) / l);
+                    this->geometry_center.x + d * (circle->geometry_center.x - this->geometry_center.x) / l,
+                    this->geometry_center.y + d * (circle->geometry_center.y - this->geometry_center.y) / l);
         return CrossingResult2D(true, point);
     }
 }
@@ -372,14 +372,21 @@ CrossingResult2D Circle2D::cross(const Rectangle2D *rectangle) const
 
 Point2D Circle2D::segmentCrossBorder(const Segment2D *segment) const
 {
-    Segment2D seg = getCrossBy(segment->line);
-    if (seg.p1.getDistTo(segment->p1) < seg.p2.getDistTo(segment->p1))
+    if (segment->cross(this).crossing)
     {
-        return seg.p1;
+        Segment2D seg = getCrossBy(segment->line);
+        if (seg.p1.getVectorTo(seg.p2).scalar(segment->p1.getVectorTo(segment->p2)) > 0)
+        {
+            return seg.p1;
+        }
+        else
+        {
+            return seg.p2;
+        }
     }
     else
     {
-        return seg.p2;
+        return segment->line.getProjection(this->getGeometryCenter());
     }
 }
 
@@ -448,8 +455,8 @@ bool Rectangle2D::contains(const Point2D &point) const
     Vector2D v = point.toVector();
     v.sub(this->getGeometryCenter().toVector());
     v.rotate(-this->angle);
-    return (v.x > -width / 2 - eps) && (v.x < width / 2 + eps)
-            && (v.y > -height / 2 - eps) && (v.y < height / 2 + eps);
+    return (v.x > -width / 2 - 10 * eps) && (v.x < width / 2 + 10 * eps)
+            && (v.y > -height / 2 - 10 * eps) && (v.y < height / 2 + 10 * eps);
 }
 
 void Rectangle2D::rotate(double angle)
@@ -659,22 +666,17 @@ CrossingResult2D Rectangle2D::cross(const Rectangle2D *rectangle) const
 
 Point2D Rectangle2D::segmentCrossBorder(const Segment2D *segment) const
 {
-    Point2D points[4];
-    bool found = false;
-    Point2D closest(0, 0);
-    int head = 0;
-    CrossingResult2D result = ab->cross(segment);
-    if (result.crossing) points[head++] = result.center;
-    result = bc->cross(segment);
-    if (result.crossing) points[head++] = result.center;
-    result = cd->cross(segment);
-    if (result.crossing) points[head++] = result.center;
-    result = da->cross(segment);
-    if (result.crossing) points[head++] = result.center;
+    Point2D points[8];
+    points[0] = ab->line.getCrossBy(segment->line);
+    points[1] = bc->line.getCrossBy(segment->line);
+    points[2] = cd->line.getCrossBy(segment->line);
+    points[3] = da->line.getCrossBy(segment->line);
     Vector2D dir = segment->p1.getVectorTo(segment->p2);
     dir.mul(-10);
     Point2D p = segment->p1.getPoint(dir);
-    for (int i = 0; i < head; i++)
+    bool found = false;
+    Point2D closest;
+    for (int i = 0; i < 4; i++)
     {
         if (this->contains(points[i]))
         {
@@ -685,5 +687,13 @@ Point2D Rectangle2D::segmentCrossBorder(const Segment2D *segment) const
             }
         }
     }
-    return closest;
+    if (found)
+    {
+        return closest;
+    }
+    else
+    {
+        return segment->p1;
+    }
+
 }

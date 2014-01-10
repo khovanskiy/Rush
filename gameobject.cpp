@@ -11,7 +11,7 @@ GameObject::GameObject(PhysicsObject *object)
     if (type == PhysicsObject::VEHICLE)
     {
         Vehicle* vehicle = dynamic_cast<Vehicle*>(object);
-        QString model = vehicle->getCarModel();
+        QString model = vehicle->getVehicleType();
         if (model == Vehicle::DODGE_CHALLENGER_SRT8)
         {
             bitmap->load(path + "\\DATA\\Textures\\Vehicles\\dodge_small.png");
@@ -60,6 +60,22 @@ GameObject::GameObject(PhysicsObject *object)
         else if (turret_type == Turret::SAW)
         {
             bitmap->load(path + "\\DATA\\Textures\\Turrets\\saw.png");
+        }
+    }
+    else if (type == PhysicsObject::OBSTACLE)
+    {
+        QString obstacle_type = dynamic_cast<Obstacle*>(object)->getObstacleType();
+        if (obstacle_type == Obstacle::STONE_WALL)
+        {
+            bitmap->load(path + "\\DATA\\Textures\\Obstacles\\stone_wall.png");
+        }
+        else if (obstacle_type == Obstacle::WOODEN_BARREL)
+        {
+            bitmap->load(path + "\\DATA\\Textures\\Obstacles\\wooden_barrel.png");
+        }
+        else if (obstacle_type == Obstacle::WOODEN_BOX)
+        {
+            bitmap->load(path + "\\DATA\\Textures\\Obstacles\\wooden_box.png");
         }
     }
     bitmap->setRSPointCenter();

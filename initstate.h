@@ -4,7 +4,6 @@
 #include "state.h"
 #include "bitmap.h"
 #include <memory>
-#include "vehicle.h"
 #include "physicsworld.h"
 #include "statecontext.h"
 #include "gameobject.h"

@@ -10,12 +10,6 @@ CarWheel::CarWheel(double mu_parallel_friction, double mu_parallel_roll,
             mu_perpendicular_friction, mu_broken_friction,
             max_angle, r, radius)
 {
-    /*Console::print("Car wheel created:");
-    Console::print("Radius:");
-    Console::print(radius);
-    Console::print("Coordinates:");
-    Console::print(r);
-            /**/
     this->driving = driving;
     this->braking = braking;
     this->reaction = reaction;

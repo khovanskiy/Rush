@@ -1,8 +1,8 @@
 #include "physicsobject.h"
 #include "console.h"
 
-static const double common_pseudo_v_koef = 0.5;
-static const double explosion_pseudo_v_koef = 5;
+static const double common_pseudo_v_koef = 0.1;
+static const double explosion_pseudo_v_koef = 1;
 static const double angular_speed_koef = 0.3;
 static const double PI = 3.14159265358979323846;
 static const double INFINITE_TIME = 1e100;
@@ -11,12 +11,14 @@ const QString PhysicsObject::TURRET = "turret";
 const QString PhysicsObject::VEHICLE = "vehicle";
 const QString PhysicsObject::BULLET = "bullet";
 const QString PhysicsObject::EXPLOSION = "explosion";
+const QString PhysicsObject::OBSTACLE = "obstacle";
 
-PhysicsObject::PhysicsObject(Shape2D * shape, double mass, double inertia_moment)
+PhysicsObject::PhysicsObject(Shape2D * shape, double mass, double inertia_moment, QString physics_object_type)
     : shape(shape), mass(mass), inertia_moment(inertia_moment), v(0, 0), a(0, 0), pseudo_v(0, 0),
       f(0, 0), force_moment(0), angular_speed(0), angular_acceleration(0), valid(true), time_to_live(INFINITE_TIME)
 {    
     this->dynamic = true;
+    this->physics_object_type = physics_object_type;
 }
 
 PhysicsObject::~PhysicsObject()
@@ -45,11 +47,20 @@ void PhysicsObject::addImpulseAtPoint(const Vector2D &impulse, const Point2D &po
     this->angular_speed += d_ang_speed;
 }
 
-void PhysicsObject::pushAwayFromPoint(const Point2D &point, double pseudo_velocity_koef)
+void PhysicsObject::pushAwayFromPoint(const Point2D &point)
 {
     Vector2D d_p_v = this->getMassCenter();
     d_p_v.sub(point.toVector());
-    d_p_v.setLength(this->shape->getDepth(point) * pseudo_velocity_koef);
+    d_p_v.setLength(this->shape->getDepth(point) * common_pseudo_v_koef);
+    pseudo_v.add(d_p_v);
+}
+
+void PhysicsObject::pushAwayFromExplosion(const Point2D &center, double radius)
+{
+
+    Vector2D d_p_v = this->getMassCenter();
+    d_p_v.sub(center.toVector());
+    d_p_v.setLength((radius + this->getHeight() / 2 - d_p_v.getLength()) * explosion_pseudo_v_koef / radius);
     pseudo_v.add(d_p_v);
 }
 
@@ -60,6 +71,7 @@ QString PhysicsObject::getType()
 
 std::vector<PhysicsObject*> PhysicsObject::calculateInnerState(double dt)
 {
+    pseudo_v.mul(0);
     return std::vector<PhysicsObject*>();
 }
 
@@ -104,6 +116,15 @@ void PhysicsObject::tick(double dt)
         rotate(angular_speed * dt);
         angular_speed += angular_acceleration * dt;
         angular_acceleration = (force_moment / inertia_moment) * dt;
+    }
+    else
+    {
+        v.mul(0);
+        a.mul(0);
+        f.mul(0);
+        angular_speed = 0;
+        angular_acceleration = 0;
+        force_moment = 0;
     }
     time_to_live -= dt;
     if (time_to_live <= 0) invalidate();
@@ -202,7 +223,14 @@ double PhysicsObject::getWidth()
     return shape->getWidth();
 }
 
-bool PhysicsObject::collidesWith(PhysicsObject *other)
+Vector2D PhysicsObject::getRelativeSpeed(PhysicsObject *other)
+{
+    Vector2D result = this->v;
+    result.sub(other->v);
+    return result;
+}
+
+CrossingResult2D PhysicsObject::collidesWith(PhysicsObject *other)
 {
     if ((other->getType() == PhysicsObject::BULLET) || (other->getType() == PhysicsObject::EXPLOSION))
     {
@@ -210,14 +238,15 @@ bool PhysicsObject::collidesWith(PhysicsObject *other)
     }
     else
     {
-        return (this->shape->cross(other->shape).crossing);
+        CrossingResult2D result = (this->shape->cross(other->shape));
+        result.crossing = result.crossing && this->isValid() && other->isValid();
+        return result;
     }
 }
 
-Collision PhysicsObject::solveCollisionWith(PhysicsObject *other)
+Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, Point2D const & center)
 {
-    CrossingResult2D crossing_result = this->shape->cross(other->shape);
-    Vector2D collision_center = crossing_result.center.toVector();
+    Vector2D collision_center = center.toVector();
     Vector2D relative_speed = this->getSpeedAtPoint(collision_center);
     relative_speed.sub(other->getSpeedAtPoint(collision_center));
     Vector2D collision_direction = relative_speed;
@@ -243,26 +272,22 @@ Collision PhysicsObject::solveCollisionWith(PhysicsObject *other)
     return Collision(collision_center, relative_speed, impulse_change, other);
 }
 
-void PhysicsObject::applyCollisions(const std::vector<Collision> &collisions)
+void PhysicsObject::applyCollision(const Collision &collision)
 {
-    pseudo_v.mul(0);
-    for (auto i = collisions.begin(); i != collisions.end(); i++)
+    QString source_type = collision.source->getType();
+    if (source_type != PhysicsObject::EXPLOSION)
     {
-        QString source_type = i->source->getType();
-        if (source_type != PhysicsObject::EXPLOSION)
+        addImpulseAtPoint(collision.impulse_change, collision.center);
+    }
+    if (source_type != PhysicsObject::BULLET)
+    {
+        if (source_type == PhysicsObject::EXPLOSION)
         {
-            addImpulseAtPoint(i->impulse_change, i->collision_center);
+            pushAwayFromExplosion(collision.source->getCoordinates(), collision.source->getWidth() / 2);
         }
-        if (source_type != PhysicsObject::BULLET)
+        else
         {
-            if (source_type == PhysicsObject::EXPLOSION)
-            {
-                pushAwayFromPoint(i->collision_center, explosion_pseudo_v_koef);
-            }
-            else
-            {
-                pushAwayFromPoint(i->collision_center, common_pseudo_v_koef);
-            }
+            pushAwayFromPoint(collision.center);
         }
     }
 }

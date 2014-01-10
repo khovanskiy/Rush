@@ -12,13 +12,14 @@ const QString Bullet::CUT = "cut";
 
 Bullet::Bullet(Vector2D r, Vector2D speed, double mass, QString bullet_type,
                double width, double height, double dt, double time_to_live)
-    : PhysicsObject(new Segment2D(Point2D(r), Point2D(r).getPoint(speed.getMul(dt))), mass, infinity),
-      bullet_type(bullet_type), width(width), height(height)
+    : PhysicsObject(new Segment2D(Point2D(r), Point2D(r).getPoint(speed.getMul(dt))),
+                    mass, infinity, PhysicsObject::BULLET),
+      width(width), height(height)
 {
     this->v = speed;
     this->setMassCenter(r);
-    this->physics_object_type = PhysicsObject::BULLET;
     this->time_to_live = time_to_live;
+    this->bullet_type = bullet_type;
 }
 
 void Bullet::setSource(PhysicsObject *source)
@@ -42,12 +43,19 @@ void Bullet::invalidate()
     }
 }
 
-bool Bullet::collidesWith(PhysicsObject *other)
+CrossingResult2D Bullet::collidesWith(PhysicsObject *other)
 {
-    bool result = (this->source != other) && (other->getType() != PhysicsObject::BULLET)
-            && (other->getType() != PhysicsObject::EXPLOSION)
-            && (this->shape->cross(other->getShape()).crossing);
-    if (result)
+    CrossingResult2D result;
+    if ((other->getType() == PhysicsObject::BULLET)
+            || (other->getType() == PhysicsObject::EXPLOSION) || (this->source == other))
+    {
+        result = CrossingResult2D(false, Point2D(0, 0));
+    }
+    else
+    {
+        result = (this->shape->cross(other->getShape()));
+    }
+    if (result.crossing)
     {
         Vector2D q = this->getCoordinates();
         q.add(this->getSpeed());
@@ -74,6 +82,6 @@ QString Bullet::getBulletType()
     return this->bullet_type;
 }
 
-void Bullet::applyCollisions(const std::vector<Collision> &collisions)
+void Bullet::applyCollision(Collision const &collision)
 {
 }

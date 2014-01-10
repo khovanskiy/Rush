@@ -19,7 +19,7 @@ protected:
     double rotation_percent;
     bool firing_state;
     double firing_angle;
-    QString carModel;
+    QString vehicle_type;
 
     double width;
     double length;
@@ -27,13 +27,13 @@ protected:
 
     virtual void recalculateMassCenter();
     virtual void setMassCenter(Vector2D mass_center);
+    Vehicle(Rectangle2D * shape, double mass, double inertia_moment, QString vehicle_type);
+    virtual ~Vehicle();
 
 public:
     static const QString DODGE_CHALLENGER_SRT8;
     static const QString FERRARI_599GTO;
 
-    Vehicle(Rectangle2D * shape, double mass, double inertia_moment);
-    virtual ~Vehicle();
     virtual void setVehicleBody(VehicleBody const & body);
     virtual void setEngine(VehicleEngine const & engine);
     virtual void setWheels(CarTrack back, CarTrack front, double height);
@@ -45,7 +45,7 @@ public:
     virtual int getGear();
     virtual double getSpins();
     virtual bool isStaying();
-    virtual QString getCarModel();
+    virtual QString getVehicleType();
     virtual void invalidate();
     virtual std::vector<PhysicsObject*> calculateInnerState(double dt);
     virtual std::vector<Turret*> getTurrets();

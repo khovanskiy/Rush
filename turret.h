@@ -7,6 +7,7 @@
 class Turret : public PhysicsObject
 {
     friend class PhysicsObjectFactory;
+    friend class Vehicle;
 
     QString turret_type;
     double max_angle;
@@ -20,14 +21,16 @@ class Turret : public PhysicsObject
 
     double d_angle;
 
+    Turret(Shape2D * shape, double mass, double inertia_moment,
+           double fire_delay, double max_angle, QString bullet_type, double scatter);
+    virtual ~Turret();
+
+
 public:
     static const QString MACHINEGUN;
     static const QString ROCKET_LAUNCHER;
     static const QString SAW;
 
-    Turret(Shape2D * shape, double mass, double inertia_moment,
-           double fire_delay, double max_angle, QString bullet_type, double scatter);
-    virtual ~Turret();
     void setPosition(Vector2D local_r);
     Vector2D getPosition() const;
     QString getTurretType() const;

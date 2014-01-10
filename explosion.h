@@ -4,11 +4,17 @@
 
 class Explosion : public PhysicsObject
 {
+    friend class PhysicsObjectFactory;
+
     double time;
     double start_radius;
     double end_radius;
 
     QString explosion_type;
+
+    Explosion(Shape2D* shape, double mass, double inertia_moment,
+              double start_radius, double end_radius, double time,
+              QString explosion_type);
 
 public:
 
@@ -16,13 +22,10 @@ public:
     static const QString MEDIUM;
     static const QString LARGE;
 
-    Explosion(Shape2D* shape, double mass, double inertia_moment,
-              double start_radius, double end_radius, double time,
-              QString explosion_type);
     QString getExplosionType();
     virtual void tick(double dt);
-    virtual bool collidesWith(PhysicsObject *other);
-    virtual void applyCollisions(const std::vector<Collision> &collisions);
+    virtual CrossingResult2D collidesWith(PhysicsObject *other);
+    virtual void applyCollision(const Collision &collision);
 };
 
 #endif // EXPLOSION_H

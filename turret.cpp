@@ -11,7 +11,7 @@ const QString Turret::SAW = "saw";
 
 Turret::Turret(Shape2D *shape, double mass, double inertia_moment,
                double fire_delay, double max_angle, QString bullet_type, double scatter)
-    : PhysicsObject(shape, mass, inertia_moment), d_angle(0)
+    : PhysicsObject(shape, mass, inertia_moment, PhysicsObject::TURRET), d_angle(0)
 {
     this->max_angle = max_angle;
     this->bullet_type = bullet_type;
@@ -19,7 +19,6 @@ Turret::Turret(Shape2D *shape, double mass, double inertia_moment,
     this->local_angle = 0;
     this->fire_delay = fire_delay;
     this->next_shot = fire_delay;
-    this->physics_object_type = PhysicsObject::TURRET;
     this->scatter = scatter;
 }
 
@@ -71,6 +70,7 @@ bool Turret::getFiring() const
 
 std::vector<PhysicsObject*> Turret::calculateInnerState(double dt)
 {
+    PhysicsObject::calculateInnerState(dt);
     next_shot = (dt > next_shot ? 0 : next_shot - dt);
     if (!firing)
     {

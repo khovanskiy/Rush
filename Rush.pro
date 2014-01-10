@@ -54,7 +54,8 @@ SOURCES += background.cpp \
     wheel.cpp \
     randomgenerator.cpp \
     explosion.cpp \
-    gameobject.cpp
+    gameobject.cpp \
+    obstacle.cpp
 
 
 
@@ -100,4 +101,5 @@ HEADERS  += background.h \
     wheel.h \
     randomgenerator.h \
     explosion.h \
-    gameobject.h
+    gameobject.h \
+    obstacle.h

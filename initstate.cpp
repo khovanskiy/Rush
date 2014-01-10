@@ -36,7 +36,7 @@ InitState::~InitState()
 void InitState::init()
 {
     time = 0;
-    dodge = PhysicsObjectFactory::createDodgeChallengerSRT8();
+    dodge = PhysicsObjectFactory::createVehicle(Vehicle::DODGE_CHALLENGER_SRT8);
     dodge->setCoordinates(Vector2D(5, 0));
     dodge->setAngle(2 * asin(1));
     dodge->setTorquePercent(1);
@@ -55,16 +55,30 @@ void InitState::init()
     turret = PhysicsObjectFactory::createVehicleTurret(Turret::ROCKET_LAUNCHER);
     turret->setPosition(Vector2D(0, -0.5));
     dodge->addTurret(turret);
-    /**/
-    for (int i = 0; i < 10; i++)
+    /*for (int i = 0; i < 10; i++)
     {
         for (int j = 0; j < 10; j++)
         {
-            Vehicle* ferrari = PhysicsObjectFactory::createFerrari599GTO();
+            Vehicle* ferrari = PhysicsObjectFactory::createVehicle(Vehicle::FERRARI_599GTO);
             ferrari->setCoordinates(Vector2D(5 + 6 * j, -15 - 5 * i));
             ferrari->setAngle(-asin(1));
         }
-    }
+    }/**/
+    /*for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            Obstacle* obstacle = PhysicsObjectFactory::createObstacle(
+                        Vector2D(5 + 2 * j, -15 - 5 * i), 0, Obstacle::STONE_WALL);
+        }
+    }/**/
+    for (int i = 0; i < 10; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                PhysicsObjectFactory::createObstacle(Vector2D(5 + 2 * j, -15 - 2 * i), 0, Obstacle::WOODEN_BARREL);
+            }
+        }
     Keyboard::gi()->addEventListener(this);
 }
 
