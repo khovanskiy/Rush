@@ -144,27 +144,31 @@ Turret* PhysicsObjectFactory::createVehicleTurret(QString turret_type)
 
 Explosion* PhysicsObjectFactory::createExplosion(Vector2D r, double angle, QString explosion_type)
 {
-    double start_radius, end_radius, time;
+    double start_radius, end_radius, time, explosion_impulse;
     if (explosion_type == Explosion::SMALL)
     {
         start_radius = 0.1;
         end_radius = 1;
         time = 0.05;
+        explosion_impulse = 200;
     }
     else if (explosion_type == Explosion::MEDIUM)
     {
         start_radius = 0.2;
         end_radius = 3;
         time = 0.1;
+        explosion_impulse = 600;
     }
     else if (explosion_type == Explosion::LARGE)
     {
         start_radius = 0.5;
         end_radius = 10;
         time = 0.2;
+        explosion_impulse = 2000;
     }
     Shape2D* shape = new Circle2D(r, start_radius, angle);
-    Explosion* result = new Explosion(shape, 1e10, 1e10, start_radius, end_radius, time, explosion_type);
+    Explosion* result = new Explosion(shape, 1e10, 1e10, start_radius, end_radius,
+                                      time, explosion_impulse, explosion_type);
     result->setStatic();
     PhysicsWorld::gi().addObject(result);
     return result;

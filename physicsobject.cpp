@@ -1,8 +1,8 @@
 #include "physicsobject.h"
 #include "console.h"
 
-static const double common_pseudo_v_koef = 0.5;
-static const double explosion_pseudo_v_koef = 20;
+static const double common_pseudo_v_koef = 0.1;
+static const double explosion_pseudo_v_koef = 1;
 static const double angular_speed_koef = 0.3;
 static const double PI = 3.14159265358979323846;
 static const double INFINITE_TIME = 1e100;
@@ -55,23 +55,21 @@ void PhysicsObject::pushAwayFromPoint(const Point2D &point, PhysicsObject* sourc
 {
     Vector2D d_p_v = this->getMassCenter();
     d_p_v.sub(point.toVector());
-    double l = this->shape->getDepth(point) * source->mass / (this->mass + source->mass);
-    d_p_v.setLength(l);
-    /*d_p_v.setLength(this->shape->getDepth(point) * common_pseudo_v_koef);
-    if (d_p_v.getLength() > max_pseudo_v_koef * this->shape->getDepth(point) / dt)
-    {
-        d_p_v.setLength(max_pseudo_v_koef * this->shape->getDepth(point) / dt);
-    }/**/
-    pseudo_v.add(d_p_v);
+    double l = common_pseudo_v_koef * (this->shape->getDepth(point) / dt)
+            * source->mass / (this->mass + source->mass);
+    d_p_v.setLength(l);    
+    //pseudo_v.add(d_p_v);
+    d_p_v.mul(dt);
+    this->shape->move(d_p_v.x, d_p_v.y);
 }
 
-void PhysicsObject::pushAwayFromExplosion(const Point2D &center, double radius)
+void PhysicsObject::pushAwayFromExplosion(const Point2D &center, double radius, double impulse_change)
 {
-
-    Vector2D d_p_v = this->getMassCenter();
-    d_p_v.sub(center.toVector());
-    d_p_v.setLength((radius + this->getHeight() / 2 - d_p_v.getLength()) * explosion_pseudo_v_koef / radius);
-    pseudo_v.add(d_p_v);
+    Vector2D d_v = this->getMassCenter();
+    d_v.sub(center.toVector());
+    d_v.setLength(explosion_pseudo_v_koef * (impulse_change / mass)
+                    * (radius + this->getHeight() / 2 - d_v.getLength()) / radius);
+    v.add(d_v);
 }
 
 QString PhysicsObject::getType()
@@ -261,6 +259,14 @@ CrossingResult2D PhysicsObject::collidesWith(PhysicsObject *other)
 
 Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, Point2D const & center)
 {
+    if (other->getType() == PhysicsObject::EXPLOSION)
+    {
+        Collision collision = other->solveCollisionWith(this, center);
+        collision.source = other;
+        collision.relative_speed.mul(-1);
+        collision.impulse_change.mul(-1);
+        return collision;
+    }
     Vector2D collision_center = center.toVector();
     Vector2D relative_speed = this->getSpeedAtPoint(collision_center);
     relative_speed.sub(other->getSpeedAtPoint(collision_center));
@@ -298,11 +304,26 @@ void PhysicsObject::applyCollision(const Collision &collision, double dt)
     {
         if (source_type == PhysicsObject::EXPLOSION)
         {
-            pushAwayFromExplosion(collision.source->getCoordinates(), collision.source->getWidth() / 2);
+            pushAwayFromExplosion(collision.source->getCoordinates(), collision.source->getWidth() / 2,
+                                  collision.impulse_change.getLength());
         }
         else
         {
             pushAwayFromPoint(collision.center, collision.source, dt);
         }
     }
+}
+
+double PhysicsObject::getMass()
+{
+    return this->mass;
+}
+
+double PhysicsObject::getInertiaMoment()
+{
+    return this->inertia_moment;
+}
+
+void PhysicsObject::postTick(double dt)
+{
 }

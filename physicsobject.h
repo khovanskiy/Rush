@@ -48,7 +48,7 @@ protected:
     Vector2D getSpeedAtPoint(Point2D const & point);
     void addImpulseAtPoint(Vector2D const & impulse, Point2D const & point);
     void pushAwayFromPoint(Point2D const & point, PhysicsObject* source, double dt);
-    void pushAwayFromExplosion(Point2D const & center, double radius);
+    void pushAwayFromExplosion(Point2D const & center, double radius, double impulse_change);
 
 public:
     static const QString TURRET;
@@ -84,10 +84,13 @@ public:
     virtual AABB getAABB();
     virtual double getHeight();
     virtual double getWidth();
+    virtual double getMass();
+    virtual double getInertiaMoment();
     virtual Vector2D getRelativeSpeed(PhysicsObject* other);
     virtual CrossingResult2D collidesWith(PhysicsObject* other);
     virtual Collision solveCollisionWith(PhysicsObject* other, Point2D const & center);
     virtual void applyCollision(Collision const & collision, double dt);
+    virtual void postTick(double dt);
 };
 
 #endif // PHYSICSOBJECT_H

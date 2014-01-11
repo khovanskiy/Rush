@@ -6,7 +6,7 @@ const QString Explosion::LARGE = "large";
 
 Explosion::Explosion(Shape2D *shape, double mass, double inertia_moment,
                      double start_radius, double end_radius, double time,
-                     QString explosion_type)
+                     double explosion_impulse, QString explosion_type)
     : PhysicsObject(shape, mass, inertia_moment, PhysicsObject::EXPLOSION)
 {
     this->start_radius = start_radius;
@@ -14,6 +14,7 @@ Explosion::Explosion(Shape2D *shape, double mass, double inertia_moment,
     this->time_to_live = time;
     this->time = time;
     this->explosion_type = explosion_type;
+    this->explosion_impulse = explosion_impulse;
 }
 
 QString Explosion::getExplosionType()
@@ -46,6 +47,12 @@ CrossingResult2D Explosion::collidesWith(PhysicsObject *other)
     {
         return (this->shape->cross(other->getShape()));
     }
+}
+
+Collision Explosion::solveCollisionWith(PhysicsObject *other, const Point2D &center)
+{
+    return Collision(this->getShape()->cross(other->getShape()).center.toVector(),
+                     other->getSpeed(), Vector2D(this->explosion_impulse, 0), other);
 }
 
 void Explosion::applyCollision(const Collision &collision, double dt)

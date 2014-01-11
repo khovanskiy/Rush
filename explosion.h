@@ -9,12 +9,13 @@ class Explosion : public PhysicsObject
     double time;
     double start_radius;
     double end_radius;
+    double explosion_impulse;
 
     QString explosion_type;
 
     Explosion(Shape2D* shape, double mass, double inertia_moment,
               double start_radius, double end_radius, double time,
-              QString explosion_type);
+              double explosion_impulse, QString explosion_type);
 
 public:
 
@@ -25,6 +26,7 @@ public:
     QString getExplosionType();
     virtual void tick(double dt);
     virtual CrossingResult2D collidesWith(PhysicsObject *other);
+    virtual Collision solveCollisionWith(PhysicsObject *other, const Point2D &center);
     virtual void applyCollision(const Collision &collision, double dt);
 };
 

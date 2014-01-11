@@ -66,6 +66,10 @@ void Vehicle::setEngine(const VehicleEngine &engine)
 void Vehicle::addTurret(Turret * turret)
 {
     this->turrets.push_back(turret);
+    this->mass += turret->getMass();
+    this->inertia_moment += turret->getInertiaMoment();
+    double d = turret->getPosition().getLength();
+    this->inertia_moment += d * d * turret->getMass();
 }
 
 void Vehicle::setAccelerationState(AccelerationState const & acc_state)
@@ -179,6 +183,10 @@ void Vehicle::invalidate()
 void Vehicle::tick(double dt)
 {
     this->PhysicsObject::tick(dt);
+}
+
+void Vehicle::postTick(double dt)
+{
     for (auto i = turrets.begin(); i != turrets.end(); i++)
     {
         double angle = this->getAngle();

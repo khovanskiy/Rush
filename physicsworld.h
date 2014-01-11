@@ -60,6 +60,7 @@ class PhysicsWorld
     void collisionSearch(double dt);
     std::vector<PhysicsObject*> changingStates(double dt);
     void integrating(double dt);
+    void updatingStates(double dt);
     void addingObjects(std::vector<PhysicsObject*> const & n_objects);
     void deleteInvalidObjects();    
 

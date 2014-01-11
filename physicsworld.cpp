@@ -233,6 +233,7 @@ void PhysicsWorld::tick(double dt)
         addingObjects(n_objects);
         collisionSearch(ddt);
     }
+    updatingStates(dt);
 }
 
 void PhysicsWorld::addingObjects(const std::vector<PhysicsObject *> &n_objects)
@@ -250,4 +251,12 @@ void PhysicsWorld::deleteInvalidObjects()
         delete *i;
     }
     to_delete.clear();
+}
+
+void PhysicsWorld::updatingStates(double dt)
+{
+    for (auto i = objects.begin(); i != objects.end(); i++)
+    {
+        (*i)->object->postTick(dt);
+    }
 }
