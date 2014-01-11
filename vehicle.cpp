@@ -1,4 +1,5 @@
 #include "vehicle.h"
+<<<<<<< HEAD
 //#include "console.h"
 
 static const double G = 9.80665;
@@ -17,18 +18,82 @@ Vehicle::Vehicle(Vector2D const & r, double angle,
 {
     this->mass_center = mass_center;
     this->inertia_moment = inertia_moment;
+=======
+#include "console.h"
+
+static const double eps = 2e-4;
+
+const QString Vehicle::DODGE_CHALLENGER_SRT8 = "dodge_challenger_srt8";
+const QString Vehicle::FERRARI_599GTO = "ferrari_599_gto";
+
+void Vehicle::recalculateMassCenter()
+{
+    this->mass_center = this->shape->getRotatingPoint().toVector();
+    this->mass_center.sub(this->shape->getGeometryCenter().toVector());
+    this->mass_center.rotate(-this->shape->getAngle());
+    chassis.setStructure(this->mass, this->mass_center, this->height);
+    body.r = this->mass_center;
+}
+
+void Vehicle::setMassCenter(Vector2D mass_center)
+{
+    this->PhysicsObject::setMassCenter(mass_center);
+    this->recalculateMassCenter();
+}
+
+Vehicle::Vehicle(Rectangle2D * shape, double mass, double inertia_moment, QString vehicle_type)
+    : PhysicsObject(shape, mass, inertia_moment, PhysicsObject::VEHICLE)
+{
+    this->recalculateMassCenter();
+>>>>>>> origin/physicsDebug
     this->setFiring(false, 0);
     this->setAccelerationState(AccelerationState::NoAcc);
     this->setRotationPercent(0);
     this->setTorquePercent(0);
+    this->width = shape->getWidth();
+    this->length = shape->getHeight();
+    this->vehicle_type = vehicle_type;
 }
 
 Vehicle::~Vehicle()
 {
-    chassis.deleteWheels();
+    for (auto i = turrets.begin(); i != turrets.end(); i++)
+    {
+        delete *i;
+    }
 }
 
-void Vehicle::setAccelerationState(AccelerationState acc_state)
+void Vehicle::setVehicleBody(const VehicleBody &body)
+{
+    this->body = body;
+    this->recalculateMassCenter();
+}
+
+void Vehicle::setWheels(CarTrack back, CarTrack front, double height)
+{
+    this->height = height;
+    this->chassis.setWheels(this->mass, this->height, back, front);
+    Vector2D m_c = chassis.getMassCenter();
+    m_c.rotate(this->getAngle());
+    m_c.add(this->getCoordinates());
+    setMassCenter(m_c);
+}
+
+void Vehicle::setEngine(const VehicleEngine &engine)
+{
+    this->chassis.setEngine(engine);
+}
+
+void Vehicle::addTurret(Turret * turret)
+{
+    this->turrets.push_back(turret);
+    this->mass += turret->getMass();
+    this->inertia_moment += turret->getInertiaMoment();
+    double d = turret->getPosition().getLength();
+    this->inertia_moment += d * d * turret->getMass();
+}
+
+void Vehicle::setAccelerationState(AccelerationState const & acc_state)
 {
     this->acc_state = acc_state;
 }
@@ -49,8 +114,25 @@ void Vehicle::setFiring(bool firing_state, double firing_angle)
     this->firing_state = firing_state;
 }
 
-void Vehicle::calculateFireAndForces(double dt)
+int Vehicle::getGear()
 {
+    return chassis.getGear();
+}
+
+double Vehicle::getSpins()
+{
+    return chassis.getSpins();
+}
+
+bool Vehicle::isStaying()
+{
+    return ((v.getLength() < eps) && (angular_speed < eps));
+}
+
+std::vector<PhysicsObject*> Vehicle::calculateInnerState(double dt)
+{
+    PhysicsObject::calculateInnerState(dt);
+    double angle = this->shape->getAngle();
     f.x = 0;
     f.y = 0;
     force_moment = 0;
@@ -69,41 +151,85 @@ void Vehicle::calculateFireAndForces(double dt)
     body.f.rotate(angle);
     f.add(body.f);
     force_moment += body.force_moment;
-    double percent;
-    for (std::vector<Turret>::iterator i = turrets.begin(); i != turrets.end(); i++)
+    std::vector<PhysicsObject*> result;
+    for (std::vector<Turret*>::iterator i = turrets.begin(); i != turrets.end(); i++)
     {
-        if ((*i).max_angle > 0)
+        (*i)->setLocalAngle(firing_angle);
+        (*i)->setFiring(firing_state);
+        std::vector<PhysicsObject*> bullets = (*i)->calculateInnerState(dt);
+        double angle = this->getAngle();
+        Vector2D r = (*i)->getPosition();
+        r.rotate(angle);
+        r.add(this->getMassCenter());
+        for (std::vector<PhysicsObject*>::iterator j = bullets.begin(); j != bullets.end(); j++)
         {
-            percent = firing_angle / (*i).max_angle;
-            if (percent > 1) percent = 1;
-            else if (percent < -1) percent = -1;
-            (*i).setAngle(percent);
+            (dynamic_cast<Bullet*>(*j))->setSource(this);
+            Vector2D ddr = (*j)->getCoordinates();
+            ddr.rotate(angle);
+            ddr.add(this->getMassCenter());
+            (*j)->setMassCenter((*j)->getCoordinates());
+            (*j)->rotate(angle);
+            (*j)->setCoordinates(ddr);
+            Vector2D v = (*j)->getSpeed();
+            v.rotate(angle);
+            v.add(this->getSpeed());
+            (*j)->setSpeed(v);
+            Vector2D impulse = (*j)->getImpulse();
+            impulse.mul(-1);
+            this->addImpulseAtPoint(impulse, r);
+            result.push_back(*j);
         }
-        else
-        {
-            (*i).setAngle(0);
-        }
+<<<<<<< HEAD
         (*i).setFiring(firing_state);
         (*i).calculateFireAndForces(dt);
         f.add((*i).f);
         force_moment += (*i).force_moment;
     }    
+=======
+    }
+    return result;
+>>>>>>> origin/physicsDebug
+}
+
+QString Vehicle::getVehicleType()
+{
+<<<<<<< HEAD
+    calculateFireAndForces(dt);
+    Shape::tick(dt);
+=======
+    return this->vehicle_type;
+>>>>>>> origin/physicsDebug
+}
+
+std::vector<Turret*> Vehicle::getTurrets()
+{
+    return this->turrets;
+}
+
+void Vehicle::invalidate()
+{
+    for (auto i = turrets.begin(); i != turrets.end(); i++)
+    {
+        (*i)->invalidate();
+    }
 }
 
 void Vehicle::tick(double dt)
 {
-    calculateFireAndForces(dt);
-    Shape::tick(dt);
+    this->PhysicsObject::tick(dt);
 }
 
-int Vehicle::getGear()
+void Vehicle::postTick(double dt)
 {
-    return chassis.getGear();
-}
-
-double Vehicle::getSpins()
-{
-    return chassis.getSpins();
+    for (auto i = turrets.begin(); i != turrets.end(); i++)
+    {
+        double angle = this->getAngle();
+        Vector2D r = (*i)->getPosition();
+        r.rotate(angle);
+        r.add(this->getMassCenter());
+        (*i)->setCoordinates(r);
+        (*i)->setAngle((*i)->getLocalAngle() + angle);
+    }
 }
 
 bool Vehicle::isStaying()

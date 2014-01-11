@@ -25,6 +25,7 @@ struct Wheel
     Wheel(double mu_parallel_friction, double mu_parallel_roll,
                  double mu_perpendicular_friction, double mu_broken_friction,
                  double max_angle, Vector2D const & r, double radius);
+    virtual ~Wheel();
     void setWheelAngle(double percent);
     void calculateForces(double dt);
     Vector2D getWheelDirection();

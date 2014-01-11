@@ -18,7 +18,11 @@ public:
     virtual ~State() { Console::print("State is deleted"); } // Без этого delete State* не сделать
     virtual void init() {}
     virtual void focus() {}
+<<<<<<< HEAD
     virtual void tick(double) {}
+=======
+    virtual void tick(double dt) {}
+>>>>>>> origin/physicsDebug
     virtual void defocus() {}
     virtual void release() {}
     virtual void Invoke(const Event&) {}

@@ -27,8 +27,13 @@ GraphicCore::GraphicCore() : QGLWidget(QGLFormat(QGL::SampleBuffers), 0)
     //this->showFullScreen();
     pen = new QPen(QColor(255,255,255));
     setWindowTitle("Rush game");
+<<<<<<< HEAD
     resize(1280, 800);
     move(0,0);
+=======
+    resize(1200, 800);
+    move(50,50);
+>>>>>>> origin/physicsDebug
     setAutoFillBackground(false);
     setMouseTracking(true);
     show();
@@ -52,7 +57,7 @@ GraphicCore* GraphicCore::gi()
 void GraphicCore::paintEvent(QPaintEvent*)
 {
     render2d->begin(this);
-    render2d->setBackground(QBrush(QColor(0,0,0)));
+    render2d->setBackground(QBrush(QColor(8,26,0)));
     render2d->eraseRect(QRect(this->rect()));
     render2d->setRenderHint(QPainter::Antialiasing);
     Background::gi()->render(render2d, Matrix());

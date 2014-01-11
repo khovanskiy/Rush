@@ -7,9 +7,12 @@
 Program::Program(QWidget *parent) : QMainWindow(parent)
 {
     game = new Game();
+<<<<<<< HEAD
     //init IO
     Mouse::gi();
     Keyboard::gi();
+=======
+>>>>>>> origin/physicsDebug
 }
 
 Program::~Program()

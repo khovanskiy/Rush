@@ -1,8 +1,30 @@
 #include "vehiclebody.h"
 #include <math.h>
 
+<<<<<<< HEAD
 static const double default_environment_resistance = 0.1;
 
+=======
+static const double straight_air_koef = 1;
+static const double rear_air_koef = 3;
+static const double left_air_koef = 5;
+static const double right_air_koef = 5;
+static const double spin_air_koef = 100;
+
+static const double default_environment_resistance = 0.1;
+
+VehicleBody::VehicleBody()
+    : r(0, 0)
+{
+    this->front_air_resistance = 0;
+    this->rear_air_resistance = 0;
+    this->left_air_resistance = 0;
+    this->right_air_resistance = 0;
+    this->spin_air_resistance = 0;
+    this->environment_resistance = default_environment_resistance;
+}
+
+>>>>>>> origin/physicsDebug
 VehicleBody::VehicleBody(double front_air_resistance,
                          double rear_air_resistance,
                          double left_air_resistance,
@@ -17,16 +39,32 @@ VehicleBody::VehicleBody(double front_air_resistance,
     this->right_air_resistance = right_air_resistance;
     this->spin_air_resistance = spin_air_resistance;
     this->environment_resistance = default_environment_resistance;
+<<<<<<< HEAD
+=======
+}
+
+VehicleBody::VehicleBody(double air_resistance_koef, double length, double width, double height, Vector2D r)
+    : r(r)
+{
+    double raw_square = (width * length + 2 * (width + length) * height);
+    double air_resistance = air_resistance_koef * raw_square;
+    this->front_air_resistance = straight_air_koef * air_resistance;
+    this->rear_air_resistance = rear_air_koef * air_resistance;
+    this->left_air_resistance = left_air_koef * air_resistance;
+    this->right_air_resistance = right_air_koef * air_resistance;
+    this->spin_air_resistance = spin_air_koef * air_resistance;
+    this->environment_resistance = default_environment_resistance;
+>>>>>>> origin/physicsDebug
 }
 
 VehicleBody::VehicleBody(VehicleBody const & body)
+    :r(body.r)
 {
     this->front_air_resistance = body.front_air_resistance;
     this->rear_air_resistance = body.rear_air_resistance;
     this->left_air_resistance = body.left_air_resistance;
     this->right_air_resistance = body.right_air_resistance;
     this->spin_air_resistance = body.spin_air_resistance;
-    this->r = body.r;
     this->environment_resistance = body.environment_resistance;
 }
 

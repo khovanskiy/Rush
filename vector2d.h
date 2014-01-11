@@ -26,6 +26,8 @@ public:
     double cross(const Vector2D &);
     double angleBetween(const Vector2D &);
 
+    Vector2D getMul(double k) const;
+
     double x;
     double y;
 };

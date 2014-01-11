@@ -106,3 +106,8 @@ double Vector2D::angleBetween(const Vector2D &other)
     return Vector2D::angleBetween(*this, other);
 }
 
+Vector2D Vector2D::getMul(double k) const
+{
+    return Vector2D(x * k, y * k);
+}
+
