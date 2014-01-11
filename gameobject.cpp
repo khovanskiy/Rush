@@ -2,9 +2,10 @@
 #include "stage.h"
 #include <QCoreApplication>
 
-static const double collision_damage_koef = 1e-2;
-static const double bullet_damage_koef = 1;
-static const double explosion_damage_koef = 2;
+static const double collision_damage_koef = 2e-2;
+static const double bullet_damage_koef = 0.2;
+static const double explosion_damage_koef = 1;
+static const double minimum_damaging_impulse = 1000;
 
 GameObject::GameObject(ObjectData *object_data)
 {
@@ -122,7 +123,11 @@ void GameObject::update(double scale, double angle, Vector2D dr, Vector2D center
     bitmap->setRotationZ(physics_object->getAngle() + angle);
     for (auto i = object_data->collisions.begin(); i != object_data->collisions.end(); i++)
     {
-        health -= collision_damage_koef * i->impulse_change.getLength();
+        double d_i = i->impulse_change.getLength();
+        if (d_i > minimum_damaging_impulse)
+        {
+            health -= collision_damage_koef * (d_i - minimum_damaging_impulse);
+        }
         QString source_type = i->source->getType();
         if (source_type == PhysicsObject::BULLET)
         {

@@ -25,7 +25,7 @@ public:
     QString getExplosionType();
     virtual void tick(double dt);
     virtual CrossingResult2D collidesWith(PhysicsObject *other);
-    virtual void applyCollision(const Collision &collision);
+    virtual void applyCollision(const Collision &collision, double dt);
 };
 
 #endif // EXPLOSION_H

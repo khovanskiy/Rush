@@ -48,6 +48,6 @@ CrossingResult2D Explosion::collidesWith(PhysicsObject *other)
     }
 }
 
-void Explosion::applyCollision(const Collision &collision)
+void Explosion::applyCollision(const Collision &collision, double dt)
 {
 }

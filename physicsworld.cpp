@@ -44,7 +44,7 @@ void PhysicsWorld::clear()
     this->closed = true;
     for (auto i = objects.begin(); i != objects.end(); i++) {
         (*i)->object->invalidate();
-        to_delete.push_back((*i)->object);
+        to_delete.push_back(*i);
     }
     for (auto i = to_delete.begin(); i != to_delete.end(); i++)
     {
@@ -137,14 +137,13 @@ void PhysicsWorld::addColliding(std::vector<pair> colliding)
 {
     for (auto ii = colliding.begin(); ii != colliding.end(); ii++)
     {
-        for (auto jj = ii; jj != colliding.end();)
+        auto jj = ii;
+        jj++;
+        while ((jj != colliding.end()) && (jj->second.bottom <= ii->second.top - eps))
         {
+            if (ii->second.cross(jj->second))
+                potentially_colliding.push_back(std::pair<ObjectData*, ObjectData*>(ii->first, jj->first));
             jj++;
-            if (jj != colliding.end())
-            {
-                if (ii->second.cross(jj->second))
-                    potentially_colliding.push_back(std::pair<ObjectData*, ObjectData*>(ii->first, jj->first));
-            }
         }
     }
 }
@@ -162,18 +161,18 @@ void PhysicsWorld::narrowCollisionSearch()
     }
 }
 
-void PhysicsWorld::collisionSolving()
+void PhysicsWorld::collisionSolving(double dt)
 {
     for (auto i = colliding_pairs.begin(); i != colliding_pairs.end(); i++)
     {
         Collision collision = i->o1->object->solveCollisionWith(i->o2->object, i->center);
         i->o1->collisions.push_back(collision);
-        i->o1->object->applyCollision(collision);
+        i->o1->object->applyCollision(collision, dt);
         collision.impulse_change.mul(-1);
         collision.relative_speed.mul(-1);
         collision.source = i->o1->object;
         i->o2->collisions.push_back(collision);
-        i->o2->object->applyCollision(collision);
+        i->o2->object->applyCollision(collision, dt);
     }
 }
 
@@ -194,7 +193,7 @@ std::vector<PhysicsObject*> PhysicsWorld::changingStates(double dt)
         }
         else
         {
-            to_delete.push_back((*i)->object);
+            to_delete.push_back(*i);
         }
     }
     this->objects = data;
@@ -209,7 +208,7 @@ void PhysicsWorld::integrating(double dt)
     }
 }
 
-void PhysicsWorld::collisionSearch()
+void PhysicsWorld::collisionSearch(double dt)
 {
     for (auto i = objects.begin(); i != objects.end(); i++)
     {
@@ -219,7 +218,7 @@ void PhysicsWorld::collisionSearch()
     narrowCollisionSearch();
     for (int j = 0; j < collision_solving_iterations; j++)
     {
-        collisionSolving();
+        collisionSolving(dt);
     }
 }
 
@@ -232,7 +231,7 @@ void PhysicsWorld::tick(double dt)
         integrating(ddt);
         std::vector<PhysicsObject*> n_objects = changingStates(ddt);
         addingObjects(n_objects);
-        collisionSearch();
+        collisionSearch(ddt);
     }
 }
 

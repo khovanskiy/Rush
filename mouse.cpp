@@ -32,7 +32,7 @@ void Mouse::bubbleEvent(const Event &e)
     dispatchEvent(e);
 }
 
-Mouse* Mouse::getInstance()
+Mouse* Mouse::gi()
 {
     if (instance == 0)
     {

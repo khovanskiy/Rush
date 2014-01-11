@@ -142,9 +142,6 @@ std::vector<PhysicsObject*> Vehicle::calculateInnerState(double dt)
             Vector2D ddr = (*j)->getCoordinates();
             ddr.rotate(angle);
             ddr.add(this->getMassCenter());
-            Vector2D cv = this->v;
-            cv.mul(dt);
-            ddr.add(cv);
             (*j)->setMassCenter((*j)->getCoordinates());
             (*j)->rotate(angle);
             (*j)->setCoordinates(ddr);

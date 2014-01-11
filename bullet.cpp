@@ -82,6 +82,6 @@ QString Bullet::getBulletType()
     return this->bullet_type;
 }
 
-void Bullet::applyCollision(Collision const &collision)
+void Bullet::applyCollision(Collision const &collision, double dt)
 {
 }

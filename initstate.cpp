@@ -8,6 +8,7 @@
 #include "math.h"
 #include "background.h"
 #include "keyboard.h"
+#include "mouse.h"
 #include "keyboardevent.h"
 #include "random"
 #include "QCoreApplication"
@@ -46,7 +47,7 @@ void InitState::init()
     turret = PhysicsObjectFactory::createVehicleTurret(Turret::SAW);
     turret->setPosition(Vector2D(0.5, 2.2));
     dodge->addTurret(turret);
-    /*turret = PhysicsObjectFactory::createVehicleTurret(Turret::MACHINEGUN);
+    turret = PhysicsObjectFactory::createVehicleTurret(Turret::MACHINEGUN);
     turret->setPosition(Vector2D(0.5, 1));
     dodge->addTurret(turret);
     turret = PhysicsObjectFactory::createVehicleTurret(Turret::MACHINEGUN);
@@ -80,6 +81,7 @@ void InitState::init()
             }
         }
     Keyboard::gi()->addEventListener(this);
+    Mouse::gi()->addEventListener(this);
 }
 
 void InitState::focus()
@@ -173,7 +175,7 @@ void InitState::tick(double dt)
 
 void InitState::Invoke(const Event &event)
 {
-    if (event.type == MouseEvent::CLICK)
+    if ((event.type == MouseEvent::CLICK) && (event.target == Mouse::gi()))
     {
         static double alpha = 0;
         firing = !firing;
@@ -262,6 +264,7 @@ void InitState::defocus()
 void InitState::release()
 {
     Keyboard::gi()->removeEventListener(this);
+    Mouse::gi()->removeEventListener(this);
     for (auto i = game_objects.begin(); i != game_objects.end(); i++)
     {
         removeAllBitmaps(*i);

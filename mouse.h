@@ -6,7 +6,7 @@
 class Mouse : public EventDispatcher, public EventHandler
 {
 public:
-    static Mouse* getInstance();
+    static Mouse* gi();
     void Invoke(const Event&);
 private:
     Mouse();

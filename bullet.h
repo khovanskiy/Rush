@@ -26,7 +26,7 @@ public:
     virtual double getHeight();
     virtual QString getBulletType();
     virtual void invalidate();
-    virtual void applyCollision(const Collision &collision);
+    virtual void applyCollision(const Collision &collision, double dt);
 };
 
 #endif // BULLET_H

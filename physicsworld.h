@@ -35,6 +35,14 @@ struct CollidingPair
 
 class PhysicsWorld
 {
+    bool closed;
+
+    std::vector<ObjectData*> to_delete;
+    std::vector<ObjectData*> new_objects;
+    std::vector<CollidingPair> colliding_pairs;
+    std::vector<std::pair<ObjectData*, ObjectData*>> potentially_colliding;
+    std::vector<ObjectData*> objects;
+
     PhysicsWorld()
     {
         this->closed = false;
@@ -43,25 +51,17 @@ class PhysicsWorld
     void operator=(PhysicsWorld const&);
     ~PhysicsWorld();
 
-    std::vector<PhysicsObject*> to_delete;
-    std::vector<ObjectData*> new_objects;
-    std::vector<CollidingPair> colliding_pairs;
-    std::vector<std::pair<ObjectData*, ObjectData*>> potentially_colliding;
-    std::vector<ObjectData*> objects;
-
-    bool closed;
-
     void broadCollisionSearch();
     void xCollisionSearch(std::vector<std::pair<ObjectData*, AABB>> x_colliding, int iteration);
     void yCollisionSearch(std::vector<std::pair<ObjectData*, AABB>> y_colliding, int iteration);
     void addColliding(std::vector<std::pair<ObjectData*, AABB>> colliding);
     void narrowCollisionSearch();
-    void collisionSolving();
-    void collisionSearch();
+    void collisionSolving(double dt);
+    void collisionSearch(double dt);
     std::vector<PhysicsObject*> changingStates(double dt);
     void integrating(double dt);
     void addingObjects(std::vector<PhysicsObject*> const & n_objects);
-    void deleteInvalidObjects();
+    void deleteInvalidObjects();    
 
 public:
     static PhysicsWorld& gi()

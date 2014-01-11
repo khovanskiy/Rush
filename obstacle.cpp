@@ -1,6 +1,7 @@
 #include "obstacle.h"
 
 static const double G = 9.80665;
+static const double rotation_friction = 1;
 
 const QString Obstacle::WOODEN_BOX = "wooden_box";
 const QString Obstacle::WOODEN_BARREL = "wooden_barrel";
@@ -27,7 +28,7 @@ std::vector<PhysicsObject*> Obstacle::calculateInnerState(double dt)
     wheel->v = this->v;
     wheel->calculateForces(dt);
     this->f = wheel->f;
-    this->force_moment = wheel->force_moment;
+    this->force_moment = wheel->force_moment - this->angular_speed * rotation_friction * this->inertia_moment * G;
     return std::vector<PhysicsObject*>();
 }
 

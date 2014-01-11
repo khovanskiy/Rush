@@ -29,6 +29,8 @@ class PhysicsObject
     friend class PhysicsObjectFactory;
     friend struct ObjectData;
 
+    static int next_id;
+
 protected:
     Shape2D * shape;
     Vector2D v, a, f, pseudo_v;
@@ -37,6 +39,7 @@ protected:
     QString physics_object_type;
     bool dynamic;
     bool valid;
+    int id;
     double time_to_live;
 
     PhysicsObject(Shape2D* shape, double mass, double inertia_moment, QString physics_object_type);
@@ -44,7 +47,7 @@ protected:
 
     Vector2D getSpeedAtPoint(Point2D const & point);
     void addImpulseAtPoint(Vector2D const & impulse, Point2D const & point);
-    void pushAwayFromPoint(Point2D const & point);
+    void pushAwayFromPoint(Point2D const & point, PhysicsObject* source, double dt);
     void pushAwayFromExplosion(Point2D const & center, double radius);
 
 public:
@@ -55,6 +58,7 @@ public:
     static const QString OBSTACLE;
 
     virtual QString getType();
+    virtual int getId();
     virtual std::vector<PhysicsObject*> calculateInnerState(double dt);
     virtual bool isValid();
     virtual void invalidate();
@@ -83,7 +87,7 @@ public:
     virtual Vector2D getRelativeSpeed(PhysicsObject* other);
     virtual CrossingResult2D collidesWith(PhysicsObject* other);
     virtual Collision solveCollisionWith(PhysicsObject* other, Point2D const & center);
-    virtual void applyCollision(Collision const & collision);
+    virtual void applyCollision(Collision const & collision, double dt);
 };
 
 #endif // PHYSICSOBJECT_H
