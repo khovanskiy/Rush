@@ -8,12 +8,13 @@
 
 DisplayObject::DisplayObject()
 {
-    lmatrix = new QMatrix();
-    gmatrix = new QMatrix();
+    lmatrix = new Matrix();
+    gmatrix = new Matrix();
     _visible = true;
     _x = _y = rx = ry = _rotationZ = 0;
     _scaleX = _scaleY = 1;
     _ratio = false;
+    root = 0;
 }
 
 DisplayObject::~DisplayObject()
@@ -22,27 +23,41 @@ DisplayObject::~DisplayObject()
     delete gmatrix;
 }
 
-QMatrix* DisplayObject::getRenderMatrix()
+void DisplayObject::render(QPainter *, const Matrix &base)
+{
+
+}
+
+Matrix* DisplayObject::getRenderMatrix()
 {
     return getGlobalMatrix();
 }
 
-QMatrix* DisplayObject::getGlobalMatrix()
+Matrix* DisplayObject::getGlobalMatrix()
 {
-    QMatrix* r = getLocalMatrix();
-    gmatrix->setMatrix(r->m11(),r->m12(),r->m21(),r->m22(),r->dx(),r->dy());
+    if (false)
+    {
+        *gmatrix = Matrix::mul(*getLocalMatrix(), *root->getLocalMatrix());
+    }
+    else
+    {
+        *gmatrix = *getLocalMatrix();
+    }
     return gmatrix;
 }
 
-QMatrix* DisplayObject::getLocalMatrix()
+Matrix* DisplayObject::getLocalMatrix()
 {
-    QMatrix a; a.translate(-rx,-ry);
-    QMatrix b; b.scale(_scaleX, _scaleY);
-    QMatrix c; c.rotate(_rotationZ / asin(1) * 90);
-    QMatrix d; d.translate(rx,ry);
-    QMatrix e; e.translate(_x-rx, _y-ry);
-    QMatrix r = a * b * c * d * e;
-    lmatrix->setMatrix(r.m11(),r.m12(),r.m21(),r.m22(),r.dx(),r.dy());
+    Matrix a = Matrix::translation(Vector2D(-rx, -ry));
+    Matrix b = Matrix::scaling(Vector2D(_scaleX, _scaleY));
+    Matrix c = Matrix::rotationZ(-_rotationZ);
+    Matrix d = Matrix::translation(Vector2D(rx, ry));
+    Matrix e = Matrix::translation(Vector2D(_x - rx, _y - ry));
+    a.mul(b);
+    a.mul(c);
+    a.mul(d);
+    a.mul(e);
+    *lmatrix = a;
     return lmatrix;
 }
 
@@ -51,39 +66,39 @@ QRectF DisplayObject::getRenderBounds()
     return getBounds(getRenderMatrix());
 }
 
-QRectF DisplayObject::getBounds(QMatrix* p) const // Спасибо линейной алгебре!
+QRectF DisplayObject::getBounds(Matrix* p) const // Спасибо линейной алгебре!
 {
     float nx = 0;
     float ny = 0;
     float x1 = std::numeric_limits<float>::max(); float y1 = std::numeric_limits<float>::max();
     float x2 = std::numeric_limits<float>::min(); float y2 = std::numeric_limits<float>::min();
 
-    nx = p->dx();
-    ny = p->dy();
+    nx = p->M31;
+    ny = p->M32;
 
     x1 = std::min(x1, nx);
     y1 = std::min(y1, ny);
     x2 = std::max(x2, nx);
     y2 = std::max(y2, ny);
 
-    nx = p->m21() * _height + p->dx();
-    ny = p->m22() * _height + p->dy();
+    nx = p->M21 * _height + p->M31;
+    ny = p->M22 * _height + p->M32;
 
     x1 = std::min(x1, nx);
     y1 = std::min(y1, ny);
     x2 = std::max(x2, nx);
     y2 = std::max(y2, ny);
 
-    nx = p->m11() * _width + p->dx();
-    ny = p->m12() * _width + p->dy();
+    nx = p->M11 * _width + p->M31;
+    ny = p->M12 * _width + p->M32;
 
     x1 = std::min(x1, nx);
     y1 = std::min(y1, ny);
     x2 = std::max(x2, nx);
     y2 = std::max(y2, ny);
 
-    nx = p->m11() * _width + p->m21() * _height + p->dx();
-    ny = p->m12() * _width + p->m22() * _height + p->dy();
+    nx = p->M11 * _width + p->M21 * _height + p->M31;
+    ny = p->M12 * _width + p->M22 * _height + p->M32;
 
     x1 = std::min(x1, nx);
     y1 = std::min(y1, ny);
@@ -104,8 +119,8 @@ void DisplayObject::setWidth(float value)
 
 float DisplayObject::getWidth()
 {
-    QMatrix* res = getRenderMatrix();
-    return (float)(_height * abs(res->m12()) + _width * abs(res->m11()));
+    Matrix* res = getRenderMatrix();
+    return (float)(_height * abs(res->M12) + _width * abs(res->M11));
 }
 
 void DisplayObject::setHeight(float value)
@@ -119,8 +134,8 @@ void DisplayObject::setHeight(float value)
 
 float DisplayObject::getHeight()
 {
-    QMatrix* res = getRenderMatrix();
-    return (float)(_width * abs(res->m12()) + _height * abs(res->m11()));
+    Matrix* res = getRenderMatrix();
+    return (float)(_width * abs(res->M12) + _height * abs(res->M11));
 }
 
 bool DisplayObject::isVisible() const
@@ -130,8 +145,13 @@ bool DisplayObject::isVisible() const
 
 void DisplayObject::setRSPointCenter()
 {
-    rx = _width / 2;
-    ry = _height / 2;
+    setRSPoint(Vector2D(0.5, 0.5));
+}
+
+void DisplayObject::setRSPoint(const Vector2D &c)
+{
+    rx = _width * c.x;
+    ry = _height * c.y;
 }
 
 bool DisplayObject::hitTestPoint(float x, float y)

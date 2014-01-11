@@ -13,6 +13,8 @@ private:
     ~Mouse();
     void bubbleEvent(const Event&);
     static Mouse* instance;
+    int x;
+    int y;
 };
 
 #endif // MOUSE_H

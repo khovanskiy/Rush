@@ -25,6 +25,7 @@ static Vector2D r_center(500, 500);
 static Vector2D dr(0, 0);
 static double d_angle = 0;
 static bool firing = false;
+static double alpha = 0;
 
 InitState::InitState()
 {    
@@ -175,84 +176,107 @@ void InitState::tick(double dt)
 
 void InitState::Invoke(const Event &event)
 {
-    if ((event.type == MouseEvent::CLICK) && (event.target == Mouse::gi()))
+    if (event.target == Mouse::gi())
     {
-        static double alpha = 0;
-        firing = !firing;
+        if ((event.type == MouseEvent::MOUSE_DOWN))
+        {
+            firing = true;
+        }
+        else if (event.type == MouseEvent::MOUSE_UP)
+        {
+            firing = false;
+        }
+        else if (event.type == MouseEvent::MOUSE_MOVE)
+        {
+            MouseEvent* me = (MouseEvent*)(&event);
+            mouse_pointer = Vector2D(me->getX(), me->getY());
+            Console::print(mouse_pointer);
+        }
+        Vector2D r = dodge->getMassCenter();
+        r.add(dr);
+        r.rotate(d_angle);
+        r.mul(scale);
+        r.add(r_center);
+        double dy = mouse_pointer.y - r.y;
+        double dx = mouse_pointer.x - r.x;
+        alpha = -asin(1) +atan2(dy, dx) - dodge->getAngle() - d_angle;
         dodge->setFiring(firing, alpha);
     }
-    else if (event.type == KeyboardEvent::KEY_DOWN)
+    else if (event.target == Keyboard::gi())
     {
-        KeyboardEvent* st = (KeyboardEvent*)(&event);
-        switch (st->keyCode)
+        if (event.type == KeyboardEvent::KEY_DOWN)
         {
-            case Qt::Key_W:
+            KeyboardEvent* st = (KeyboardEvent*)(&event);
+            switch (st->keyCode)
             {
-                dodge->setAccelerationState(ForwardAcc);
-            } break;
-            case Qt::Key_S:
-            {
-                dodge->setAccelerationState(BackwardAcc);
-            } break;
-            case Qt::Key_A:
-            {
-                dodge->setRotationPercent(-1);
-            } break;
-            case Qt::Key_D:
-            {
-                    dodge->setRotationPercent(1);
-            } break;
-            case Qt::Key_Space:
-            {
-                    dodge->setAccelerationState(Brakes);
-            } break;
-            case Qt::Key_Escape:
-            {
-                context->changeState(StateEnum::INIT);
-            } break;
-            case Qt::Key_Q:
-            {
-                view = (view + 1) % TOTAL_VIEWS;
-            } break;
-            case Qt::Key_Plus:
-            {
-                scale *= 1.5;
-            } break;
-            case Qt::Key_Equal:
-            {
-                scale *= 1.5;
-            } break;
-            case Qt::Key_Minus:
-            {
-                scale /= 1.5;
+                case Qt::Key_W:
+                {
+                    dodge->setAccelerationState(ForwardAcc);
+                } break;
+                case Qt::Key_S:
+                {
+                    dodge->setAccelerationState(BackwardAcc);
+                } break;
+                case Qt::Key_A:
+                {
+                    dodge->setRotationPercent(-1);
+                } break;
+                case Qt::Key_D:
+                {
+                        dodge->setRotationPercent(1);
+                } break;
+                case Qt::Key_Space:
+                {
+                        dodge->setAccelerationState(Brakes);
+                } break;
+                case Qt::Key_Escape:
+                {
+                    context->changeState(StateEnum::INIT);
+                } break;
+                case Qt::Key_Q:
+                {
+                    view = (view + 1) % TOTAL_VIEWS;
+                } break;
+                case Qt::Key_Plus:
+                {
+                    scale *= 1.5;
+                } break;
+                case Qt::Key_Equal:
+                {
+                    scale *= 1.5;
+                } break;
+                case Qt::Key_Minus:
+                {
+                    scale /= 1.5;
+                }
             }
         }
-    }
-    else if (event.type == KeyboardEvent::KEY_UP)
-    {
-        KeyboardEvent* st = (KeyboardEvent*)(&event);
-        switch (st->keyCode)
+        else if (event.type == KeyboardEvent::KEY_UP)
         {
-            case Qt::Key_W:
+            KeyboardEvent* st = (KeyboardEvent*)(&event);
+            switch (st->keyCode)
             {
-                    dodge->setAccelerationState(NoAcc);
-            } break;
-            case Qt::Key_S:
-            {
-                    dodge->setAccelerationState(NoAcc);
-            } break;
-            case Qt::Key_A:
-            {
-                    dodge->setRotationPercent(0);
-            } break;
-            case Qt::Key_D:
-            {
-                    dodge->setRotationPercent(0);
-            } break;
-            case Qt::Key_Space:
-            {
-                    dodge->setAccelerationState(NoAcc);
-            } break;
+                case Qt::Key_W:
+                {
+                        dodge->setAccelerationState(NoAcc);
+                } break;
+                case Qt::Key_S:
+                {
+                        dodge->setAccelerationState(NoAcc);
+                } break;
+                case Qt::Key_A:
+                {
+                        dodge->setRotationPercent(0);
+                } break;
+                case Qt::Key_D:
+                {
+                        dodge->setRotationPercent(0);
+                } break;
+                case Qt::Key_Space:
+                {
+                        dodge->setAccelerationState(NoAcc);
+                } break;
+            }
         }
     }
 }

@@ -56,10 +56,10 @@ SOURCES += background.cpp \
     explosion.cpp \
     gameobject.cpp \
     obstacle.cpp \
-    gamemodelobject.cpp \
-    gameviewobject.cpp \
     gameviewobjectfactory.cpp \
-    gameworld.cpp
+    gameworld.cpp \
+    exitstate.cpp \
+    sprite.cpp
 
 
 
@@ -107,7 +107,7 @@ HEADERS  += background.h \
     explosion.h \
     gameobject.h \
     obstacle.h \
-    gamemodelobject.h \
-    gameviewobject.h \
     gameviewobjectfactory.h \
-    gameworld.h
+    gameworld.h \
+    exitstate.h \
+    sprite.h

@@ -17,8 +17,11 @@ Keyboard::~Keyboard()
 
 void Keyboard::Invoke(const Event &event)
 {
-    KeyboardEvent* st = (KeyboardEvent*)(&event);
-    dispatchEvent(KeyboardEvent(this, event.type, st->keyCode));
+    if (event.type == KeyboardEvent::KEY_UP || event.type == KeyboardEvent::KEY_DOWN)
+    {
+        KeyboardEvent* st = (KeyboardEvent*)(&event);
+        dispatchEvent(KeyboardEvent(this, event.type, st->keyCode));
+    }
 }
 
 Keyboard* Keyboard::gi()

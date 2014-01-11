@@ -17,17 +17,20 @@
 #include "mouseevent.h"
 #include "keyboardevent.h"
 #include "camera.h"
+#include "matrix.h"
 
 GraphicCore* GraphicCore::instance = 0;
 
 GraphicCore::GraphicCore() : QGLWidget(QGLFormat(QGL::SampleBuffers), 0)
 {
     render2d = new QPainter();
+    //this->showFullScreen();
     pen = new QPen(QColor(255,255,255));
     setWindowTitle("Rush game");
-    resize(1200, 800);
-    move(50,50);
+    resize(1280, 800);
+    move(0,0);
     setAutoFillBackground(false);
+    setMouseTracking(true);
     show();
 }
 
@@ -49,12 +52,12 @@ GraphicCore* GraphicCore::gi()
 void GraphicCore::paintEvent(QPaintEvent*)
 {
     render2d->begin(this);
-    render2d->setBackground(QBrush(QColor(8,26,0)));
+    render2d->setBackground(QBrush(QColor(0,0,0)));
     render2d->eraseRect(QRect(this->rect()));
     render2d->setRenderHint(QPainter::Antialiasing);
-    Background::gi()->render(render2d);
-    Stage::gi()->render(render2d);
-    Interface::gi()->render(render2d);
+    Background::gi()->render(render2d, Matrix());
+    Stage::gi()->render(render2d, Matrix());
+    Interface::gi()->render(render2d, Matrix());
     render2d->end();
 }
 
@@ -64,9 +67,22 @@ void GraphicCore::resizeEvent(QResizeEvent *event)
     Camera::gi()->resize(event->size().width(), event->size().height());
 }
 
+void GraphicCore::mouseMoveEvent(QMouseEvent *event)
+{
+    dispatchEvent(MouseEvent(this, MouseEvent::MOUSE_MOVE, event->x(), event->y()));
+    event->accept();
+}
+
 void GraphicCore::mousePressEvent(QMouseEvent* event)
 {
-    dispatchEvent(MouseEvent(this, MouseEvent::CLICK, event->x(), event->y()));
+    dispatchEvent(MouseEvent(this, MouseEvent::MOUSE_DOWN, event->x(), event->y()));
+    event->accept();
+}
+
+void GraphicCore::mouseReleaseEvent(QMouseEvent* event)
+{
+    dispatchEvent(MouseEvent(this, MouseEvent::MOUSE_UP, event->x(), event->y()));
+    event->accept();
 }
 
 void GraphicCore::keyPressEvent(QKeyEvent* event)
@@ -98,5 +114,5 @@ void GraphicCore::keyReleaseEvent(QKeyEvent* event)
 void GraphicCore::render(float interpolation)
 {
     repaint();
-    dispatchEvent(Event(this, Event::ENTER_FRAME));
+    //dispatchEvent(Event(this, Event::ENTER_FRAME));
 }

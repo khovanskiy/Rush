@@ -117,7 +117,7 @@ Turret* PhysicsObjectFactory::createVehicleTurret(QString turret_type)
     {
         bullet_type = Bullet::MISSILE;
         fire_delay = 2;
-        max_angle = asin(1);
+        max_angle = 2 * asin(1);
         width = 1.3;
         height = 2.10;
         mass = 150;

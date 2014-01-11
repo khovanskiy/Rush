@@ -8,15 +8,18 @@
 #include "eventdispatcher.h"
 #include "eventhandler.h"
 
+#include "vector2d.h"
+#include "matrix.h"
+
 class DisplayObject : public EventDispatcher
 {
 public:
     DisplayObject();
     virtual ~DisplayObject();
-    QMatrix* getRenderMatrix();
-    QMatrix* getLocalMatrix();
-    QMatrix* getGlobalMatrix();
-    virtual void render(QPainter*) {}
+    Matrix* getRenderMatrix();
+    Matrix* getLocalMatrix();
+    Matrix* getGlobalMatrix();
+    virtual void render(QPainter*, const Matrix& base);
     void setX(float x) { _x = x; }
     float getX() const { return _x;}
     void setY(float y) { _y = y; }
@@ -36,6 +39,7 @@ public:
     void setRatio(bool ratio) { _ratio = ratio; }
     bool isRatio() const { return _ratio; }
     void setRSPointCenter();
+    void setRSPoint(const Vector2D&);
     virtual QRectF getRenderBounds();
     bool hitTestPoint(float x, float y);
     QString h(int, QString);
@@ -51,11 +55,12 @@ protected:
     float _height;
     bool _visible;
     bool _ratio;
-    QMatrix* gmatrix;
-    QMatrix* lmatrix;
+    Matrix* gmatrix;
+    Matrix* lmatrix;
 private:
+    DisplayObject* root;
     //FunctionProxy* do_proxy;
-    QRectF getBounds(QMatrix*) const;
+    QRectF getBounds(Matrix*) const;
 };
 
 #endif // DISPLAYOBJECT_H

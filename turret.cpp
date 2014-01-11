@@ -38,6 +38,8 @@ Vector2D Turret::getPosition() const
 
 void Turret::setLocalAngle(double local_angle)
 {
+    while (local_angle < -2 * asin(1)) local_angle += 4 * asin(1);
+    while (local_angle > 2 * asin(1)) local_angle -= 4 * asin(1);
     if (local_angle < -max_angle) local_angle = -max_angle;
     if (local_angle > max_angle) local_angle = max_angle;
     this->local_angle = local_angle;
