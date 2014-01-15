@@ -2,7 +2,7 @@
 #include "console.h"
 
 static const double common_pseudo_v_koef = 0.1;
-static const double explosion_pseudo_v_koef = 1;
+static const double explosion_pseudo_v_koef = 0.2;
 static const double angular_speed_koef = 0.3;
 static const double PI = 3.14159265358979323846;
 static const double INFINITE_TIME = 1e100;
