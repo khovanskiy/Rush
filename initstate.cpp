@@ -57,12 +57,12 @@ void InitState::init()
     turret = PhysicsObjectFactory::createVehicleTurret(Turret::ROCKET_LAUNCHER);
     turret->setPosition(Vector2D(0, -0.5));
     dodge->addTurret(turret);/**/
-    /*for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 10; i++)
     {
         for (int j = 0; j < 10; j++)
         {
             Vehicle* ferrari = PhysicsObjectFactory::createVehicle(Vehicle::FERRARI_599GTO);
-            ferrari->setCoordinates(Vector2D(5 + 6 * j, -15 - 5 * i));
+            ferrari->setCoordinates(Vector2D(50 + 6 * j, -15 - 5 * i));
             ferrari->setAngle(-asin(1));
         }
     }/**/
@@ -75,12 +75,12 @@ void InitState::init()
         }
     }/**/
     for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
         {
-            for (int j = 0; j < 10; j++)
-            {
-                PhysicsObjectFactory::createObstacle(Vector2D(5 + 2 * j, -15 - 2 * i), 0, Obstacle::WOODEN_BARREL);
-            }
+            PhysicsObjectFactory::createObstacle(Vector2D(5 + 2 * j, -15 - 2 * i), 0, Obstacle::WOODEN_BARREL);
         }
+    }/**/
     Keyboard::gi()->addEventListener(this);
     Mouse::gi()->addEventListener(this);
 }
@@ -163,7 +163,6 @@ void InitState::renewGameObjects()
     {
         (*i)->update(scale, d_angle, dr, r_center);
     }
-    Console::print(time);/**/
 }
 
 void InitState::tick(double dt)
@@ -172,6 +171,7 @@ void InitState::tick(double dt)
     PhysicsWorld::gi().tick(dt);
     getNewPhysicsObjects();
     renewGameObjects();
+    Console::print(time);/**/
 }
 
 void InitState::Invoke(const Event &event)
@@ -190,7 +190,7 @@ void InitState::Invoke(const Event &event)
         {
             MouseEvent* me = (MouseEvent*)(&event);
             mouse_pointer = Vector2D(me->getX(), me->getY());
-            Console::print(mouse_pointer);
+            //Console::print(mouse_pointer);
         }
         Vector2D r = dodge->getMassCenter();
         r.add(dr);

@@ -2,7 +2,7 @@
 #include "console.h"
 
 static const double common_pseudo_v_koef = 0.1;
-static const double explosion_pseudo_v_koef = 1;
+static const double explosion_pseudo_v_koef = 0.2;
 static const double angular_speed_koef = 0.3;
 static const double PI = 3.14159265358979323846;
 static const double INFINITE_TIME = 1e100;
@@ -55,11 +55,9 @@ void PhysicsObject::pushAwayFromPoint(const Point2D &point, PhysicsObject* sourc
 {
     Vector2D d_p_v = this->getMassCenter();
     d_p_v.sub(point.toVector());
-    double l = common_pseudo_v_koef * (this->shape->getDepth(point) / dt)
+    double l = common_pseudo_v_koef * (this->shape->getDepth(point))
             * source->mass / (this->mass + source->mass);
-    d_p_v.setLength(l);    
-    //pseudo_v.add(d_p_v);
-    d_p_v.mul(dt);
+    d_p_v.setLength(l);
     this->shape->move(d_p_v.x, d_p_v.y);
 }
 

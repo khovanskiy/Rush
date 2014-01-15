@@ -165,14 +165,18 @@ void PhysicsWorld::collisionSolving(double dt)
 {
     for (auto i = colliding_pairs.begin(); i != colliding_pairs.end(); i++)
     {
-        Collision collision = i->o1->object->solveCollisionWith(i->o2->object, i->center);
-        i->o1->collisions.push_back(collision);
-        i->o1->object->applyCollision(collision, dt);
-        collision.impulse_change.mul(-1);
-        collision.relative_speed.mul(-1);
-        collision.source = i->o1->object;
-        i->o2->collisions.push_back(collision);
-        i->o2->object->applyCollision(collision, dt);
+        if (i->o1->object->isValid() && i->o2->object->isValid()
+                && i->o1->object->collidesWith(i->o2->object).crossing)
+        {
+            Collision collision = i->o1->object->solveCollisionWith(i->o2->object, i->center);
+            i->o1->collisions.push_back(collision);
+            i->o1->object->applyCollision(collision, dt);
+            collision.impulse_change.mul(-1);
+            collision.relative_speed.mul(-1);
+            collision.source = i->o1->object;
+            i->o2->collisions.push_back(collision);
+            i->o2->object->applyCollision(collision, dt);
+        }
     }
 }
 
