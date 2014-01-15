@@ -43,6 +43,7 @@ void Turret::setLocalAngle(double local_angle)
     if (local_angle < -max_angle) local_angle = -max_angle;
     if (local_angle > max_angle) local_angle = max_angle;
     this->local_angle = local_angle;
+    this->setAngle(local_angle);
 }
 
 double Turret::getLocalAngle() const
@@ -53,6 +54,11 @@ double Turret::getLocalAngle() const
 double Turret::getAngle()
 {
     return this->shape->getAngle() + d_angle;
+}
+
+Vector2D Turret::getCoordinates()
+{
+    return this->local_r;
 }
 
 QString Turret::getTurretType() const

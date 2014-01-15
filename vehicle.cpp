@@ -187,7 +187,7 @@ void Vehicle::tick(double dt)
 
 void Vehicle::postTick(double dt)
 {
-    for (auto i = turrets.begin(); i != turrets.end(); i++)
+    /*for (auto i = turrets.begin(); i != turrets.end(); i++)
     {
         double angle = this->getAngle();
         Vector2D r = (*i)->getPosition();
@@ -195,5 +195,5 @@ void Vehicle::postTick(double dt)
         r.add(this->getMassCenter());
         (*i)->setCoordinates(r);
         (*i)->setAngle((*i)->getLocalAngle() + angle);
-    }
+    }/**/
 }

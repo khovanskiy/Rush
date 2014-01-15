@@ -54,12 +54,14 @@ SOURCES += background.cpp \
     wheel.cpp \
     randomgenerator.cpp \
     explosion.cpp \
-    gameobject.cpp \
     obstacle.cpp \
     gameviewobjectfactory.cpp \
     gameworld.cpp \
     exitstate.cpp \
-    sprite.cpp
+    sprite.cpp \
+    gamemodelobject.cpp \
+    gameviewobject.cpp \
+    mapview.cpp
 
 
 
@@ -105,9 +107,11 @@ HEADERS  += background.h \
     wheel.h \
     randomgenerator.h \
     explosion.h \
-    gameobject.h \
     obstacle.h \
     gameviewobjectfactory.h \
     gameworld.h \
     exitstate.h \
-    sprite.h
+    sprite.h \
+    gamemodelobject.h \
+    gameviewobject.h \
+    mapview.h

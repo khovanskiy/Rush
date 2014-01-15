@@ -39,6 +39,7 @@ public:
     void setLocalAngle(double local_angle);
     double getLocalAngle() const;
     virtual double getAngle();
+    virtual Vector2D getCoordinates();
     virtual std::vector<PhysicsObject*> calculateInnerState(double dt);
 };
 

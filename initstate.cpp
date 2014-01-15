@@ -12,7 +12,7 @@
 #include "keyboardevent.h"
 #include "random"
 #include "QCoreApplication"
-#include "physicsobjectfactory.h"
+#include "mapview.h"
 
 static double scale = 15;
 static const int FREE_VIEW = 0;
@@ -90,63 +90,8 @@ void InitState::focus()
     Console::print("FOCUS");
 }
 
-void InitState::addGameObject(GameObject *game_object)
+void InitState::calculateView()
 {
-    game_objects.push_back(game_object);
-    addAllBitmaps(game_object);
-}
-
-void InitState::addPhysicsObject(ObjectData *object_data)
-{
-    addGameObject(new GameObject(object_data));
-}
-
-void InitState::addAllBitmaps(GameObject *game_object)
-{
-    Stage::gi()->addChild(game_object->bitmap);
-    std::vector<GameObject*> inner_objects = game_object->getInnerObjects();
-    for (auto i = inner_objects.begin(); i != inner_objects.end(); i++)
-    {
-        addAllBitmaps(*i);
-    }
-}
-
-void InitState::removeAllBitmaps(GameObject *game_object)
-{
-    Stage::gi()->removeChild(game_object->bitmap);
-    std::vector<GameObject*> inner_objects = game_object->getInnerObjects();
-    for (auto i = inner_objects.begin(); i != inner_objects.end(); i++)
-    {
-        removeAllBitmaps(*i);
-    }
-}
-
-
-void InitState::getNewPhysicsObjects()
-{
-    std::vector<ObjectData*> new_objects = PhysicsWorld::gi().popNewObjects();
-    for (auto i = new_objects.begin(); i != new_objects.end(); i++)
-    {
-        addPhysicsObject(*i);
-    }
-}
-
-void InitState::renewGameObjects()
-{
-    std::vector<GameObject*> remained;
-    for (auto i = game_objects.begin(); i != game_objects.end(); i++)
-    {
-        if ((*i)->object_data->object->isValid())
-        {
-            remained.push_back(*i);
-        }
-        else
-        {
-            removeAllBitmaps(*i);
-            delete *i;
-        }
-    }
-    game_objects = remained;
     switch (view)
     {
     case FIXED_COORDINATES:
@@ -159,18 +104,26 @@ void InitState::renewGameObjects()
         d_angle = -2 * asin(1) - dodge->getAngle();
     } break;
     }
-    for (auto i = game_objects.begin(); i != game_objects.end(); i++)
-    {
-        (*i)->update(scale, d_angle, dr, r_center);
-    }
 }
 
 void InitState::tick(double dt)
 {
+    Vector2D r = dodge->getCoordinates();
+    r.add(dr);
+    r.rotate(d_angle);
+    r.mul(scale);
+    r.add(r_center);
+    double dy = mouse_pointer.y - r.y;
+    double dx = mouse_pointer.x - r.x;
+    alpha = -asin(1) +atan2(dy, dx) - dodge->getAngle() - d_angle;
+    dodge->setFiring(firing, alpha);
+
+    calculateView();
+
     time += dt;
-    PhysicsWorld::gi().tick(dt);
-    getNewPhysicsObjects();
-    renewGameObjects();
+
+    MapView::gi().tick(dt);
+    MapView::gi().updateView(scale, dr, d_angle, r_center);
     Console::print(time);/**/
 }
 
@@ -191,16 +144,7 @@ void InitState::Invoke(const Event &event)
             MouseEvent* me = (MouseEvent*)(&event);
             mouse_pointer = Vector2D(me->getX(), me->getY());
             //Console::print(mouse_pointer);
-        }
-        Vector2D r = dodge->getMassCenter();
-        r.add(dr);
-        r.rotate(d_angle);
-        r.mul(scale);
-        r.add(r_center);
-        double dy = mouse_pointer.y - r.y;
-        double dx = mouse_pointer.x - r.x;
-        alpha = -asin(1) +atan2(dy, dx) - dodge->getAngle() - d_angle;
-        dodge->setFiring(firing, alpha);
+        }        
     }
     else if (event.target == Keyboard::gi())
     {
@@ -289,11 +233,7 @@ void InitState::release()
 {
     Keyboard::gi()->removeEventListener(this);
     Mouse::gi()->removeEventListener(this);
-    for (auto i = game_objects.begin(); i != game_objects.end(); i++)
-    {
-        removeAllBitmaps(*i);
-        delete *i;
-    }
-    PhysicsWorld::gi().clear();
-    game_objects.clear();
+    Console::print("Start clearing...");
+    MapView::gi().clear();
+    Console::print("Finished clearing.");
 }

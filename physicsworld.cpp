@@ -13,6 +13,7 @@ static const double eps = 1e-3;
 PhysicsWorld::~PhysicsWorld()
 {
     clear();
+    deleteInvalidObjects();
 }
 
 void PhysicsWorld::addObject(PhysicsObject *object)
@@ -46,14 +47,12 @@ void PhysicsWorld::clear()
         (*i)->object->invalidate();
         to_delete.push_back(*i);
     }
-    for (auto i = to_delete.begin(); i != to_delete.end(); i++)
-    {
-        delete *i;
-    }
     objects.clear();
     new_objects.clear();
-    to_delete.clear();
+    deleteInvalidObjects();
+    Console::print("Physics objects cleared");
     this->closed = false;
+    Console::print("Physics world cleared.");
 }
 
 bool PhysicsWorld::isClosed()
