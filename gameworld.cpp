@@ -3,7 +3,10 @@
 
 GameWorld::~GameWorld()
 {
-    clear();
+    for (auto i = game_objects.begin(); i != game_objects.end(); i++)
+    {
+        delete *i;
+    }
     deleteInvalidObjects();
 }
 
@@ -61,7 +64,6 @@ void GameWorld::clear()
     }
     new_objects.clear();
     game_objects.clear();
-    deleteInvalidObjects();
     Console::print("Game objects cleared.");
     PhysicsWorld::gi().clear();
     Console::print("Game world cleared.");

@@ -188,9 +188,9 @@ Obstacle* PhysicsObjectFactory::createObstacle(Vector2D r, double angle, QString
     }
     else if (obstacle_type == Obstacle::WOODEN_BOX)
     {
-        shape = new Rectangle2D(r, 0.5, 0.5, angle);
-        mass = 50;
-        inertia_moment = 10;
+        shape = new Rectangle2D(r, 1, 1, angle);
+        mass = 30;
+        inertia_moment = 6;
         dynamic = true;
     }
     else if (obstacle_type == Obstacle::WOODEN_BARREL)

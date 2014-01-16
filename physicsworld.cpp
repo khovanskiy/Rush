@@ -5,14 +5,17 @@
 typedef std::pair<ObjectData*, AABB> pair;
 
 static const int calc_koef = 1;
-static const int sweep_and_prune_iterations = 2;
+static const int sweep_and_prune_iterations = 3;
 static const int collision_solving_iterations = 10;
 static const double INFINITY = 1e6;
 static const double eps = 1e-3;
 
 PhysicsWorld::~PhysicsWorld()
 {
-    clear();
+    for (auto i = objects.begin(); i != objects.end(); i++) {
+        (*i)->object->invalidate();
+        to_delete.push_back(*i);
+    }
     deleteInvalidObjects();
 }
 
@@ -49,7 +52,6 @@ void PhysicsWorld::clear()
     }
     objects.clear();
     new_objects.clear();
-    deleteInvalidObjects();
     Console::print("Physics objects cleared");
     this->closed = false;
     Console::print("Physics world cleared.");
@@ -73,13 +75,13 @@ void PhysicsWorld::broadCollisionSearch()
 
 void PhysicsWorld::xCollisionSearch(std::vector<pair> x_colliding, int iteration)
 {
+    std::sort(x_colliding.begin(), x_colliding.end(),
+              [](const pair & a, const pair & b)
+    {
+       return a.second.left < b.second.left;
+    });
     if (iteration <= sweep_and_prune_iterations)
     {
-        std::sort(x_colliding.begin(), x_colliding.end(),
-                  [](const pair & a, const pair & b)
-        {
-           return a.second.left < b.second.left;
-        });
         std::vector<pair> y_vector;
         double max_right = -INFINITY;
         for (auto i = x_colliding.begin(); i != x_colliding.end(); i++)
@@ -138,7 +140,7 @@ void PhysicsWorld::addColliding(std::vector<pair> colliding)
     {
         auto jj = ii;
         jj++;
-        while ((jj != colliding.end()) && (jj->second.bottom <= ii->second.top - eps))
+        while ((jj != colliding.end()) && (jj->second.left <= ii->second.right - eps))
         {
             if (ii->second.cross(jj->second))
                 potentially_colliding.push_back(std::pair<ObjectData*, ObjectData*>(ii->first, jj->first));
@@ -213,10 +215,6 @@ void PhysicsWorld::integrating(double dt)
 
 void PhysicsWorld::collisionSearch(double dt)
 {
-    for (auto i = objects.begin(); i != objects.end(); i++)
-    {
-        (*i)->collisions.clear();
-    }
     broadCollisionSearch();
     narrowCollisionSearch();
     for (int j = 0; j < collision_solving_iterations; j++)
@@ -228,6 +226,10 @@ void PhysicsWorld::collisionSearch(double dt)
 void PhysicsWorld::tick(double dt)
 {
     deleteInvalidObjects();
+    for (auto i = objects.begin(); i != objects.end(); i++)
+    {
+        (*i)->collisions.clear();
+    }
     double ddt = dt / calc_koef;
     for (int i = 0; i < calc_koef; i++)
     {

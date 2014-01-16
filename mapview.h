@@ -7,6 +7,7 @@
 class MapView
 {
     std::vector<GameViewObject*> game_view_objects;
+    std::vector<GameViewObject*> to_delete;
 
     MapView()
     {
@@ -15,8 +16,10 @@ class MapView
     void operator=(MapView const&);
     ~MapView();
 
+    void deleteInvalidObjects();
     void addGameViewObject(GameViewObject* game_view_object);
-    void removeGameViewObject(GameViewObject* game_view_object);
+    void removeFromScene(GameViewObject* game_view_object);
+    void addToScene(GameViewObject* game_view_object);
 
 
 public:

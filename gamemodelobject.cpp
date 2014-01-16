@@ -1,9 +1,10 @@
 #include "gamemodelobject.h"
+#include "console.h"
 
 static const double collision_damage_koef = 2e-3;
-static const double bullet_damage_koef = 0.2;
-static const double explosion_damage_koef = 1;
-static const double minimum_damaging_impulse = 100;
+static const double bullet_damage_koef = 10;
+static const double explosion_damage_koef = 20;
+static const double minimum_damaging_impulse = 200;
 
 GameModelObject::~GameModelObject()
 {
@@ -53,7 +54,7 @@ GameModelObject::GameModelObject(ObjectData *object_data)
         }
         else if (secondary_type == Obstacle::WOODEN_BARREL)
         {
-            health = 100;
+            health = 300;
         }
         else if (secondary_type == Obstacle::WOODEN_BOX)
         {
@@ -149,7 +150,7 @@ void GameModelObject::invalidate()
 
 bool GameModelObject::isValid()
 {
-    return this->object_data->object->isValid();
+    return (this->object_data != 0) && (this->object_data->object->isValid());
 }
 
 int GameModelObject::getId()

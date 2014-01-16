@@ -17,14 +17,11 @@ GameViewObject::GameViewObject(QString path,
 
 GameViewObject::~GameViewObject()
 {
-    Console::print("Deleting view object " + path);
     delete bitmap;
-    Console::print("Bitmap deleted.");
     for (auto i = inner_objects.begin(); i != inner_objects.end(); i++)
     {
         delete *i;
     }
-    Console::print("View object deleted");
 }
 
 void GameViewObject::invalidate()
@@ -34,7 +31,7 @@ void GameViewObject::invalidate()
 
 bool GameViewObject::isValid()
 {
-    return game_model_object->isValid();
+    return (game_model_object != 0) && (game_model_object->isValid());
 }
 
 void GameViewObject::update(double scale, Vector2D d_r, double d_angle, Vector2D center)
@@ -42,11 +39,13 @@ void GameViewObject::update(double scale, Vector2D d_r, double d_angle, Vector2D
     Vector2D r = game_model_object->getCenter();
     r.add(d_r);
     r.rotate(d_angle);
-    center.div(scale);
-    r.add(center);
+    Vector2D c = center;
+    c.div(scale);
+    r.add(c);
     bitmap->setX(scale * r.x);
     bitmap->setY(scale * r.y);
-    bitmap->setRotationZ(game_model_object->getAngle() + d_angle);
+    double angle = game_model_object->getAngle() + d_angle;
+    bitmap->setRotationZ(angle);
     bitmap->setWidth(scale * game_model_object->getWidth());
     bitmap->setHeight(scale * game_model_object->getHeight());
     for (auto i = inner_objects.begin(); i != inner_objects.end(); i++)

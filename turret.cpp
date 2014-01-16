@@ -53,7 +53,7 @@ double Turret::getLocalAngle() const
 
 double Turret::getAngle()
 {
-    return this->shape->getAngle() + d_angle;
+    return this->local_angle + d_angle;
 }
 
 Vector2D Turret::getCoordinates()

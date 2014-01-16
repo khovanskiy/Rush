@@ -174,6 +174,7 @@ std::vector<Turret*> Vehicle::getTurrets()
 
 void Vehicle::invalidate()
 {
+    PhysicsObject::invalidate();
     for (auto i = turrets.begin(); i != turrets.end(); i++)
     {
         (*i)->invalidate();
