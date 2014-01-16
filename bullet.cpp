@@ -45,26 +45,15 @@ void Bullet::invalidate()
 
 CrossingResult2D Bullet::collidesWith(PhysicsObject *other)
 {
-    CrossingResult2D result;
     if ((other->getType() == PhysicsObject::BULLET)
             || (other->getType() == PhysicsObject::EXPLOSION) || (this->source == other))
     {
-        result = CrossingResult2D(false, Point2D(0, 0));
+        return CrossingResult2D(false, Point2D(0, 0));
     }
     else
     {
-        result = (this->shape->cross(other->getShape()));
+        return (this->shape->cross(other->getShape()));
     }
-    if (result.crossing)
-    {
-        Vector2D q = this->getCoordinates();
-        q.add(this->getSpeed());
-        Segment2D * segment = new Segment2D(Point2D(this->getCoordinates()), Point2D(q));
-        setCoordinates(other->getShape()->segmentCrossBorder(segment).toVector());
-        delete segment;
-        invalidate();
-    }
-    return result;
 }
 
 double Bullet::getWidth()
@@ -84,4 +73,10 @@ QString Bullet::getBulletType()
 
 void Bullet::applyCollision(Collision const &collision, double dt)
 {
+    Vector2D q = this->getCoordinates();
+    q.add(this->getSpeed());
+    Segment2D * segment = new Segment2D(Point2D(this->getCoordinates()), Point2D(q));
+    setCoordinates(collision.source->getShape()->segmentCrossBorder(segment).toVector());
+    delete segment;
+    invalidate();
 }

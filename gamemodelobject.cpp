@@ -2,7 +2,7 @@
 #include "console.h"
 
 static const double collision_damage_koef = 2e-3;
-static const double bullet_damage_koef = 10;
+static const double bullet_damage_koef = 20;
 static const double explosion_damage_koef = 20;
 static const double minimum_damaging_impulse = 200;
 

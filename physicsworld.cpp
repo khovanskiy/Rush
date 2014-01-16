@@ -5,7 +5,7 @@
 typedef std::pair<ObjectData*, AABB> pair;
 
 static const int calc_koef = 1;
-static const int sweep_and_prune_iterations = 3;
+static const int sweep_and_prune_iterations = 2;
 static const int collision_solving_iterations = 10;
 static const double INFINITY = 1e6;
 static const double eps = 1e-3;
