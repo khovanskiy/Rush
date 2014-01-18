@@ -55,18 +55,35 @@ struct AABB
     double left, right;
     double top, bottom;
 
-    AABB(double left, double right, double bottom, double top)
+    AABB()
+        : left(0), right(0), bottom(0), top(0)
     {
-        this->left = left;
-        this->right = right;
-        this->bottom = bottom;
-        this->top = top;
     }
 
-    bool cross(AABB const & other)
+    AABB(double left, double right, double bottom, double top)
+        : left(left), right(right), bottom(bottom), top(top)
+    {
+    }
+
+    bool cross(AABB const & other) const
     {
         return (this->left < other.right) && (other.left < this->right)
                 && (this->bottom < other.top) && (other.bottom < this->top);
+    }
+
+    bool contains(Point2D const & point) const
+    {
+        return (left <= point.x) && (right >= point.x) && (bottom <= point.y) && (top >= point.y);
+    }
+
+    bool contains(AABB const & other) const
+    {
+        return (left <= other.left) && (right >= other.right) && (bottom <= other.bottom) && (top >= other.top);
+    }
+
+    Point2D getCenter() const
+    {
+        return Point2D((left + right) / 2, (bottom + top) / 2);
     }
 };
 
@@ -84,7 +101,7 @@ protected:
 
 public:
     Shape2D(Point2D const & geometry_center, double angle)
-        : geometry_center(geometry_center), rotating_point(geometry_center), angle(angle)
+        : geometry_center(geometry_center), rotating_point(geometry_center), angle(angle), r_point_to_center(0, 0)
     {
     }
 
@@ -144,7 +161,6 @@ public:
 
 struct Segment2D : public Shape2D
 {
-    double length;
     Point2D p1, p2;
     Line2D line;
 
@@ -154,7 +170,6 @@ struct Segment2D : public Shape2D
     virtual void rotate(double angle);
     virtual void move(double x, double y);
     virtual bool contains(Point2D const & point) const;
-    virtual double getLength();
     virtual double getDepth(const Point2D &point);
     virtual double getWidth();
     virtual double getHeight();
@@ -190,11 +205,9 @@ struct Circle2D : public Shape2D
 struct Rectangle2D : public Shape2D
 {
     double width, height;
-    Point2D a, b, c, d;
     Segment2D * ab, * bc, * cd, * da;
 
     Rectangle2D(Point2D const & center, double width, double height, double angle);
-    Rectangle2D(Point2D const & a, Point2D const & b, Point2D const & c, Point2D const & d);
     virtual ~Rectangle2D();
     virtual bool contains(Point2D const & point) const;
     virtual void rotate(double angle);
@@ -212,7 +225,7 @@ struct Rectangle2D : public Shape2D
     virtual CrossingResult2D cross(const Rectangle2D* rectangle) const;
 
 private:
-    void recalculatePoints();
+    void calculatePoints();
 };
 
 #endif // GEOMETRY2D_H

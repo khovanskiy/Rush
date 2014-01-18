@@ -7,26 +7,26 @@ class Bullet : public PhysicsObject
 {
     friend class PhysicsObjectFactory;
 
-    QString bullet_type;
+    int bullet_type;
     PhysicsObject* source;
     double width, height;
 
-    Bullet(Vector2D r, Vector2D speed, double mass, QString bullet_type,
+    Bullet(Vector2D r, Vector2D speed, double mass, int bullet_type,
            double width, double height, double dt, double time_to_live);
     virtual ~Bullet();
 
 public:
-    static const QString BULLET;
-    static const QString MISSILE;
-    static const QString CUT;
+    static const int BULLET;
+    static const int MISSILE;
+    static const int CUT;
 
     void setSource(PhysicsObject* source);
     virtual CrossingResult2D collidesWith(PhysicsObject *other);
     virtual double getWidth();
     virtual double getHeight();
-    virtual QString getBulletType();
-    virtual void invalidate();
+    virtual int getBulletType();    
     virtual void applyCollision(const Collision &collision, double dt);
+    virtual std::vector<PhysicsObject*> calculateInnerState(double dt);
 };
 
 #endif // BULLET_H

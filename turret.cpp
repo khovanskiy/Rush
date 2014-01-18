@@ -5,12 +5,12 @@
 
 static const double eps = 1e-3;
 
-const QString Turret::MACHINEGUN = "machinegun";
-const QString Turret::ROCKET_LAUNCHER = "rocket_launcher";
-const QString Turret::SAW = "saw";
+const int Turret::MACHINEGUN = 0;
+const int Turret::ROCKET_LAUNCHER = 1;
+const int Turret::SAW = 2;
 
 Turret::Turret(Shape2D *shape, double mass, double inertia_moment,
-               double fire_delay, double max_angle, QString bullet_type, double scatter)
+               double fire_delay, double max_angle, int bullet_type, double scatter)
     : PhysicsObject(shape, mass, inertia_moment, PhysicsObject::TURRET), d_angle(0)
 {
     this->max_angle = max_angle;
@@ -61,7 +61,7 @@ Vector2D Turret::getCoordinates()
     return this->local_r;
 }
 
-QString Turret::getTurretType() const
+int Turret::getTurretType() const
 {
     return this->turret_type;
 }

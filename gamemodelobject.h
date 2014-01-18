@@ -7,8 +7,8 @@
 class GameModelObject
 {
     std::vector<GameModelObject*> inner_objects;
-    QString primary_type;
-    QString secondary_type;
+    int primary_type;
+    int secondary_type;
     double health;
 
     int id;
@@ -25,7 +25,7 @@ public:
     GameModelObject(ObjectData* object_data);
     GameModelObject(int id, Vector2D r, Vector2D v,
                     double angle, double angular_speed,
-                    QString primary_type, QString secondary_type,
+                    int primary_type, int secondary_type,
                     double health, double width, double height,
                     std::vector<GameModelObject*> inner_objects);
     ~GameModelObject();
@@ -38,8 +38,8 @@ public:
     double getAngle();
     double getWidth();
     double getHeight();
-    QString getPrimaryType();
-    QString getSecondaryType();
+    int getPrimaryType();
+    int getSecondaryType();
     //QString serialize();
 };
 

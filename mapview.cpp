@@ -1,5 +1,6 @@
 #include "mapview.h"
 #include "console.h"
+#include <QElapsedTimer>
 
 MapView::~MapView()
 {
@@ -12,12 +13,17 @@ MapView::~MapView()
 
 void MapView::deleteInvalidObjects()
 {
-    for (auto i = to_delete.begin(); i != to_delete.end(); i++)
+    int num = to_delete.size();
+    if (num > 0)
     {
-        removeFromScene(*i);
-        delete *i;
+        GameViewObject** ptr = &to_delete.front();
+        for (int i = 0; i < num; i++)
+        {
+            removeFromScene(ptr[i]);
+            delete ptr[i];
+        }
+        to_delete.clear();
     }
-    to_delete.clear();
 }
 
 void MapView::addGameViewObject(GameViewObject *game_view_object)
@@ -30,9 +36,14 @@ void MapView::removeFromScene(GameViewObject *game_view_object)
 {
     Stage::gi()->removeChild(game_view_object->getBitmap());
     std::vector<GameViewObject*> inner_objects = game_view_object->getInnerObjects();
-    for (auto i = inner_objects.begin(); i != inner_objects.end(); i++)
+    int num = inner_objects.size();
+    if (num > 0)
     {
-        removeFromScene(*i);
+        GameViewObject** ptr = &inner_objects.front();
+        for (int i = 0; i < num; i++)
+        {
+            removeFromScene(ptr[i]);
+        }
     }
 }
 
@@ -40,9 +51,14 @@ void MapView::addToScene(GameViewObject *game_view_object)
 {
     Stage::gi()->addChild(game_view_object->getBitmap());
     std::vector<GameViewObject*> inner_objects = game_view_object->getInnerObjects();
-    for (auto i = inner_objects.begin(); i != inner_objects.end(); i++)
+    int num = inner_objects.size();
+    if (num > 0)
     {
-        addToScene(*i);
+        GameViewObject** ptr = &inner_objects.front();
+        for (int i = 0; i < num; i++)
+        {
+            addToScene(ptr[i]);
+        }
     }
 }
 
@@ -51,44 +67,60 @@ void MapView::tick(double dt)
     deleteInvalidObjects();
     GameWorld& gw = GameWorld::gi();
     gw.tick(dt);
-    std::vector<GameModelObject*> v = gw.popNewObjects();
-    for (auto i = v.begin(); i != v.end(); i++)
-    {
-        addGameViewObject(GameViewObjectFactory::createGameViewObject(*i));
-    }
     std::vector<GameViewObject*> remained;
-    for (auto i = game_view_objects.begin(); i != game_view_objects.end(); i++)
+    int num = game_view_objects.size();
+    if (num > 0)
     {
-        if ((*i)->isValid())
+        GameViewObject** ptr = &game_view_objects.front();
+        for (int i = 0; i < num; i++)
         {
-            remained.push_back(*i);
+            if (ptr[i]->isValid())
+            {
+                remained.push_back(ptr[i]);
+            }
+            else
+            {
+                to_delete.push_back(ptr[i]);
+            }
         }
-        else
+        game_view_objects = remained;
+    }
+    std::vector<GameModelObject*> v = gw.popNewObjects();
+    num = v.size();
+    if (num > 0)
+    {
+        GameModelObject** ptr = &v.front();
+        for (int i = 0; i < num; i++)
         {
-            to_delete.push_back(*i);
+            addGameViewObject(GameViewObjectFactory::createGameViewObject(ptr[i]));
         }
     }
-    game_view_objects = remained;
 }
 
 void MapView::updateView(double scale, Vector2D d_r, double d_angle, Vector2D center)
 {
-    for (auto i = game_view_objects.begin(); i != game_view_objects.end(); i++)
+    int num = game_view_objects.size();
+    if (num > 0)
     {
-        (*i)->update(scale, d_r, d_angle, center);
+        GameViewObject** ptr = &game_view_objects.front();
+        for (int i = 0; i < num; i++)
+        {
+            ptr[i]->update(scale, d_r, d_angle, center);
+        }
     }
 }
 
 void MapView::clear()
 {
-    Console::print("Start clearing...");
-    for (auto i = game_view_objects.begin(); i != game_view_objects.end(); i++)
+    int num = game_view_objects.size();
+    if (num > 0)
     {
-        to_delete.push_back(*i);
+        GameViewObject** ptr = &game_view_objects.front();
+        for (int i = 0; i < num; i++)
+        {
+            to_delete.push_back(ptr[i]);
+        }
+        game_view_objects.clear();
     }
-    game_view_objects.clear();
-    Console::print("View objects cleared.");
     GameWorld::gi().clear();
-    Console::print("Mapview cleared.");    
-    Console::print("Finished clearing.");
 }

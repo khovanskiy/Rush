@@ -36,13 +36,13 @@ protected:
     Vector2D v, a, f, pseudo_v;
     double mass, inertia_moment, force_moment;
     double angular_speed, angular_acceleration;
-    QString physics_object_type;
+    int physics_object_type;
     bool dynamic;
     bool valid;
     int id;
     double time_to_live;
 
-    PhysicsObject(Shape2D* shape, double mass, double inertia_moment, QString physics_object_type);
+    PhysicsObject(Shape2D* shape, double mass, double inertia_moment, int physics_object_type);
     virtual ~PhysicsObject();
 
     Vector2D getSpeedAtPoint(Point2D const & point);
@@ -51,13 +51,13 @@ protected:
     void pushAwayFromExplosion(Point2D const & center, double radius, double impulse_change);
 
 public:
-    static const QString TURRET;
-    static const QString VEHICLE;
-    static const QString BULLET;
-    static const QString EXPLOSION;
-    static const QString OBSTACLE;
+    static const int TURRET;
+    static const int VEHICLE;
+    static const int BULLET;
+    static const int EXPLOSION;
+    static const int OBSTACLE;
 
-    virtual QString getType();
+    virtual int getType();
     virtual int getId();
     virtual std::vector<PhysicsObject*> calculateInnerState(double dt);
     virtual bool isValid();

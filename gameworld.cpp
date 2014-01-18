@@ -1,5 +1,6 @@
 #include "gameworld.h"
 #include "console.h"
+#include <QElapsedTimer>
 
 GameWorld::~GameWorld()
 {
@@ -12,41 +13,56 @@ GameWorld::~GameWorld()
 
 void GameWorld::deleteInvalidObjects()
 {
-    for (auto i = to_delete.begin(); i != to_delete.end(); i++)
+    int num = to_delete.size();
+    if (num > 0)
     {
-        delete *i;
+        GameModelObject** ptr = &to_delete.front();
+        for (int i = 0; i < num; i++)
+        {
+            delete ptr[i];
+        }
+        to_delete.clear();
     }
-    to_delete.clear();
 }
 
 void GameWorld::getNewObjects()
 {
     PhysicsWorld& pw = PhysicsWorld::gi();
     std::vector<ObjectData*> v = pw.popNewObjects();
-    for (auto i = v.begin(); i != v.end(); i++)
+    int num = v.size();
+    if (num > 0)
     {
-        GameModelObject* game_object = new GameModelObject(*i);
-        new_objects.push_back(game_object);
-        game_objects.push_back(game_object);
+        ObjectData** ptr = &v.front();
+        for (int i = 0; i < num; i++)
+        {
+            GameModelObject* game_object = new GameModelObject(ptr[i]);
+            new_objects.push_back(game_object);
+            game_objects.push_back(game_object);
+        }
     }
 }
 
 void GameWorld::updateObjects(double dt)
 {
-    std::vector<GameModelObject*> remained;
-    for (auto i = game_objects.begin(); i != game_objects.end(); i++)
+    const int num = game_objects.size();
+    if (num > 0)
     {
-        (*i)->update(dt, Vector2D(0, 0), 0);
-        if ((*i)->isValid())
+        GameModelObject** ptr = &game_objects.front();
+        std::vector<GameModelObject*> remained;
+        for (int i = 0; i < num; i++)
         {
-            remained.push_back(*i);
+            ptr[i]->update(dt, Vector2D(0, 0), 0);
+            if (ptr[i]->isValid())
+            {
+                remained.push_back(ptr[i]);
+            }
+            else
+            {
+                to_delete.push_back(ptr[i]);
+            }
         }
-        else
-        {
-            to_delete.push_back(*i);
-        }
+        game_objects = remained;
     }
-    game_objects = remained;
 }
 
 std::vector<GameModelObject*> GameWorld::popNewObjects()
@@ -58,15 +74,18 @@ std::vector<GameModelObject*> GameWorld::popNewObjects()
 
 void GameWorld::clear()
 {
-    for (auto i = game_objects.begin(); i != game_objects.end(); i++)
+    int num = game_objects.size();
+    if (num > 0)
     {
-        delete *i;
+        GameModelObject** ptr = &game_objects.front();
+        for (int i = 0; i < num; i++)
+        {
+            delete ptr[i];
+        }
+        new_objects.clear();
     }
-    new_objects.clear();
     game_objects.clear();
-    Console::print("Game objects cleared.");
     PhysicsWorld::gi().clear();
-    Console::print("Game world cleared.");
 }
 
 void GameWorld::tick(double dt)

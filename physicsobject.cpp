@@ -1,7 +1,7 @@
 #include "physicsobject.h"
 #include "console.h"
 
-static const double common_pseudo_v_koef = 0.1;
+static const double push_length_koef = 0.5;
 static const double explosion_pseudo_v_koef = 0.2;
 static const double angular_speed_koef = 0.3;
 static const double PI = 3.14159265358979323846;
@@ -9,13 +9,13 @@ static const double INFINITE_TIME = 1e100;
 
 int PhysicsObject::next_id = 0;
 
-const QString PhysicsObject::TURRET = "turret";
-const QString PhysicsObject::VEHICLE = "vehicle";
-const QString PhysicsObject::BULLET = "bullet";
-const QString PhysicsObject::EXPLOSION = "explosion";
-const QString PhysicsObject::OBSTACLE = "obstacle";
+const int PhysicsObject::TURRET = 0;
+const int PhysicsObject::VEHICLE = 1;
+const int PhysicsObject::BULLET = 2;
+const int PhysicsObject::EXPLOSION = 3;
+const int PhysicsObject::OBSTACLE = 4;
 
-PhysicsObject::PhysicsObject(Shape2D * shape, double mass, double inertia_moment, QString physics_object_type)
+PhysicsObject::PhysicsObject(Shape2D * shape, double mass, double inertia_moment, int physics_object_type)
     : shape(shape), mass(mass), inertia_moment(inertia_moment), v(0, 0), a(0, 0), pseudo_v(0, 0),
       f(0, 0), force_moment(0), angular_speed(0), angular_acceleration(0), valid(true), time_to_live(INFINITE_TIME)
 {    
@@ -55,10 +55,10 @@ void PhysicsObject::pushAwayFromPoint(const Point2D &point, PhysicsObject* sourc
 {
     Vector2D d_p_v = this->getMassCenter();
     d_p_v.sub(point.toVector());
-    double l = common_pseudo_v_koef * (this->shape->getDepth(point))
+    double l = push_length_koef * (this->shape->getDepth(point))
             * source->mass / (this->mass + source->mass);
     d_p_v.setLength(l);
-    this->shape->move(d_p_v.x, d_p_v.y);
+    this->move(d_p_v);
 }
 
 void PhysicsObject::pushAwayFromExplosion(const Point2D &center, double radius, double impulse_change)
@@ -70,7 +70,7 @@ void PhysicsObject::pushAwayFromExplosion(const Point2D &center, double radius, 
     v.add(d_v);
 }
 
-QString PhysicsObject::getType()
+int PhysicsObject::getType()
 {
     return this->physics_object_type;
 }
@@ -115,18 +115,20 @@ void PhysicsObject::tick(double dt)
 {
     if ((this->dynamic) && (this->isValid()))
     {
+        a = f;
+        a.div(mass);
+        Vector2D dv = a;
+        dv.mul(dt);
+        v.add(dv);
         Vector2D dr = v;
         dr.add(pseudo_v);
         dr.mul(dt);
         move(dr);
-        Vector2D dv = a;
-        dv.mul(dt);
-        v.add(dv);
-        a = f;
-        a.div(mass);
-        rotate(angular_speed * dt);
-        angular_speed += angular_acceleration * dt;
         angular_acceleration = (force_moment / inertia_moment) * dt;
+        angular_speed += angular_acceleration * dt;
+        rotate(angular_speed * dt);
+
+
     }
     else
     {
@@ -250,9 +252,9 @@ CrossingResult2D PhysicsObject::collidesWith(PhysicsObject *other)
     else
     {
         CrossingResult2D result = (this->shape->cross(other->shape));
-        result.crossing = result.crossing && this->isValid() && other->isValid();
         return result;
     }
+    return CrossingResult2D(false, Point2D());
 }
 
 Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, Point2D const & center)
@@ -293,7 +295,7 @@ Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, Point2D const 
 
 void PhysicsObject::applyCollision(const Collision &collision, double dt)
 {
-    QString source_type = collision.source->getType();
+    int source_type = collision.source->getType();
     if (source_type != PhysicsObject::EXPLOSION)
     {
         addImpulseAtPoint(collision.impulse_change, collision.center);

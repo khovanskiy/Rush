@@ -3,8 +3,8 @@
 
 static const double eps = 2e-4;
 
-const QString Vehicle::DODGE_CHALLENGER_SRT8 = "dodge_challenger_srt8";
-const QString Vehicle::FERRARI_599GTO = "ferrari_599_gto";
+const int Vehicle::DODGE_CHALLENGER_SRT8 = 0;
+const int Vehicle::FERRARI_599GTO = 1;
 
 void Vehicle::recalculateMassCenter()
 {
@@ -21,7 +21,7 @@ void Vehicle::setMassCenter(Vector2D mass_center)
     this->recalculateMassCenter();
 }
 
-Vehicle::Vehicle(Rectangle2D * shape, double mass, double inertia_moment, QString vehicle_type)
+Vehicle::Vehicle(Rectangle2D * shape, double mass, double inertia_moment, int vehicle_type)
     : PhysicsObject(shape, mass, inertia_moment, PhysicsObject::VEHICLE)
 {
     this->recalculateMassCenter();
@@ -162,7 +162,7 @@ std::vector<PhysicsObject*> Vehicle::calculateInnerState(double dt)
     return result;
 }
 
-QString Vehicle::getVehicleType()
+int Vehicle::getVehicleType()
 {
     return this->vehicle_type;
 }
@@ -187,14 +187,5 @@ void Vehicle::tick(double dt)
 }
 
 void Vehicle::postTick(double dt)
-{
-    /*for (auto i = turrets.begin(); i != turrets.end(); i++)
-    {
-        double angle = this->getAngle();
-        Vector2D r = (*i)->getPosition();
-        r.rotate(angle);
-        r.add(this->getMassCenter());
-        (*i)->setCoordinates(r);
-        (*i)->setAngle((*i)->getLocalAngle() + angle);
-    }/**/
+{    
 }

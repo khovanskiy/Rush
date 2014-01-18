@@ -14,8 +14,8 @@ GameViewObject* GameViewObjectFactory::createGameViewObject(GameModelObject *gam
         inner_objects.push_back(GameViewObjectFactory::createGameViewObject(*i));
     }
     QString path;
-    QString primary_type = game_model_object->getPrimaryType();
-    QString secondary_type = game_model_object->getSecondaryType();
+    int primary_type = game_model_object->getPrimaryType();
+    int secondary_type = game_model_object->getSecondaryType();
     if (primary_type == PhysicsObject::VEHICLE)
     {
         if (secondary_type == Vehicle::DODGE_CHALLENGER_SRT8)
@@ -76,6 +76,5 @@ GameViewObject* GameViewObjectFactory::createGameViewObject(GameModelObject *gam
             path = "\\DATA\\Textures\\Obstacles\\wooden_box.png";
         }
     }
-    //Console::print(path);
     return new GameViewObject(path, inner_objects, game_model_object);
 }

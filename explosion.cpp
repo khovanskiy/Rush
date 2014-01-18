@@ -1,12 +1,12 @@
 #include "explosion.h"
 
-const QString Explosion::SMALL = "small";
-const QString Explosion::MEDIUM = "medium";
-const QString Explosion::LARGE = "large";
+const int Explosion::SMALL = 0;
+const int Explosion::MEDIUM = 1;
+const int Explosion::LARGE = 2;
 
 Explosion::Explosion(Shape2D *shape, double mass, double inertia_moment,
                      double start_radius, double end_radius, double time,
-                     double explosion_impulse, QString explosion_type)
+                     double explosion_impulse, int explosion_type)
     : PhysicsObject(shape, mass, inertia_moment, PhysicsObject::EXPLOSION)
 {
     this->start_radius = start_radius;
@@ -17,7 +17,7 @@ Explosion::Explosion(Shape2D *shape, double mass, double inertia_moment,
     this->explosion_impulse = explosion_impulse;
 }
 
-QString Explosion::getExplosionType()
+int Explosion::getExplosionType()
 {
     return this->explosion_type;
 }

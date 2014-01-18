@@ -125,12 +125,12 @@ Vector2D Line2D::getProjection(const Vector2D &vector) const
 
 Segment2D::Segment2D(const Point2D &p1, const Point2D &p2)
     : Shape2D(Point2D((p1.x + p2.x) / 2, (p1.y + p2.y) / 2), -asin(1) + atan2(p2.y - p1.y, p2.x - p1.x)),
-      p1(p1), p2(p2), line(p1, p2), length(p1.getDistTo(p2))
+      p1(p1), p2(p2), line(p1, p2)
 {
 }
 
 Segment2D::Segment2D(const Point2D &center, double length, double angle)
-    : Shape2D(center, angle), length(length)
+    : Shape2D(center, angle)
 {
     Vector2D v(0, length / 2);
     v.rotate(angle);
@@ -144,16 +144,11 @@ Segment2D::~Segment2D()
 {
 }
 
-double Segment2D::getLength()
-{
-    return this->length;
-}
-
 void Segment2D::rotate(double angle)
 {
     this->Shape2D::rotate(angle);
-    Vector2D v(length / 2, 0);
-    v.rotate(this->getAngle());
+    Vector2D v(0, p1.getDistTo(p2) / 2);
+    v.rotate(this->angle);
     this->p2 = this->geometry_center.getPoint(v);
     v.mul(-1);
     this->p1 = this->geometry_center.getPoint(v);
@@ -163,8 +158,10 @@ void Segment2D::rotate(double angle)
 void Segment2D::move(double x, double y)
 {
     this->Shape2D::move(x, y);
-    p1 = p1.getPoint(Vector2D(x, y));
-    p2 = p2.getPoint(Vector2D(x, y));
+    p1.x += x;
+    p1.y += y;
+    p2.x += x;
+    p2.y += y;
     this->line = Line2D(p1, p2);
 }
 
@@ -244,7 +241,7 @@ double Segment2D::getWidth()
 
 double Segment2D::getHeight()
 {
-    return getLength();
+    return p1.getDistTo(p2);
 }
 
 AABB Segment2D::getAABB()
@@ -376,7 +373,7 @@ Point2D Circle2D::segmentCrossBorder(const Segment2D *segment) const
     }
 }
 
-void Rectangle2D::recalculatePoints()
+void Rectangle2D::calculatePoints()
 {
     Vector2D va(-width / 2, -height / 2);
     Vector2D vb(-width / 2, height / 2);
@@ -386,21 +383,18 @@ void Rectangle2D::recalculatePoints()
     vb.rotate(angle);
     vc.rotate(angle);
     vd.rotate(angle);
-    a = Point2D(geometry_center.x + va.x, geometry_center.y + va.y);
-    b = Point2D(geometry_center.x + vb.x, geometry_center.y + vb.y);
-    c = Point2D(geometry_center.x + vc.x, geometry_center.y + vc.y);
-    d = Point2D(geometry_center.x + vd.x, geometry_center.y + vd.y);
-    if (ab != 0)
-    {
-        delete ab;
-        delete bc;
-        delete cd;
-        delete da;
-    }
+    Point2D a(geometry_center.x + va.x, geometry_center.y + va.y);
+    Point2D b(geometry_center.x + vb.x, geometry_center.y + vb.y);
+    Point2D c(geometry_center.x + vc.x, geometry_center.y + vc.y);
+    Point2D d(geometry_center.x + vd.x, geometry_center.y + vd.y);
     ab = new Segment2D(a, b);
+    ab->setRotatingPoint(geometry_center);
     bc = new Segment2D(b, c);
+    bc->setRotatingPoint(geometry_center);
     cd = new Segment2D(c, d);
-    da = new Segment2D(d, a);    
+    cd->setRotatingPoint(geometry_center);
+    da = new Segment2D(d, a);
+    da->setRotatingPoint(geometry_center);
 }
 
 Rectangle2D::Rectangle2D(const Point2D &center, double width, double height, double angle)
@@ -408,24 +402,7 @@ Rectangle2D::Rectangle2D(const Point2D &center, double width, double height, dou
 {
     this->width = width;
     this->height = height;
-    ab = 0;
-    bc = 0;
-    cd = 0;
-    da = 0;
-    recalculatePoints();
-}
-
-Rectangle2D::Rectangle2D(const Point2D &a, const Point2D &b, const Point2D &c, const Point2D &d)
-    : Shape2D(Point2D((a.x + c.x) / 2, (a.y + c.y) / 2), atan2(b.y - a.y, b.x - a.x)),
-      a(a), b(b), c(c), d(d)
-{
-    this->width = a.getDistTo(d);
-    this->height = a.getDistTo(b);
-    ab = 0;
-    bc = 0;
-    cd = 0;
-    da = 0;
-    recalculatePoints();    
+    calculatePoints();
 }
 
 Rectangle2D::~Rectangle2D()
@@ -448,13 +425,19 @@ bool Rectangle2D::contains(const Point2D &point) const
 void Rectangle2D::rotate(double angle)
 {
     this->Shape2D::rotate(angle);
-    recalculatePoints();
+    ab->rotate(angle);
+    bc->rotate(angle);
+    cd->rotate(angle);
+    da->rotate(angle);
 }
 
 void Rectangle2D::move(double x, double y)
 {
     this->Shape2D::move(x, y);
-    recalculatePoints();
+    ab->move(x, y);
+    bc->move(x, y);
+    cd->move(x, y);
+    da->move(x, y);
 }
 
 double Rectangle2D::getHeight()
@@ -465,7 +448,7 @@ double Rectangle2D::getHeight()
 void Rectangle2D::setHeight(double height)
 {
     this->height = height;
-    recalculatePoints();
+    calculatePoints();
 }
 
 double Rectangle2D::getWidth()
@@ -476,34 +459,28 @@ double Rectangle2D::getWidth()
 void Rectangle2D::setWidth(double width)
 {
     this->width = width;
-    recalculatePoints();
+    calculatePoints();
 }
 
 double Rectangle2D::getDepth(const Point2D &point)
 {
-    double p1 = point.getDistTo(ab->line.getProjection(point));
-    double p2 = point.getDistTo(bc->line.getProjection(point));
-    double p3 = point.getDistTo(cd->line.getProjection(point));
-    double p4 = point.getDistTo(da->line.getProjection(point));
-    if (p3 < p1) p1 = p3;
-    if (p4 < p2) p2 = p4;
-    if (p1 < p2)
-    {
-        return p1;
-    }
-    else
-    {
-        return p2;
-    }
+    double min = ab->line.getDistTo(point);
+    double cur = bc->line.getDistTo(point);
+    if (cur < min) min = cur;
+    cur = cd->line.getDistTo(point);
+    if (cur < min) min = cur;
+    cur = da->line.getDistTo(point);
+    if (cur < min) min = cur;
+    return min;
 }
 
 AABB Rectangle2D::getAABB()
 {
-    double w = abs(this->a.x - this->geometry_center.x);
-    double w1 = abs(this->b.x - this->geometry_center.x);
+    double w = abs(this->ab->p1.x - this->geometry_center.x);
+    double w1 = abs(this->ab->p2.x - this->geometry_center.x);
     if (w1 > w) w = w1;
-    double h = abs(this->a.y - this->geometry_center.y);
-    double h1 = abs(this->b.y - this->geometry_center.y);
+    double h = abs(this->ab->p1.y - this->geometry_center.y);
+    double h1 = abs(this->ab->p2.y - this->geometry_center.y);
     if (h1 > h) h = h1;
     return AABB(this->geometry_center.x - w, this->geometry_center.x + w,
                 this->geometry_center.y - h, this->geometry_center.y + h);

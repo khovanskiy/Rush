@@ -21,14 +21,14 @@ double PhysicsObjectFactory::tireSpecsToRadius(double tread_width,
     return ((tread_width / 1000) * (aspect_ratio / 100) + rim_diameter * inch_to_meter);
 }
 
-Vehicle* PhysicsObjectFactory::createEmptyCar(double length, double width, double mass, QString vehicle_type)
+Vehicle* PhysicsObjectFactory::createEmptyCar(double length, double width, double mass, int vehicle_type)
 {
     return new Vehicle(new Rectangle2D(Point2D(0, 0), width, length, 0), mass,
                    mass * (width * width + length * length) / 12, vehicle_type);
 }
 
 
-Vehicle* PhysicsObjectFactory::createVehicle(QString vehicle_type)
+Vehicle* PhysicsObjectFactory::createVehicle(int vehicle_type)
 {
     Vehicle* result;
     if (vehicle_type == Vehicle::DODGE_CHALLENGER_SRT8)
@@ -65,7 +65,7 @@ Vehicle* PhysicsObjectFactory::createVehicle(QString vehicle_type)
     return result;
 }
 
-Bullet* PhysicsObjectFactory::createBullet(Vector2D r, double angle, QString bullet_type, double dt)
+Bullet* PhysicsObjectFactory::createBullet(Vector2D r, double angle, int bullet_type, double dt)
 {
     double width, height, mass, speed, time_to_live;
     if (bullet_type == Bullet::BULLET)
@@ -97,11 +97,11 @@ Bullet* PhysicsObjectFactory::createBullet(Vector2D r, double angle, QString bul
     return new Bullet(r, v, mass, bullet_type, width, height, dt, time_to_live);
 }
 
-Turret* PhysicsObjectFactory::createVehicleTurret(QString turret_type)
+Turret* PhysicsObjectFactory::createVehicleTurret(int turret_type)
 {
     double width, height, max_angle;
     double fire_delay = 0.4, mass = 100, inertia_moment = 7, scatter = 0;
-    QString bullet_type = Bullet::BULLET;
+    int bullet_type = Bullet::BULLET;
     if (turret_type == Turret::MACHINEGUN)
     {
         bullet_type = Bullet::BULLET;
@@ -142,7 +142,7 @@ Turret* PhysicsObjectFactory::createVehicleTurret(QString turret_type)
     return result;
 }
 
-Explosion* PhysicsObjectFactory::createExplosion(Vector2D r, double angle, QString explosion_type)
+Explosion* PhysicsObjectFactory::createExplosion(Vector2D r, double angle, int explosion_type)
 {
     double start_radius, end_radius, time, explosion_impulse;
     if (explosion_type == Explosion::SMALL)
@@ -170,11 +170,10 @@ Explosion* PhysicsObjectFactory::createExplosion(Vector2D r, double angle, QStri
     Explosion* result = new Explosion(shape, 1e10, 1e10, start_radius, end_radius,
                                       time, explosion_impulse, explosion_type);
     result->setStatic();
-    PhysicsWorld::gi().addObject(result);
     return result;
 }
 
-Obstacle* PhysicsObjectFactory::createObstacle(Vector2D r, double angle, QString obstacle_type)
+Obstacle* PhysicsObjectFactory::createObstacle(Vector2D r, double angle, int obstacle_type)
 {
     Shape2D * shape;
     double mass = 100, inertia_moment = 50;

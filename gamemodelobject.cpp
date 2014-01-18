@@ -73,7 +73,7 @@ GameModelObject::GameModelObject(ObjectData *object_data)
 
 GameModelObject::GameModelObject(int id, Vector2D r, Vector2D v,
                                  double angle, double angular_speed,
-                                 QString primary_type, QString secondary_type,
+                                 int primary_type, int secondary_type,
                                  double health, double width, double height,
                                  std::vector<GameModelObject *> inner_objects)
     : id(id), r(r), v(v), angle(angle), angular_speed(angular_speed),
@@ -100,7 +100,7 @@ void GameModelObject::update(double dt, Vector2D parent_r, double parent_angle)
             {
                 health -= collision_damage_koef * d_i;
             }
-            QString source_type = i->source->getType();
+            int source_type = i->source->getType();
             if (source_type == PhysicsObject::BULLET)
             {
                 health -= bullet_damage_koef;
@@ -150,7 +150,7 @@ void GameModelObject::invalidate()
 
 bool GameModelObject::isValid()
 {
-    return (this->object_data != 0) && (this->object_data->object->isValid());
+    return (this->object_data == 0) || (this->object_data->object->isValid());
 }
 
 int GameModelObject::getId()
@@ -178,12 +178,12 @@ double GameModelObject::getHeight()
     return this->height;
 }
 
-QString GameModelObject::getPrimaryType()
+int GameModelObject::getPrimaryType()
 {
     return this->primary_type;
 }
 
-QString GameModelObject::getSecondaryType()
+int GameModelObject::getSecondaryType()
 {
     return this->secondary_type;
 }

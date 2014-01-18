@@ -6,11 +6,11 @@
 
 static const double infinity = 1e100;
 
-const QString Bullet::BULLET = "bullet";
-const QString Bullet::MISSILE = "missile";
-const QString Bullet::CUT = "cut";
+const int Bullet::BULLET = 0;
+const int Bullet::MISSILE = 1;
+const int Bullet::CUT = 2;
 
-Bullet::Bullet(Vector2D r, Vector2D speed, double mass, QString bullet_type,
+Bullet::Bullet(Vector2D r, Vector2D speed, double mass, int bullet_type,
                double width, double height, double dt, double time_to_live)
     : PhysicsObject(new Segment2D(Point2D(r), Point2D(r).getPoint(speed.getMul(dt))),
                     mass, infinity, PhysicsObject::BULLET),
@@ -29,18 +29,6 @@ void Bullet::setSource(PhysicsObject *source)
 
 Bullet::~Bullet()
 {
-}
-
-void Bullet::invalidate()
-{
-    this->PhysicsObject::invalidate();
-    if (bullet_type == Bullet::MISSILE)
-    {
-        if (!PhysicsWorld::gi().isClosed())
-        {
-            PhysicsObjectFactory::createExplosion(this->getCoordinates(), this->getAngle(), Explosion::MEDIUM);
-        }
-    }
 }
 
 CrossingResult2D Bullet::collidesWith(PhysicsObject *other)
@@ -66,7 +54,7 @@ double Bullet::getHeight()
     return this->height;
 }
 
-QString Bullet::getBulletType()
+int Bullet::getBulletType()
 {
     return this->bullet_type;
 }
@@ -79,4 +67,21 @@ void Bullet::applyCollision(Collision const &collision, double dt)
     setCoordinates(collision.source->getShape()->segmentCrossBorder(segment).toVector());
     delete segment;
     invalidate();
+}
+
+std::vector<PhysicsObject*> Bullet::calculateInnerState(double dt)
+{
+    pseudo_v.mul(0);
+    std::vector<PhysicsObject*> result;
+    if (!valid && bullet_type == Bullet::MISSILE)
+    {
+        if (!PhysicsWorld::gi().isClosed())
+        {
+            result.push_back(PhysicsObjectFactory::createExplosion(
+                                 this->getCoordinates(),
+                                 this->getAngle(),
+                                 Explosion::MEDIUM));
+        }
+    }
+    return result;
 }

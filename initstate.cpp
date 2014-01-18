@@ -59,7 +59,7 @@ void InitState::init()
     turret->setPosition(Vector2D(0, -0.5));
     dodge->addTurret(turret);/**/
 
-    for (int i = 0; i < 10; i++)
+    /*for (int i = 0; i < 10; i++)
     {
         for (int j = 0; j < 10; j++)
         {
@@ -68,17 +68,16 @@ void InitState::init()
             ferrari->setAngle(-asin(1));
         }
     }/**/
-    for (int i = 0; i < 10; i++)
+    /*for (int i = 0; i < 10; i++)
     {
         for (int j = 0; j < 10; j++)
         {
-            Obstacle* obstacle = PhysicsObjectFactory::createObstacle(
-                        Vector2D(-30 + 1 * j, -15 - 1 * i), 0, Obstacle::WOODEN_BOX);
+            PhysicsObjectFactory::createObstacle(Vector2D(-50 + 2 * j, -50 - 2 * i), 0, Obstacle::WOODEN_BOX);
         }
     }/**/
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 30; i++)
     {
-        for (int j = 0; j < 10; j++)
+        for (int j = 0; j < 30; j++)
         {
             PhysicsObjectFactory::createObstacle(Vector2D(5 + 2 * j, -15 - 2 * i), 0, Obstacle::WOODEN_BARREL);
         }
