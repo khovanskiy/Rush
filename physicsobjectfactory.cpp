@@ -21,10 +21,17 @@ double PhysicsObjectFactory::tireSpecsToRadius(double tread_width,
     return ((tread_width / 1000) * (aspect_ratio / 100) + rim_diameter * inch_to_meter);
 }
 
-Vehicle* PhysicsObjectFactory::createEmptyCar(double length, double width, double mass, int vehicle_type)
+double PhysicsObjectFactory::inchToMeter(double inches)
 {
-    return new Vehicle(new Rectangle2D(Point2D(0, 0), width, length, 0), mass,
-                   mass * (width * width + length * length) / 12, vehicle_type);
+    return inches * 0.0254;
+}
+
+Vehicle* PhysicsObjectFactory::createEmptyCar(double length, double width, double width_with_mirrors,
+                                              double mass, int vehicle_type)
+
+{
+    return new Vehicle(new Rectangle2D(Point2D(0, 0), width, length, 0), width_with_mirrors,
+                       mass, mass * (width * width + length * length) / 12, vehicle_type);
 }
 
 
@@ -33,7 +40,7 @@ Vehicle* PhysicsObjectFactory::createVehicle(int vehicle_type)
     Vehicle* result;
     if (vehicle_type == Vehicle::DODGE_CHALLENGER_SRT8)
     {
-        result = createEmptyCar(5.0, 1.923, 1887, vehicle_type);
+        result = createEmptyCar(5.0, 1.923, 2.270, 1887, vehicle_type);
         double r[] = {3.59, 2.19, 1.41, 1, 0.83};
         std::vector<double> ratios(r, r + sizeof(r) / sizeof(double));
         result->setEngine(VehicleEngine(637, 6000, ratios, 3.06));
@@ -48,11 +55,11 @@ Vehicle* PhysicsObjectFactory::createVehicle(int vehicle_type)
     }
     else if (vehicle_type == Vehicle::FERRARI_599GTO)
     {
-        result = createEmptyCar(4.710, 1.962, 1605, vehicle_type);
+        result = createEmptyCar(4.710, 1.962, 2.180, 1605, vehicle_type);
         double r[] = {3.15, 2.18, 1.57, 1.19, 0.94, 0.76};
         std::vector<double> ratios(r, r + sizeof(r) / sizeof(double));
         result->setEngine(VehicleEngine(620, 8400, ratios, 4.18));
-        CarTrack back(-1.328, 1.610, tireSpecsToRadius(315, 35, 20),
+        CarTrack back (-1.328, 1.610, tireSpecsToRadius(315, 35, 20),
                       0.53, true, true, RotationReaction::NoRotation,
                       0.9, 0.025, 0.9, 1.5, M_PI / 6);
         CarTrack front(1.470, 1.701, tireSpecsToRadius(280, 35, 20),
@@ -60,6 +67,24 @@ Vehicle* PhysicsObjectFactory::createVehicle(int vehicle_type)
                        0.9, 0.025, 0.9, 1.5, M_PI / 6);
         result->setWheels(back, front, 1.326);
         result->setVehicleBody(VehicleBody(0.356, 4.710, 1.962, 1.326, result->chassis.getMassCenter()));
+    }
+    else if (vehicle_type == Vehicle::FORD_F150_SVT_RAPTOR)
+    {
+        result = createEmptyCar(inchToMeter(232.1), inchToMeter(86.3),
+                                inchToMeter(104.1), 2813, vehicle_type);
+        double r[] = {4.17, 2.34, 1.52, 1.14, 0.86, 0.69};
+        std::vector<double> ratios(r, r + sizeof(r) / sizeof(double));
+        result->setEngine(VehicleEngine(1001, 7000, ratios, 4.10));
+        //http://en.wikipedia.org/wiki/Ford_Boss_engine#7.0.C2.A0L
+        CarTrack back (-inchToMeter(67.2), inchToMeter(73.6), tireSpecsToRadius(315, 35, 20),
+                      0.43, true, true, RotationReaction::NoRotation,
+                      0.9, 0.025, 0.9, 1.5, M_PI / 6);
+        CarTrack front(inchToMeter(78), inchToMeter(73.6), tireSpecsToRadius(280, 35, 20),
+                       0.57, true, true, RotationReaction::StraightRot,
+                       0.9, 0.025, 0.9, 1.5, M_PI / 6);
+        result->setWheels(back, front, inchToMeter(78.4));
+        result->setVehicleBody(VehicleBody(0.356, inchToMeter(232.1), inchToMeter(86.3),
+                                           inchToMeter(78.4), result->chassis.getMassCenter()));
     }
     PhysicsWorld::gi().addObject(result);
     return result;

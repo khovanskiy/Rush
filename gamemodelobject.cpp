@@ -66,8 +66,8 @@ GameModelObject::GameModelObject(ObjectData *object_data)
     this->v = physics_object->getSpeed();
     this->angle = physics_object->getAngle();
     this->angular_speed = physics_object->getAngularSpeed();
-    this->width = physics_object->getWidth();
-    this->height = physics_object->getHeight();
+    this->width = physics_object->getImageWidth();
+    this->height = physics_object->getImageHeight();
     this->id = physics_object->getId();
 }
 
@@ -118,8 +118,8 @@ void GameModelObject::update(double dt, Vector2D parent_r, double parent_angle)
         this->v = physics_object->getSpeed();
         this->angle = physics_object->getAngle();
         this->angular_speed = physics_object->getAngularSpeed();
-        this->width = physics_object->getWidth();
-        this->height = physics_object->getHeight();
+        this->width = physics_object->getImageWidth();
+        this->height = physics_object->getImageHeight();
         this->id = physics_object->getId();
     }
     else

@@ -58,7 +58,7 @@ void PhysicsObject::pushAwayFromPoint(const Point2D &point, PhysicsObject* sourc
     double l = push_length_koef * (this->shape->getDepth(point))
             * source->mass / (this->mass + source->mass);
     d_p_v.setLength(l);
-    this->move(d_p_v);
+    move(d_p_v);
 }
 
 void PhysicsObject::pushAwayFromExplosion(const Point2D &center, double radius, double impulse_change)
@@ -127,8 +127,6 @@ void PhysicsObject::tick(double dt)
         angular_acceleration = (force_moment / inertia_moment) * dt;
         angular_speed += angular_acceleration * dt;
         rotate(angular_speed * dt);
-
-
     }
     else
     {
@@ -232,6 +230,16 @@ double PhysicsObject::getHeight()
 }
 
 double PhysicsObject::getWidth()
+{
+    return shape->getWidth();
+}
+
+double PhysicsObject::getImageHeight()
+{
+    return shape->getHeight();
+}
+
+double PhysicsObject::getImageWidth()
 {
     return shape->getWidth();
 }

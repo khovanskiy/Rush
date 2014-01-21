@@ -26,6 +26,10 @@ GameViewObject* GameViewObjectFactory::createGameViewObject(GameModelObject *gam
         {
             path = "\\DATA\\Textures\\Vehicles\\ferrari_small.png";
         }
+        else if (secondary_type == Vehicle::FORD_F150_SVT_RAPTOR)
+        {
+            path = "\\DATA\\Textures\\Vehicles\\ford-f-150_small.png";
+        }
     }
     else if (primary_type == PhysicsObject::BULLET)
     {

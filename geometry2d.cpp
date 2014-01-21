@@ -383,18 +383,18 @@ void Rectangle2D::calculatePoints()
     vb.rotate(angle);
     vc.rotate(angle);
     vd.rotate(angle);
-    Point2D a(geometry_center.x + va.x, geometry_center.y + va.y);
-    Point2D b(geometry_center.x + vb.x, geometry_center.y + vb.y);
-    Point2D c(geometry_center.x + vc.x, geometry_center.y + vc.y);
-    Point2D d(geometry_center.x + vd.x, geometry_center.y + vd.y);
+    Point2D a = geometry_center.getPoint(va);
+    Point2D b = geometry_center.getPoint(vb);
+    Point2D c = geometry_center.getPoint(vc);
+    Point2D d = geometry_center.getPoint(vd);
     ab = new Segment2D(a, b);
-    ab->setRotatingPoint(geometry_center);
+    ab->setRotatingPoint(rotating_point);
     bc = new Segment2D(b, c);
-    bc->setRotatingPoint(geometry_center);
+    bc->setRotatingPoint(rotating_point);
     cd = new Segment2D(c, d);
-    cd->setRotatingPoint(geometry_center);
+    cd->setRotatingPoint(rotating_point);
     da = new Segment2D(d, a);
-    da->setRotatingPoint(geometry_center);
+    da->setRotatingPoint(rotating_point);
 }
 
 Rectangle2D::Rectangle2D(const Point2D &center, double width, double height, double angle)
@@ -416,10 +416,18 @@ Rectangle2D::~Rectangle2D()
 bool Rectangle2D::contains(const Point2D &point) const
 {
     Vector2D v = point.toVector();
-    v.sub(this->getGeometryCenter().toVector());
+    v.sub(geometry_center.toVector());
     v.rotate(-this->angle);
-    return (v.x > -width / 2 - eps) && (v.x < width / 2 + eps)
-            && (v.y > -height / 2 - eps) && (v.y < height / 2 + eps);
+    return (abs(v.x) < width / 2 + eps) && (abs(v.y) < height / 2 + eps);
+}
+
+void Rectangle2D::setRotatingPoint(const Point2D &rotating_point)
+{
+    Shape2D::setRotatingPoint(rotating_point);
+    ab->setRotatingPoint(rotating_point);
+    bc->setRotatingPoint(rotating_point);
+    cd->setRotatingPoint(rotating_point);
+    da->setRotatingPoint(rotating_point);
 }
 
 void Rectangle2D::rotate(double angle)

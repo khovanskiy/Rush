@@ -168,8 +168,9 @@ void PhysicsWorld::collisionSolving(double dt)
     {
         CollidingPair colliding_pair = colliding_pairs.front();
         colliding_pairs.pop();
-        if (colliding_pair.o1->object->isValid() && colliding_pair.o2->object->isValid()
-                && colliding_pair.o1->object->collidesWith(colliding_pair.o2->object).crossing)
+        if ((colliding_pair.remained_collisions == max_collisions_per_pair)
+            ||(colliding_pair.o1->object->isValid() && colliding_pair.o2->object->isValid()
+                && colliding_pair.o1->object->collidesWith(colliding_pair.o2->object).crossing))
         {
             Collision collision = colliding_pair.o1->object->solveCollisionWith(colliding_pair.o2->object, colliding_pair.center);
             colliding_pair.o1->collisions.push_back(collision);

@@ -5,6 +5,7 @@ static const double eps = 2e-4;
 
 const int Vehicle::DODGE_CHALLENGER_SRT8 = 0;
 const int Vehicle::FERRARI_599GTO = 1;
+const int Vehicle::FORD_F150_SVT_RAPTOR = 2;
 
 void Vehicle::recalculateMassCenter()
 {
@@ -21,8 +22,8 @@ void Vehicle::setMassCenter(Vector2D mass_center)
     this->recalculateMassCenter();
 }
 
-Vehicle::Vehicle(Rectangle2D * shape, double mass, double inertia_moment, int vehicle_type)
-    : PhysicsObject(shape, mass, inertia_moment, PhysicsObject::VEHICLE)
+Vehicle::Vehicle(Rectangle2D * shape, double width_with_mirrors, double mass, double inertia_moment, int vehicle_type)
+    : PhysicsObject(shape, mass, inertia_moment, PhysicsObject::VEHICLE), width_with_mirrors(width_with_mirrors)
 {
     this->recalculateMassCenter();
     this->setFiring(false, 0);
@@ -96,6 +97,11 @@ void Vehicle::setFiring(bool firing_state, double firing_angle)
 int Vehicle::getGear()
 {
     return chassis.getGear();
+}
+
+double Vehicle::getImageWidth()
+{
+    return width_with_mirrors;
 }
 
 double Vehicle::getSpins()

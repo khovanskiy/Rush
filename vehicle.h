@@ -22,17 +22,19 @@ protected:
     int vehicle_type;
 
     double width;
+    double width_with_mirrors;
     double length;
     double height;
 
     virtual void recalculateMassCenter();
     virtual void setMassCenter(Vector2D mass_center);
-    Vehicle(Rectangle2D * shape, double mass, double inertia_moment, int vehicle_type);
+    Vehicle(Rectangle2D * shape, double width_with_mirrors, double mass, double inertia_moment, int vehicle_type);
     virtual ~Vehicle();
 
 public:
     static const int DODGE_CHALLENGER_SRT8;
     static const int FERRARI_599GTO;
+    static const int FORD_F150_SVT_RAPTOR;
 
     virtual void setVehicleBody(VehicleBody const & body);
     virtual void setEngine(VehicleEngine const & engine);
@@ -43,6 +45,7 @@ public:
     virtual void setRotationPercent(double rotation_percent);
     virtual void setFiring(bool firing_state, double firing_angle);
     virtual int getGear();
+    virtual double getImageWidth();
     virtual double getSpins();
     virtual bool isStaying();
     virtual int getVehicleType();

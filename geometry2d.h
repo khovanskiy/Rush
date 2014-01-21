@@ -210,6 +210,7 @@ struct Rectangle2D : public Shape2D
     Rectangle2D(Point2D const & center, double width, double height, double angle);
     virtual ~Rectangle2D();
     virtual bool contains(Point2D const & point) const;
+    virtual void setRotatingPoint(const Point2D &rotating_point);
     virtual void rotate(double angle);
     virtual void move(double x, double y);
     virtual double getWidth();

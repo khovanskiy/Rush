@@ -11,8 +11,10 @@ class PhysicsObjectFactory
 
     static double revsPerKmToRadius(double rotationsPerKilometer);
     static double tireSpecsToRadius(double tread_width, double aspect_ratio, double rim_diameter);
+    static double inchToMeter(double inches);
 
-    static Vehicle* createEmptyCar(double length, double width, double mass, int vehicle_type);
+    static Vehicle* createEmptyCar(double length, double width, double width_with_mirrors,
+                                   double mass, int vehicle_type);
 
 public:
 

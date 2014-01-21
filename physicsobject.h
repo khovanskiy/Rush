@@ -83,7 +83,9 @@ public:
     virtual void setShape(Shape2D* shape);
     virtual AABB getAABB();
     virtual double getHeight();
+    virtual double getImageHeight();
     virtual double getWidth();
+    virtual double getImageWidth();
     virtual double getMass();
     virtual double getInertiaMoment();
     virtual Vector2D getRelativeSpeed(PhysicsObject* other);

@@ -39,7 +39,7 @@ void InitState::init()
 {
     time = 0;
 
-    dodge = PhysicsObjectFactory::createVehicle(Vehicle::DODGE_CHALLENGER_SRT8);
+    dodge = PhysicsObjectFactory::createVehicle(Vehicle::FORD_F150_SVT_RAPTOR);
     dodge->setCoordinates(Vector2D(5, 0));
     dodge->setAngle(2 * asin(1));
     dodge->setTorquePercent(1);
@@ -75,9 +75,9 @@ void InitState::init()
             PhysicsObjectFactory::createObstacle(Vector2D(-50 + 2 * j, -50 - 2 * i), 0, Obstacle::WOODEN_BOX);
         }
     }/**/
-    for (int i = 0; i < 30; i++)
+    for (int i = 0; i < 10; i++)
     {
-        for (int j = 0; j < 30; j++)
+        for (int j = 0; j < 10; j++)
         {
             PhysicsObjectFactory::createObstacle(Vector2D(5 + 2 * j, -15 - 2 * i), 0, Obstacle::WOODEN_BARREL);
         }
