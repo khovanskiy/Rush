@@ -206,6 +206,7 @@ void InitState::release()
     delete ferrari;
     Stage::gi()->removeChild(dodgeBitmap);
     Stage::gi()->removeChild(ferrariBitmap);
+    Mouse::gi()->removeEventListener(this);
     Keyboard::gi()->removeEventListener(this);
     delete dodgeBitmap;
     delete ferrariBitmap;
