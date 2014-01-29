@@ -51,33 +51,19 @@ SOURCES += background.cpp \
     vehicle.cpp \
     vehiclebody.cpp \
     vehicleengine.cpp \
-<<<<<<< HEAD
-    position.cpp \
-    realwheel.cpp \
-    realengine.cpp \
-    realbody.cpp \
-    realturret.cpp \
-    materialpoint.cpp \
-    shape.cpp \
-    vehiclefactory.cpp \
-    exitstate.cpp \
-    vehicleview.cpp \
-    sprite.cpp \
-    gameobject.cpp \
-    view.cpp
-=======
     wheel.cpp \
     randomgenerator.cpp \
     explosion.cpp \
-    gameobject.cpp \
     obstacle.cpp \
+    gameviewobjectfactory.cpp \
+    gameworld.cpp \
+    exitstate.cpp \
+    sprite.cpp \
     gamemodelobject.cpp \
     gameviewobject.cpp \
-    gameviewobjectfactory.cpp \
-    gameworld.cpp
+    mapview.cpp
 
 
->>>>>>> origin/physicsDebug
 
 HEADERS  += background.h \
     bitmap.h \
@@ -119,27 +105,13 @@ HEADERS  += background.h \
     vehiclebody.h \
     vehicleengine.h \
     wheel.h \
-<<<<<<< HEAD
-    position.h \
-    realwheel.h \
-    realengine.h \
-    realbody.h \
-    realturret.h \
-    materialpoint.h \
-    shape.h \
-    vehiclefactory.h \
-    exitstate.h \
-    vehicleview.h \
-    sprite.h \
-    gameobject.h \
-    view.h
-=======
     randomgenerator.h \
     explosion.h \
-    gameobject.h \
     obstacle.h \
+    gameviewobjectfactory.h \
+    gameworld.h \
+    exitstate.h \
+    sprite.h \
     gamemodelobject.h \
     gameviewobject.h \
-    gameviewobjectfactory.h \
-    gameworld.h
->>>>>>> origin/physicsDebug
+    mapview.h

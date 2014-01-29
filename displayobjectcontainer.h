@@ -18,6 +18,7 @@ public:
     virtual ~DisplayObjectContainer();
     void addChild(DisplayObject* child);
     void removeChild(DisplayObject* child);
+    void removeAll();
     bool hasChild(DisplayObject* child) const;
     //LIST* getChildrenList() const;
     void render(QPainter*, const Matrix&);

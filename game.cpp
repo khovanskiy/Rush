@@ -7,11 +7,7 @@ Game::Game()
     loop = new QTimer();
     connect(loop, SIGNAL(timeout()), this, SLOT(onLoop()));
 
-<<<<<<< HEAD
-    TICKS_PER_SECOND = 20;
-=======
     TICKS_PER_SECOND = 25;
->>>>>>> origin/physicsDebug
     SKIP_TICKS = 1000 / TICKS_PER_SECOND;
     MAX_FRAMESKIP = 5;
     counter->start();

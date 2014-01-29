@@ -1,35 +1,59 @@
 #include "physicsworld.h"
 #include <algorithm>
+//#include <QElapsedTimer>
 #include "console.h"
+#include "math.h"
 
 typedef std::pair<ObjectData*, AABB> pair;
 
 static const int calc_koef = 1;
-static const int sweep_and_prune_iterations = 2;
-static const int collision_solving_iterations = 10;
+static const int max_collisions_per_pair = 5;
 static const double INFINITY = 1e6;
 static const double eps = 1e-3;
 
+PhysicsWorld::PhysicsWorld()
+{
+    this->tree = 0;
+}
+
+void PhysicsWorld::removeObjectNode(ObjectNode *node)
+{
+    node->data->object->invalidate();
+    if (tree != 0 && node->position != 0) tree->remove(node);
+    to_delete.push_back(node);
+}
+
+void PhysicsWorld::removeProjectile(ObjectData *projectile)
+{
+    projectile->object->invalidate();
+    projectiles_to_delete.push_back(projectile);
+}
+
 PhysicsWorld::~PhysicsWorld()
 {
-    clear();
+    for (auto i = nodes.begin(); i != nodes.end(); i++) {
+        removeObjectNode(*i);
+    }
+    for (auto i = projectiles.begin(); i != projectiles.end(); i++) {
+        removeProjectile(*i);
+    }
+    deleteInvalidObjects();
+    delete tree;
 }
 
 void PhysicsWorld::addObject(PhysicsObject *object)
 {
     ObjectData* object_data = new ObjectData(object);
-    objects.push_back(object_data);
     new_objects.push_back(object_data);
-}
-
-void PhysicsWorld::removeObject(PhysicsObject *object)
-{
-    object->invalidate();
-}
-
-std::vector<ObjectData*> PhysicsWorld::getObjectDatas()
-{
-    return objects;
+    if (object->isProjectile())
+    {
+        projectiles.push_back(object_data);
+    }
+    else
+    {
+        ObjectNode* node = new ObjectNode(object_data, object->getAABB());
+        nodes.push_back(node);
+    }
 }
 
 std::vector<ObjectData*> PhysicsWorld::popNewObjects()
@@ -41,222 +65,307 @@ std::vector<ObjectData*> PhysicsWorld::popNewObjects()
 
 void PhysicsWorld::clear()
 {
-    this->closed = true;
-    for (auto i = objects.begin(); i != objects.end(); i++) {
-        (*i)->object->invalidate();
-        to_delete.push_back(*i);
-    }
-    for (auto i = to_delete.begin(); i != to_delete.end(); i++)
+    int num = nodes.size();
+    if (num > 0)
     {
-        delete *i;
+        ObjectNode** ptr = &nodes.front();
+        for (int i = 0; i < num; i++)
+        {
+            removeObjectNode(ptr[i]);
+        }
+        nodes.clear();
     }
-    objects.clear();
+    num = projectiles.size();
+    if (num > 0)
+    {
+        ObjectData** ptr = &projectiles.front();
+        for (int i = 0; i < num; i++)
+        {
+            removeProjectile(ptr[i]);
+        }
+        projectiles.clear();
+    }
+    delete tree;
+    tree = 0;
     new_objects.clear();
-    to_delete.clear();
-    this->closed = false;
-}
-
-bool PhysicsWorld::isClosed()
-{
-    return closed;
 }
 
 void PhysicsWorld::broadCollisionSearch()
 {
     potentially_colliding.clear();
-    std::vector<pair> x_vector;
-    for (auto i = objects.begin(); i != objects.end(); i++)
+    if (nodes.size() > 0)
     {
-        x_vector.push_back(pair((*i), (*i)->object->getAABB()));
-    }
-    xCollisionSearch(x_vector, 1);
-}
-
-void PhysicsWorld::xCollisionSearch(std::vector<pair> x_colliding, int iteration)
-{
-    if (iteration <= sweep_and_prune_iterations)
-    {
-        std::sort(x_colliding.begin(), x_colliding.end(),
-                  [](const pair & a, const pair & b)
+        double minx = +INFINITY, maxx = -INFINITY, miny = +INFINITY, maxy = -INFINITY;
+        const int num = nodes.size();
+        ObjectNode** ptr = &nodes.front();
+        for (int i = 0; i < num; i++)
         {
-           return a.second.left < b.second.left;
-        });
-        std::vector<pair> y_vector;
-        double max_right = -INFINITY;
-        for (auto i = x_colliding.begin(); i != x_colliding.end(); i++)
-        {
-            if ((y_vector.size() == 0) || (i->second.left < max_right - eps))
-            {
-                y_vector.push_back(*i);
-                if (i->second.right > max_right) max_right = i->second.right;
-            }
-            else
-            {
-                yCollisionSearch(y_vector, iteration);
-                y_vector.clear();
-                y_vector.push_back(*i);
-                if (i->second.right > max_right) max_right = i->second.right;
-            }
+            ptr[i]->bounds = ptr[i]->data->object->getAABB();
+            if (ptr[i]->bounds.left < minx) minx = ptr[i]->bounds.left;
+            if (ptr[i]->bounds.right > maxx) maxx = ptr[i]->bounds.right;
+            if (ptr[i]->bounds.bottom < miny) miny = ptr[i]->bounds.bottom;
+            if (ptr[i]->bounds.top > maxy) maxy = ptr[i]->bounds.top;
         }
-        yCollisionSearch(y_vector, iteration);
-    }
-    else
-    {
-        addColliding(x_colliding);
-    }
-}
-
-void PhysicsWorld::yCollisionSearch(std::vector<pair> y_colliding, int iteration)
-{
-    std::sort(y_colliding.begin(), y_colliding.end(),
-              [](const pair & a, const pair & b)
-    {
-       return a.second.bottom < b.second.bottom;
-    });
-    std::vector<pair> x_vector;
-    double max_top = -INFINITY;
-    for (auto i = y_colliding.begin(); i != y_colliding.end(); i++)
-    {
-        if ((x_vector.size() == 0) || (i->second.bottom < max_top - eps))
+        AABB boundary(minx, maxx, miny, maxy);
+        if (tree == 0)
         {
-            x_vector.push_back(*i);
-            if (i->second.top > max_top) max_top = i->second.top;
+            tree = new QuadTree(boundary, 0);
         }
         else
         {
-            xCollisionSearch(x_vector, iteration + 1);
-            x_vector.clear();
-            x_vector.push_back(*i);
-            if (i->second.top > max_top) max_top = i->second.top;
+            tree = tree->resize(boundary);
+        }
+        for (int i = 0; i < num; i++)
+        {
+            if (ptr[i]->position == 0)
+            {
+                tree->insert(ptr[i]);
+            }
+            else
+            {
+                tree->update(ptr[i]);
+            }
+        }
+        std::vector<ObjectData*> response;
+        for (int i = 0; i < num; i++)
+        {
+            tree->queryAABB(ptr[i]->bounds, response);
+            const int num_r = response.size();
+            if (num_r > 1)
+            {
+                ObjectData** ptr_r = &response.front();
+                for (int j = 0; j < num_r; j++)
+                {
+                    if (ptr[i]->data != ptr_r[j])
+                    {
+                        potentially_colliding.push_back(std::pair<ObjectData*, ObjectData*>(ptr[i]->data, ptr_r[j]));
+                    }
+                }
+            }
+            response.clear();
         }
     }
-    xCollisionSearch(x_vector, iteration + 1);
+    int num = projectiles.size();
+    if (tree != 0 && num > 0)
+    {
+        ObjectData** ptr = &projectiles.front();
+        std::vector<ObjectData*> response;
+        for (int i = 0; i < num; i++)
+        {
+            tree->queryAABB(ptr[i]->object->getAABB(), response);
+            int num_r = response.size();
+            if (num_r > 0)
+            {
+                ObjectData** ptr_r = &response.front();
+                for (int j = 0; j < num_r; j++)
+                {
+                    potentially_colliding.push_back(std::pair<ObjectData*, ObjectData*>(ptr[i], ptr_r[j]));
+                }
+            }
+            response.clear();
+        }
+    }
 }
 
-void PhysicsWorld::addColliding(std::vector<pair> colliding)
-{
-    for (auto ii = colliding.begin(); ii != colliding.end(); ii++)
-    {
-        auto jj = ii;
-        jj++;
-        while ((jj != colliding.end()) && (jj->second.bottom <= ii->second.top - eps))
-        {
-            if (ii->second.cross(jj->second))
-                potentially_colliding.push_back(std::pair<ObjectData*, ObjectData*>(ii->first, jj->first));
-            jj++;
-        }
-    }
-}
 
 void PhysicsWorld::narrowCollisionSearch()
 {
-    colliding_pairs.clear();
-    for (auto i = potentially_colliding.begin(); i != potentially_colliding.end(); i++)
+    const int num = potentially_colliding.size();
+    if (num > 0)
     {
-        CrossingResult2D result = i->first->object->collidesWith(i->second->object);
-        if (result.crossing)
+        std::pair<ObjectData*, ObjectData*>* ptr = &potentially_colliding.front();
+        for (int i = 0; i < num; i++)
         {
-            colliding_pairs.push_back(CollidingPair(i->first, i->second, result.center));
+            CrossingResult2D result = ptr[i].first->object->collidesWith(ptr[i].second->object);
+            if (result.crossing)
+            {
+                colliding_pairs.push(CollidingPair(ptr[i].first, ptr[i].second, result.center, max_collisions_per_pair));
+            }
         }
     }
+
 }
 
 void PhysicsWorld::collisionSolving(double dt)
 {
-    for (auto i = colliding_pairs.begin(); i != colliding_pairs.end(); i++)
+    while (!colliding_pairs.empty())
     {
-        Collision collision = i->o1->object->solveCollisionWith(i->o2->object, i->center);
-        i->o1->collisions.push_back(collision);
-        i->o1->object->applyCollision(collision, dt);
-        collision.impulse_change.mul(-1);
-        collision.relative_speed.mul(-1);
-        collision.source = i->o1->object;
-        i->o2->collisions.push_back(collision);
-        i->o2->object->applyCollision(collision, dt);
+        CollidingPair colliding_pair = colliding_pairs.front();
+        colliding_pairs.pop();
+        if ((colliding_pair.remained_collisions == max_collisions_per_pair)
+            ||(colliding_pair.o1->object->isValid() && colliding_pair.o2->object->isValid()
+                && colliding_pair.o1->object->collidesWith(colliding_pair.o2->object).crossing))
+        {
+            Collision collision = colliding_pair.o1->object->solveCollisionWith(colliding_pair.o2->object, colliding_pair.center);
+            colliding_pair.o1->collisions.push_back(collision);
+            colliding_pair.o1->object->applyCollision(collision, dt);
+            collision.impulse_change.mul(-1);
+            collision.relative_speed.mul(-1);
+            collision.source = colliding_pair.o1->object;
+            colliding_pair.o2->collisions.push_back(collision);
+            colliding_pair.o2->object->applyCollision(collision, dt);
+            if (colliding_pair.remained_collisions > 0)
+            {
+                colliding_pair.remained_collisions--;
+                colliding_pairs.push(colliding_pair);
+            }
+        }
     }
 }
 
-std::vector<PhysicsObject*> PhysicsWorld::changingStates(double dt)
+void PhysicsWorld::changingStates(double dt, std::vector<PhysicsObject*>& n_objects)
 {
-    std::vector<PhysicsObject*> n_objects;
-    std::vector<ObjectData*> data;
-    for (auto i = objects.begin(); i != objects.end(); i++)
+    int num = nodes.size();
+    if (num > 0)
     {
-        std::vector<PhysicsObject*> result = (*i)->object->calculateInnerState(dt);
-        for (auto ii = result.begin(); ii != result.end(); ii++)
+        std::vector<ObjectNode*> remaining;
+        ObjectNode** ptr = &nodes.front();
+        for (int i = 0; i < num; i++)
         {
-            n_objects.push_back(*ii);
+            std::vector<PhysicsObject*>* result = ptr[i]->data->object->calculateInnerState(dt);
+            if (result != 0)
+            {
+                for (auto ii = result->begin(); ii != result->end(); ii++)
+                {
+                    n_objects.push_back(*ii);
+                }
+                delete result;
+            }
+            if (ptr[i]->data->object->isValid())
+            {                
+                remaining.push_back(ptr[i]);
+            }
+            else
+            {
+                removeObjectNode(ptr[i]);
+            }
         }
-        if ((*i)->object->isValid())
-        {
-            data.push_back(*i);
-        }
-        else
-        {
-            to_delete.push_back(*i);
-        }
+        this->nodes = remaining;
     }
-    this->objects = data;
-    return n_objects;
+    num = projectiles.size();
+    if (num > 0)
+    {
+        std::vector<ObjectData*> remaining;
+        ObjectData** ptr = &projectiles.front();
+        for (int i = 0; i < num; i++)
+        {
+            std::vector<PhysicsObject*>* result = ptr[i]->object->calculateInnerState(dt);
+            if (result != 0)
+            {
+                for (auto ii = result->begin(); ii != result->end(); ii++)
+                {
+                    n_objects.push_back(*ii);
+                }
+                delete result;
+            }
+            if (ptr[i]->object->isValid())
+            {
+                remaining.push_back(ptr[i]);
+            }
+            else
+            {
+                removeProjectile(ptr[i]);
+            }
+        }
+        this->projectiles = remaining;
+    }
 }
 
 void PhysicsWorld::integrating(double dt)
 {
-    for (auto i = objects.begin(); i != objects.end(); i++)
+    int num = nodes.size();
+    if (num > 0)
     {
-        (*i)->object->tick(dt);
+        ObjectNode** ptr = &nodes.front();
+        for (int i = 0; i < num; i++)
+        {
+            ptr[i]->data->object->tick(dt);
+        }
+    }
+    num = projectiles.size();
+    if (num > 0)
+    {
+        ObjectData** ptr = &projectiles.front();
+        for (int i = 0; i < num; i++)
+        {
+            ptr[i]->object->tick(dt);
+        }
     }
 }
 
 void PhysicsWorld::collisionSearch(double dt)
 {
-    for (auto i = objects.begin(); i != objects.end(); i++)
-    {
-        (*i)->collisions.clear();
-    }
     broadCollisionSearch();
     narrowCollisionSearch();
-    for (int j = 0; j < collision_solving_iterations; j++)
-    {
-        collisionSolving(dt);
-    }
+    collisionSolving(dt);
 }
 
 void PhysicsWorld::tick(double dt)
 {
     deleteInvalidObjects();
+    int num = nodes.size();
+    if (num > 0)
+    {
+        ObjectNode** ptr = &nodes.front();
+        for (int i = 0; i < num; i++)
+        {
+            ptr[i]->data->collisions.clear();
+        }
+    }
+    num = projectiles.size();
+    if (num > 0)
+    {
+        ObjectData** ptr = &projectiles.front();
+        for (int i = 0; i < num; i++)
+        {
+            ptr[i]->collisions.clear();
+        }
+    }
     double ddt = dt / calc_koef;
     for (int i = 0; i < calc_koef; i++)
     {
         integrating(ddt);
-        std::vector<PhysicsObject*> n_objects = changingStates(ddt);
+        std::vector<PhysicsObject*> n_objects;
+        changingStates(ddt, n_objects);
         addingObjects(n_objects);
         collisionSearch(ddt);
     }
-    updatingStates(dt);
 }
 
-void PhysicsWorld::addingObjects(const std::vector<PhysicsObject *> &n_objects)
+void PhysicsWorld::addingObjects(std::vector<PhysicsObject *> &n_objects)
 {
-    for (auto i = n_objects.begin(); i != n_objects.end(); i++)
+    int num = n_objects.size();
+    if (num > 0)
     {
-        addObject(*i);
+        PhysicsObject** ptr = &n_objects.front();
+        for (int i = 0; i < num; i++)
+        {
+            addObject(ptr[i]);
+        }
     }
+
 }
 
 void PhysicsWorld::deleteInvalidObjects()
 {
-    for (auto i = to_delete.begin(); i != to_delete.end(); i++)
+    int num = to_delete.size();
+    if (num > 0)
     {
-        delete *i;
+        ObjectNode** ptr = &to_delete.front();
+        for (int i = 0; i < num; i++)
+        {
+            delete ptr[i];
+        }
+        to_delete.clear();
     }
-    to_delete.clear();
-}
-
-void PhysicsWorld::updatingStates(double dt)
-{
-    for (auto i = objects.begin(); i != objects.end(); i++)
+    num = projectiles_to_delete.size();
+    if (num > 0)
     {
-        (*i)->object->postTick(dt);
+        ObjectData** ptr = &projectiles_to_delete.front();
+        for (int i = 0; i < num; i++)
+        {
+            delete ptr[i];
+        }
+        projectiles_to_delete.clear();
     }
 }

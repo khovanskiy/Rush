@@ -1,16 +1,15 @@
 #include "bullet.h"
 #include "math.h"
-#include "physicsworld.h"
 #include "explosion.h"
 #include "physicsobjectfactory.h"
 
 static const double infinity = 1e100;
 
-const QString Bullet::BULLET = "bullet";
-const QString Bullet::MISSILE = "missile";
-const QString Bullet::CUT = "cut";
+const int Bullet::BULLET = 0;
+const int Bullet::MISSILE = 1;
+const int Bullet::CUT = 2;
 
-Bullet::Bullet(Vector2D r, Vector2D speed, double mass, QString bullet_type,
+Bullet::Bullet(Vector2D r, Vector2D speed, double mass, int bullet_type,
                double width, double height, double dt, double time_to_live)
     : PhysicsObject(new Segment2D(Point2D(r), Point2D(r).getPoint(speed.getMul(dt))),
                     mass, infinity, PhysicsObject::BULLET),
@@ -31,57 +30,62 @@ Bullet::~Bullet()
 {
 }
 
-void Bullet::invalidate()
-{
-    this->PhysicsObject::invalidate();
-    if (bullet_type == Bullet::MISSILE)
-    {
-        if (!PhysicsWorld::gi().isClosed())
-        {
-            PhysicsObjectFactory::createExplosion(this->getCoordinates(), this->getAngle(), Explosion::MEDIUM);
-        }
-    }
-}
-
 CrossingResult2D Bullet::collidesWith(PhysicsObject *other)
 {
-    CrossingResult2D result;
-    if ((other->getType() == PhysicsObject::BULLET)
-            || (other->getType() == PhysicsObject::EXPLOSION) || (this->source == other))
+    if (this->source == other)
     {
-        result = CrossingResult2D(false, Point2D(0, 0));
+        return CrossingResult2D(false, Point2D(0, 0));
     }
     else
     {
-        result = (this->shape->cross(other->getShape()));
+        return (this->shape->cross(other->getShape()));
     }
-    if (result.crossing)
-    {
-        Vector2D q = this->getCoordinates();
-        q.add(this->getSpeed());
-        Segment2D * segment = new Segment2D(Point2D(this->getCoordinates()), Point2D(q));
-        setCoordinates(other->getShape()->segmentCrossBorder(segment).toVector());
-        delete segment;
-        invalidate();
-    }
-    return result;
 }
 
-double Bullet::getWidth()
+double Bullet::getImageWidth()
 {
     return this->width;
 }
 
-double Bullet::getHeight()
+double Bullet::getImageHeight()
 {
     return this->height;
 }
 
-QString Bullet::getBulletType()
+int Bullet::getBulletType()
 {
     return this->bullet_type;
 }
 
 void Bullet::applyCollision(Collision const &collision, double dt)
 {
+    Vector2D q = this->getCoordinates();
+    q.add(this->getSpeed());
+    Segment2D * segment = new Segment2D(Point2D(this->getCoordinates()), Point2D(q));
+    setCoordinates(collision.source->getShape()->segmentCrossBorder(segment).toVector());
+    delete segment;
+    invalidate();
+}
+
+std::vector<PhysicsObject*>* Bullet::calculateInnerState(double dt)
+{
+    PhysicsObject::calculateInnerState(dt);
+    if (!valid && bullet_type == Bullet::MISSILE)
+    {
+        std::vector<PhysicsObject*>* result = new std::vector<PhysicsObject*>();
+        result->push_back(PhysicsObjectFactory::createExplosion(
+                             this->getCoordinates(),
+                             this->getAngle(),
+                             Explosion::MEDIUM));
+        return result;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+bool Bullet::isProjectile()
+{
+    return true;
 }

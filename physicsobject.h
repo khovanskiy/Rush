@@ -36,13 +36,13 @@ protected:
     Vector2D v, a, f, pseudo_v;
     double mass, inertia_moment, force_moment;
     double angular_speed, angular_acceleration;
-    QString physics_object_type;
+    int physics_object_type;
     bool dynamic;
     bool valid;
     int id;
     double time_to_live;
 
-    PhysicsObject(Shape2D* shape, double mass, double inertia_moment, QString physics_object_type);
+    PhysicsObject(Shape2D* shape, double mass, double inertia_moment, int physics_object_type);
     virtual ~PhysicsObject();
 
     Vector2D getSpeedAtPoint(Point2D const & point);
@@ -51,34 +51,21 @@ protected:
     void pushAwayFromExplosion(Point2D const & center, double radius, double impulse_change);
 
 public:
-<<<<<<< HEAD
-    PhysicsObject();
-    virtual void tick(double dt) = 0;
-    virtual Vector2D getCoordinates() = 0;
-    virtual Vector2D getSpeed() = 0;
-    virtual double getAngle() = 0;
-    virtual double getAngularSpeed() = 0;
-    virtual void setCoordinates(Vector2D const & r) = 0;
-    virtual void setSpeed(Vector2D const & v) = 0;
-    //virtual bool collidesWithItem(PhysicsObject* other) = 0;
-    //virtual bool collidesWithBox(Box * box) = 0;
-    //virtual bool collidesWithCircle(Circle * circle) = 0;
-    //virtual bool collidesWithBullet(Bullet* bullet) = 0;
-=======
-    static const QString TURRET;
-    static const QString VEHICLE;
-    static const QString BULLET;
-    static const QString EXPLOSION;
-    static const QString OBSTACLE;
+    static const int TURRET;
+    static const int VEHICLE;
+    static const int BULLET;
+    static const int EXPLOSION;
+    static const int OBSTACLE;
 
-    virtual QString getType();
+    virtual int getType();
     virtual int getId();
-    virtual std::vector<PhysicsObject*> calculateInnerState(double dt);
+    virtual std::vector<PhysicsObject*>* calculateInnerState(double dt);
     virtual bool isValid();
     virtual void invalidate();
     virtual bool isDynamic();
     virtual void setStatic();
     virtual void setDynamic();
+    virtual bool isProjectile();
     virtual void tick(double dt);
     virtual Vector2D getCoordinates();
     virtual void setCoordinates(Vector2D const & r);
@@ -97,15 +84,15 @@ public:
     virtual void setShape(Shape2D* shape);
     virtual AABB getAABB();
     virtual double getHeight();
+    virtual double getImageHeight();
     virtual double getWidth();
+    virtual double getImageWidth();
     virtual double getMass();
     virtual double getInertiaMoment();
     virtual Vector2D getRelativeSpeed(PhysicsObject* other);
     virtual CrossingResult2D collidesWith(PhysicsObject* other);
     virtual Collision solveCollisionWith(PhysicsObject* other, Point2D const & center);
     virtual void applyCollision(Collision const & collision, double dt);
-    virtual void postTick(double dt);
->>>>>>> origin/physicsDebug
 };
 
 #endif // PHYSICSOBJECT_H

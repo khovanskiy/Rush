@@ -48,7 +48,6 @@ Matrix* DisplayObject::getGlobalMatrix()
 
 Matrix* DisplayObject::getLocalMatrix()
 {
-<<<<<<< HEAD
     Matrix a = Matrix::translation(Vector2D(-rx, -ry));
     Matrix b = Matrix::scaling(Vector2D(_scaleX, _scaleY));
     Matrix c = Matrix::rotationZ(-_rotationZ);
@@ -59,15 +58,6 @@ Matrix* DisplayObject::getLocalMatrix()
     a.mul(d);
     a.mul(e);
     *lmatrix = a;
-=======
-    QMatrix a; a.translate(-rx,-ry);
-    QMatrix b; b.scale(_scaleX, _scaleY);
-    QMatrix c; c.rotate(_rotationZ / asin(1) * 90);
-    QMatrix d; d.translate(rx,ry);
-    QMatrix e; e.translate(_x-rx, _y-ry);
-    QMatrix r = a * b * c * d * e;
-    lmatrix->setMatrix(r.m11(),r.m12(),r.m21(),r.m22(),r.dx(),r.dy());
->>>>>>> origin/physicsDebug
     return lmatrix;
 }
 

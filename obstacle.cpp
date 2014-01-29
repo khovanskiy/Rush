@@ -1,39 +1,45 @@
 #include "obstacle.h"
 
-static const double G = 9.80665;
-static const double rotation_friction = 1;
+static const double G = 9.8;
+static const double rotation_friction = 3;
 
-const QString Obstacle::WOODEN_BOX = "wooden_box";
-const QString Obstacle::WOODEN_BARREL = "wooden_barrel";
-const QString Obstacle::STONE_WALL = "stone_wall";
+const int Obstacle::WOODEN_BOX = 0;
+const int Obstacle::WOODEN_BARREL = 1;
+const int Obstacle::STONE_WALL = 2;
 
-Obstacle::Obstacle(Shape2D *shape, double mass, double inertia_moment, QString obstacle_type)
+Obstacle::Obstacle(Shape2D *shape, double mass, double inertia_moment, int obstacle_type)
     : PhysicsObject(shape, mass, inertia_moment, PhysicsObject::OBSTACLE)
 {
-    wheel = new CarWheel(10, 10, 10, 10, 0, Vector2D(0, 0), 1, false, true, RotationReaction::NoRotation);
-    wheel->distributed_weight = G * mass;
-    wheel->changeState(AccelerationState::NoAcc, 0);
-    wheel->distributed_torque = 0;
     this->obstacle_type = obstacle_type;
 }
 
 Obstacle::~Obstacle()
 {
-    delete wheel;
 }
 
-std::vector<PhysicsObject*> Obstacle::calculateInnerState(double dt)
+std::vector<PhysicsObject*>* Obstacle::calculateInnerState(double dt)
 {
     PhysicsObject::calculateInnerState(dt);
-    wheel->v = this->v;
-    wheel->calculateForces(dt);
-    this->f = wheel->f;
-    this->force_moment = wheel->force_moment - this->angular_speed * rotation_friction * this->inertia_moment * G;
-    return std::vector<PhysicsObject*>();
+    double vl = v.getLength();
+    if (vl != 0)
+    {
+        if (vl > G * dt)
+        {
+            f = v;
+            f.setLength(-mass * G);
+        }
+        else
+        {
+            f = v;
+            f.setLength(-mass * vl / dt);
+        }
+    }
+    this->force_moment = -this->angular_speed * rotation_friction * this->inertia_moment * G;
+    return 0;
 }
 
 
-QString Obstacle::getObstacleType()
+int Obstacle::getObstacleType()
 {
     return this->obstacle_type;
 }

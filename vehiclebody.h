@@ -31,10 +31,6 @@ struct VehicleBody
     VehicleBody(VehicleBody const & body);
     void setEnvironmentResistance(double environment_resistance);
     void setSpeed(Vector2D const & v, double angular_speed);
-<<<<<<< HEAD
-    double getChangedResistance(double resistance);
-=======
->>>>>>> origin/physicsDebug
     void calculateForces();
 };
 

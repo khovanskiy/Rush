@@ -1,9 +1,6 @@
 #include "carwheel.h"
 #include "math.h"
-<<<<<<< HEAD
-=======
 #include "console.h"
->>>>>>> origin/physicsDebug
 
 CarWheel::CarWheel(double mu_parallel_friction, double mu_parallel_roll,
                    double mu_perpendicular_friction, double mu_broken_friction,
@@ -65,14 +62,10 @@ void CarWheel::changeState(AccelerationState const & acc_state,
         }
         break;
     case AccelerationState::Brakes:
-<<<<<<< HEAD
-        state = WheelState::Braking;
-=======
         if (braking)
         {
             state = WheelState::Braking;
         }
->>>>>>> origin/physicsDebug
         break;
     }   
     double percent = 0;

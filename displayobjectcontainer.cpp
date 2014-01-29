@@ -30,6 +30,11 @@ void DisplayObjectContainer::removeChild(DisplayObject* child)
     children.erase(std::remove(children.begin(), children.end(), child), children.end());
 }
 
+void DisplayObjectContainer::removeAll()
+{
+    children.clear();
+}
+
 bool DisplayObjectContainer::hasChild(DisplayObject* child) const
 {
     if (child == 0)

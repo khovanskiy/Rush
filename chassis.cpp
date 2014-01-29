@@ -1,8 +1,5 @@
 #include "chassis.h"
-<<<<<<< HEAD
-=======
 #include "console.h"
->>>>>>> origin/physicsDebug
 
 typedef std::vector<Wheel*> vector;
 typedef vector::iterator iterator;
@@ -134,11 +131,8 @@ void Chassis::distributeWeigth()
             {
                 (*i)->distributed_weight *= right_koef;
             }
-<<<<<<< HEAD
-=======
             //Console::print("Distributed weight:");
             //Console::print((*i)->distributed_weight);
->>>>>>> origin/physicsDebug
         }        
     }
 }
@@ -201,11 +195,8 @@ void Chassis::sumForces(double dt)
     for (iterator i = wheels.begin(); i != wheels.end(); i++)
     {
         (*i)->calculateForces(dt);
-<<<<<<< HEAD
-=======
         //Console::print("Wheel force:");
         //Console::print((*i)->f);
->>>>>>> origin/physicsDebug
         f.add((*i)->f);
         force_moment += ((*i)->force_moment);        
     }
@@ -225,13 +216,6 @@ void Chassis::setTotalState(Vector2D const & v, Vector2D const & a, double angul
 
 void Chassis::calculateForces(double dt)
 {
-<<<<<<< HEAD
-    distributeWeigth();
-    setWheelsSpeed();
-    setWheelsReaction();
-    distributeTorque();
-    sumForces(dt);    
-=======
     if (wheels.size() > 0)
     {
         distributeWeigth();
@@ -240,7 +224,6 @@ void Chassis::calculateForces(double dt)
         distributeTorque();
     }
     sumForces(dt);
->>>>>>> origin/physicsDebug
 }
 
 int Chassis::getGear()

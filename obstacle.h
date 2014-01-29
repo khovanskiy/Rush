@@ -7,20 +7,19 @@ class Obstacle : public PhysicsObject
 {
     friend class PhysicsObjectFactory;
 
-    CarWheel* wheel;
-    QString obstacle_type;
+    int obstacle_type;
 
-    Obstacle(Shape2D* shape, double mass, double inertia_moment, QString obstacle_type);
+    Obstacle(Shape2D* shape, double mass, double inertia_moment, int obstacle_type);
     virtual ~Obstacle();
 
 public:
 
-    static const QString WOODEN_BOX;
-    static const QString WOODEN_BARREL;
-    static const QString STONE_WALL;
+    static const int WOODEN_BOX;
+    static const int WOODEN_BARREL;
+    static const int STONE_WALL;
 
-    virtual std::vector<PhysicsObject*> calculateInnerState(double dt);
-    QString getObstacleType();
+    virtual std::vector<PhysicsObject*>* calculateInnerState(double dt);
+    int getObstacleType();
 };
 
 #endif // OBSTACLE_H

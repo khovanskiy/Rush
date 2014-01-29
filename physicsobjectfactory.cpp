@@ -21,19 +21,26 @@ double PhysicsObjectFactory::tireSpecsToRadius(double tread_width,
     return ((tread_width / 1000) * (aspect_ratio / 100) + rim_diameter * inch_to_meter);
 }
 
-Vehicle* PhysicsObjectFactory::createEmptyCar(double length, double width, double mass, QString vehicle_type)
+double PhysicsObjectFactory::inchToMeter(double inches)
 {
-    return new Vehicle(new Rectangle2D(Point2D(0, 0), width, length, 0), mass,
-                   mass * (width * width + length * length) / 12, vehicle_type);
+    return inches * 0.0254;
+}
+
+Vehicle* PhysicsObjectFactory::createEmptyCar(double length, double width, double width_with_mirrors,
+                                              double mass, int vehicle_type)
+
+{
+    return new Vehicle(new Rectangle2D(Point2D(0, 0), width, length, 0), width_with_mirrors,
+                       mass, mass * (width * width + length * length) / 12, vehicle_type);
 }
 
 
-Vehicle* PhysicsObjectFactory::createVehicle(QString vehicle_type)
+Vehicle* PhysicsObjectFactory::createVehicle(int vehicle_type)
 {
     Vehicle* result;
     if (vehicle_type == Vehicle::DODGE_CHALLENGER_SRT8)
     {
-        result = createEmptyCar(5.0, 1.923, 1887, vehicle_type);
+        result = createEmptyCar(5.0, 1.923, 2.270, 1887, vehicle_type);
         double r[] = {3.59, 2.19, 1.41, 1, 0.83};
         std::vector<double> ratios(r, r + sizeof(r) / sizeof(double));
         result->setEngine(VehicleEngine(637, 6000, ratios, 3.06));
@@ -48,11 +55,11 @@ Vehicle* PhysicsObjectFactory::createVehicle(QString vehicle_type)
     }
     else if (vehicle_type == Vehicle::FERRARI_599GTO)
     {
-        result = createEmptyCar(4.710, 1.962, 1605, vehicle_type);
+        result = createEmptyCar(4.710, 1.962, 2.180, 1605, vehicle_type);
         double r[] = {3.15, 2.18, 1.57, 1.19, 0.94, 0.76};
         std::vector<double> ratios(r, r + sizeof(r) / sizeof(double));
         result->setEngine(VehicleEngine(620, 8400, ratios, 4.18));
-        CarTrack back(-1.328, 1.610, tireSpecsToRadius(315, 35, 20),
+        CarTrack back (-1.328, 1.610, tireSpecsToRadius(315, 35, 20),
                       0.53, true, true, RotationReaction::NoRotation,
                       0.9, 0.025, 0.9, 1.5, M_PI / 6);
         CarTrack front(1.470, 1.701, tireSpecsToRadius(280, 35, 20),
@@ -61,11 +68,29 @@ Vehicle* PhysicsObjectFactory::createVehicle(QString vehicle_type)
         result->setWheels(back, front, 1.326);
         result->setVehicleBody(VehicleBody(0.356, 4.710, 1.962, 1.326, result->chassis.getMassCenter()));
     }
+    else if (vehicle_type == Vehicle::FORD_F150_SVT_RAPTOR)
+    {
+        result = createEmptyCar(inchToMeter(232.1), inchToMeter(86.3),
+                                inchToMeter(104.1), 2813, vehicle_type);
+        double r[] = {4.17, 2.34, 1.52, 1.14, 0.86, 0.69};
+        std::vector<double> ratios(r, r + sizeof(r) / sizeof(double));
+        result->setEngine(VehicleEngine(1001, 7000, ratios, 4.10));
+        //http://en.wikipedia.org/wiki/Ford_Boss_engine#7.0.C2.A0L
+        CarTrack back (-inchToMeter(67.2), inchToMeter(73.6), tireSpecsToRadius(315, 35, 20),
+                      0.43, true, true, RotationReaction::NoRotation,
+                      0.9, 0.025, 0.9, 1.5, M_PI / 6);
+        CarTrack front(inchToMeter(78), inchToMeter(73.6), tireSpecsToRadius(280, 35, 20),
+                       0.57, true, true, RotationReaction::StraightRot,
+                       0.9, 0.025, 0.9, 1.5, M_PI / 6);
+        result->setWheels(back, front, inchToMeter(78.4));
+        result->setVehicleBody(VehicleBody(0.356, inchToMeter(232.1), inchToMeter(86.3),
+                                           inchToMeter(78.4), result->chassis.getMassCenter()));
+    }
     PhysicsWorld::gi().addObject(result);
     return result;
 }
 
-Bullet* PhysicsObjectFactory::createBullet(Vector2D r, double angle, QString bullet_type, double dt)
+Bullet* PhysicsObjectFactory::createBullet(Vector2D r, double angle, int bullet_type, double dt)
 {
     double width, height, mass, speed, time_to_live;
     if (bullet_type == Bullet::BULLET)
@@ -97,11 +122,11 @@ Bullet* PhysicsObjectFactory::createBullet(Vector2D r, double angle, QString bul
     return new Bullet(r, v, mass, bullet_type, width, height, dt, time_to_live);
 }
 
-Turret* PhysicsObjectFactory::createVehicleTurret(QString turret_type)
+Turret* PhysicsObjectFactory::createVehicleTurret(int turret_type)
 {
     double width, height, max_angle;
     double fire_delay = 0.4, mass = 100, inertia_moment = 7, scatter = 0;
-    QString bullet_type = Bullet::BULLET;
+    int bullet_type = Bullet::BULLET;
     if (turret_type == Turret::MACHINEGUN)
     {
         bullet_type = Bullet::BULLET;
@@ -117,7 +142,7 @@ Turret* PhysicsObjectFactory::createVehicleTurret(QString turret_type)
     {
         bullet_type = Bullet::MISSILE;
         fire_delay = 2;
-        max_angle = asin(1);
+        max_angle = 2 * asin(1);
         width = 1.3;
         height = 2.10;
         mass = 150;
@@ -142,7 +167,7 @@ Turret* PhysicsObjectFactory::createVehicleTurret(QString turret_type)
     return result;
 }
 
-Explosion* PhysicsObjectFactory::createExplosion(Vector2D r, double angle, QString explosion_type)
+Explosion* PhysicsObjectFactory::createExplosion(Vector2D r, double angle, int explosion_type)
 {
     double start_radius, end_radius, time, explosion_impulse;
     if (explosion_type == Explosion::SMALL)
@@ -170,11 +195,10 @@ Explosion* PhysicsObjectFactory::createExplosion(Vector2D r, double angle, QStri
     Explosion* result = new Explosion(shape, 1e10, 1e10, start_radius, end_radius,
                                       time, explosion_impulse, explosion_type);
     result->setStatic();
-    PhysicsWorld::gi().addObject(result);
     return result;
 }
 
-Obstacle* PhysicsObjectFactory::createObstacle(Vector2D r, double angle, QString obstacle_type)
+Obstacle* PhysicsObjectFactory::createObstacle(Vector2D r, double angle, int obstacle_type)
 {
     Shape2D * shape;
     double mass = 100, inertia_moment = 50;
@@ -188,9 +212,9 @@ Obstacle* PhysicsObjectFactory::createObstacle(Vector2D r, double angle, QString
     }
     else if (obstacle_type == Obstacle::WOODEN_BOX)
     {
-        shape = new Rectangle2D(r, 0.5, 0.5, angle);
-        mass = 50;
-        inertia_moment = 10;
+        shape = new Rectangle2D(r, 1, 1, angle);
+        mass = 30;
+        inertia_moment = 6;
         dynamic = true;
     }
     else if (obstacle_type == Obstacle::WOODEN_BARREL)

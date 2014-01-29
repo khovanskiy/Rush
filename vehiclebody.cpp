@@ -1,10 +1,6 @@
 #include "vehiclebody.h"
 #include <math.h>
 
-<<<<<<< HEAD
-static const double default_environment_resistance = 0.1;
-
-=======
 static const double straight_air_koef = 1;
 static const double rear_air_koef = 3;
 static const double left_air_koef = 5;
@@ -24,7 +20,6 @@ VehicleBody::VehicleBody()
     this->environment_resistance = default_environment_resistance;
 }
 
->>>>>>> origin/physicsDebug
 VehicleBody::VehicleBody(double front_air_resistance,
                          double rear_air_resistance,
                          double left_air_resistance,
@@ -39,8 +34,6 @@ VehicleBody::VehicleBody(double front_air_resistance,
     this->right_air_resistance = right_air_resistance;
     this->spin_air_resistance = spin_air_resistance;
     this->environment_resistance = default_environment_resistance;
-<<<<<<< HEAD
-=======
 }
 
 VehicleBody::VehicleBody(double air_resistance_koef, double length, double width, double height, Vector2D r)
@@ -54,7 +47,6 @@ VehicleBody::VehicleBody(double air_resistance_koef, double length, double width
     this->right_air_resistance = right_air_koef * air_resistance;
     this->spin_air_resistance = spin_air_koef * air_resistance;
     this->environment_resistance = default_environment_resistance;
->>>>>>> origin/physicsDebug
 }
 
 VehicleBody::VehicleBody(VehicleBody const & body)
