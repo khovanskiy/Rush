@@ -40,7 +40,7 @@ public:
     double getLocalAngle() const;
     virtual double getAngle();
     virtual Vector2D getCoordinates();
-    virtual std::vector<PhysicsObject*> calculateInnerState(double dt);
+    virtual std::vector<PhysicsObject*>* calculateInnerState(double dt);
 };
 
 #endif // PHYSICSTURRET_H

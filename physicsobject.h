@@ -59,12 +59,13 @@ public:
 
     virtual int getType();
     virtual int getId();
-    virtual std::vector<PhysicsObject*> calculateInnerState(double dt);
+    virtual std::vector<PhysicsObject*>* calculateInnerState(double dt);
     virtual bool isValid();
     virtual void invalidate();
     virtual bool isDynamic();
     virtual void setStatic();
     virtual void setDynamic();
+    virtual bool isProjectile();
     virtual void tick(double dt);
     virtual Vector2D getCoordinates();
     virtual void setCoordinates(Vector2D const & r);
@@ -92,7 +93,6 @@ public:
     virtual CrossingResult2D collidesWith(PhysicsObject* other);
     virtual Collision solveCollisionWith(PhysicsObject* other, Point2D const & center);
     virtual void applyCollision(Collision const & collision, double dt);
-    virtual void postTick(double dt);
 };
 
 #endif // PHYSICSOBJECT_H

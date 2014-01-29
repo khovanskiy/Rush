@@ -114,7 +114,7 @@ bool Vehicle::isStaying()
     return ((v.getLength() < eps) && (angular_speed < eps));
 }
 
-std::vector<PhysicsObject*> Vehicle::calculateInnerState(double dt)
+std::vector<PhysicsObject*>* Vehicle::calculateInnerState(double dt)
 {
     PhysicsObject::calculateInnerState(dt);
     double angle = this->shape->getAngle();
@@ -136,33 +136,38 @@ std::vector<PhysicsObject*> Vehicle::calculateInnerState(double dt)
     body.f.rotate(angle);
     f.add(body.f);
     force_moment += body.force_moment;
-    std::vector<PhysicsObject*> result;
+    std::vector<PhysicsObject*>* result = new std::vector<PhysicsObject*>();
     for (std::vector<Turret*>::iterator i = turrets.begin(); i != turrets.end(); i++)
     {
         (*i)->setLocalAngle(firing_angle);
         (*i)->setFiring(firing_state);
-        std::vector<PhysicsObject*> bullets = (*i)->calculateInnerState(dt);
+        std::vector<PhysicsObject*>* bullets = (*i)->calculateInnerState(dt);
         double angle = this->getAngle();
         Vector2D r = (*i)->getPosition();
         r.rotate(angle);
         r.add(this->getMassCenter());
-        for (std::vector<PhysicsObject*>::iterator j = bullets.begin(); j != bullets.end(); j++)
+        if (bullets != 0)
         {
-            (dynamic_cast<Bullet*>(*j))->setSource(this);
-            Vector2D ddr = (*j)->getCoordinates();
-            ddr.rotate(angle);
-            ddr.add(this->getMassCenter());
-            (*j)->setMassCenter((*j)->getCoordinates());
-            (*j)->rotate(angle);
-            (*j)->setCoordinates(ddr);
-            Vector2D v = (*j)->getSpeed();
-            v.rotate(angle);
-            v.add(this->getSpeed());
-            (*j)->setSpeed(v);
-            Vector2D impulse = (*j)->getImpulse();
-            impulse.mul(-1);
-            this->addImpulseAtPoint(impulse, r);
-            result.push_back(*j);
+            for (std::vector<PhysicsObject*>::iterator j = bullets->begin(); j != bullets->end(); j++)
+            {
+                (dynamic_cast<Bullet*>(*j))->setSource(this);
+                Vector2D ddr = (*j)->getCoordinates();
+                ddr.rotate(angle);
+                ddr.add(this->getMassCenter());
+                (*j)->setMassCenter((*j)->getCoordinates());
+                (*j)->rotate(angle);
+                (*j)->setCoordinates(ddr);
+                Vector2D v = (*j)->getSpeed();
+                v.rotate(angle);
+                v.add(this->getSpeed());
+                (*j)->setSpeed(v);
+                (*j)->setAngle(-asin(1) + atan2(v.y, v.x));
+                Vector2D impulse = (*j)->getImpulse();
+                impulse.mul(-1);
+                this->addImpulseAtPoint(impulse, r);
+                result->push_back(*j);
+            }
+            delete bullets;
         }
     }
     return result;
@@ -190,8 +195,4 @@ void Vehicle::invalidate()
 void Vehicle::tick(double dt)
 {
     this->PhysicsObject::tick(dt);
-}
-
-void Vehicle::postTick(double dt)
-{    
 }

@@ -80,10 +80,10 @@ int PhysicsObject::getId()
     return this->id;
 }
 
-std::vector<PhysicsObject*> PhysicsObject::calculateInnerState(double dt)
+std::vector<PhysicsObject*>* PhysicsObject::calculateInnerState(double dt)
 {
     pseudo_v.mul(0);
-    return std::vector<PhysicsObject*>();
+    return 0;
 }
 
 bool PhysicsObject::isValid()
@@ -253,16 +253,7 @@ Vector2D PhysicsObject::getRelativeSpeed(PhysicsObject *other)
 
 CrossingResult2D PhysicsObject::collidesWith(PhysicsObject *other)
 {
-    if ((other->getType() == PhysicsObject::BULLET) || (other->getType() == PhysicsObject::EXPLOSION))
-    {
-        return other->collidesWith(this);
-    }
-    else
-    {
-        CrossingResult2D result = (this->shape->cross(other->shape));
-        return result;
-    }
-    return CrossingResult2D(false, Point2D());
+    return this->shape->cross(other->shape);
 }
 
 Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, Point2D const & center)
@@ -332,6 +323,7 @@ double PhysicsObject::getInertiaMoment()
     return this->inertia_moment;
 }
 
-void PhysicsObject::postTick(double dt)
+bool PhysicsObject::isProjectile()
 {
+    return false;
 }

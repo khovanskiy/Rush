@@ -18,7 +18,7 @@ public:
     static const int WOODEN_BARREL;
     static const int STONE_WALL;
 
-    virtual std::vector<PhysicsObject*> calculateInnerState(double dt);
+    virtual std::vector<PhysicsObject*>* calculateInnerState(double dt);
     int getObstacleType();
 };
 

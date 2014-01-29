@@ -36,19 +36,6 @@ void Explosion::tick(double dt)
     }
 }
 
-CrossingResult2D Explosion::collidesWith(PhysicsObject *other)
-{
-    if ((other->getType() == PhysicsObject::BULLET)
-            || (other->getType() == PhysicsObject::EXPLOSION))
-    {
-        return CrossingResult2D(false, Point2D(0, 0));
-    }
-    else
-    {
-        return (this->shape->cross(other->getShape()));
-    }
-}
-
 Collision Explosion::solveCollisionWith(PhysicsObject *other, const Point2D &center)
 {
     return Collision(this->getShape()->cross(other->getShape()).center.toVector(),
@@ -57,4 +44,9 @@ Collision Explosion::solveCollisionWith(PhysicsObject *other, const Point2D &cen
 
 void Explosion::applyCollision(const Collision &collision, double dt)
 {
+}
+
+bool Explosion::isProjectile()
+{
+    return true;
 }

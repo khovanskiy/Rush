@@ -1,6 +1,5 @@
 #include "bullet.h"
 #include "math.h"
-#include "physicsworld.h"
 #include "explosion.h"
 #include "physicsobjectfactory.h"
 
@@ -33,8 +32,7 @@ Bullet::~Bullet()
 
 CrossingResult2D Bullet::collidesWith(PhysicsObject *other)
 {
-    if ((other->getType() == PhysicsObject::BULLET)
-            || (other->getType() == PhysicsObject::EXPLOSION) || (this->source == other))
+    if (this->source == other)
     {
         return CrossingResult2D(false, Point2D(0, 0));
     }
@@ -44,12 +42,12 @@ CrossingResult2D Bullet::collidesWith(PhysicsObject *other)
     }
 }
 
-double Bullet::getWidth()
+double Bullet::getImageWidth()
 {
     return this->width;
 }
 
-double Bullet::getHeight()
+double Bullet::getImageHeight()
 {
     return this->height;
 }
@@ -69,19 +67,25 @@ void Bullet::applyCollision(Collision const &collision, double dt)
     invalidate();
 }
 
-std::vector<PhysicsObject*> Bullet::calculateInnerState(double dt)
+std::vector<PhysicsObject*>* Bullet::calculateInnerState(double dt)
 {
-    pseudo_v.mul(0);
-    std::vector<PhysicsObject*> result;
+    PhysicsObject::calculateInnerState(dt);
     if (!valid && bullet_type == Bullet::MISSILE)
     {
-        if (!PhysicsWorld::gi().isClosed())
-        {
-            result.push_back(PhysicsObjectFactory::createExplosion(
-                                 this->getCoordinates(),
-                                 this->getAngle(),
-                                 Explosion::MEDIUM));
-        }
+        std::vector<PhysicsObject*>* result = new std::vector<PhysicsObject*>();
+        result->push_back(PhysicsObjectFactory::createExplosion(
+                             this->getCoordinates(),
+                             this->getAngle(),
+                             Explosion::MEDIUM));
+        return result;
     }
-    return result;
+    else
+    {
+        return 0;
+    }
+}
+
+bool Bullet::isProjectile()
+{
+    return true;
 }

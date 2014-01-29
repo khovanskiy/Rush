@@ -25,9 +25,9 @@ public:
 
     int getExplosionType();
     virtual void tick(double dt);
-    virtual CrossingResult2D collidesWith(PhysicsObject *other);
     virtual Collision solveCollisionWith(PhysicsObject *other, const Point2D &center);
     virtual void applyCollision(const Collision &collision, double dt);
+    virtual bool isProjectile();
 };
 
 #endif // EXPLOSION_H
