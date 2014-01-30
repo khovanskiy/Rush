@@ -48,9 +48,14 @@ void GameViewObject::update(double scale, Vector2D d_r, double d_angle, Vector2D
     bitmap->setRotationZ(angle);
     bitmap->setWidth(scale * game_model_object->getWidth());
     bitmap->setHeight(scale * game_model_object->getHeight());
-    for (auto i = inner_objects.begin(); i != inner_objects.end(); i++)
+    int num = inner_objects.size();
+    if (num > 0)
     {
-        (*i)->update(scale, d_r, d_angle, center);
+        GameViewObject** ptr = &inner_objects.front();
+        for (int i = 0; i < num; i++)
+        {
+            ptr[i]->update(scale, d_r, d_angle, center);
+        }
     }
 }
 

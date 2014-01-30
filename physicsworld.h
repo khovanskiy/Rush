@@ -25,10 +25,9 @@ struct CollidingPair
     ObjectData* o1;
     ObjectData* o2;
     Point2D center;
-    int remained_collisions;
 
-    CollidingPair(ObjectData* o1, ObjectData* o2, Point2D center, int remained_collisions)
-        : center(center), remained_collisions(remained_collisions)
+    CollidingPair(ObjectData* o1, ObjectData* o2, Point2D center)
+        : center(center)
     {
         this->o1 = o1;
         this->o2 = o2;
@@ -57,7 +56,7 @@ struct ObjectNode
 
 class QuadTree
 {
-    static const int minimal_filling = 10;
+    static const int minimal_filling = 2;
     AABB boundary;
 
     std::vector<ObjectNode*> obj_pairs;
@@ -257,9 +256,8 @@ class PhysicsWorld
     std::vector<ObjectNode*> to_delete;
     std::vector<ObjectData*> projectiles_to_delete;
 
-
     std::vector<ObjectData*> new_objects;
-    std::queue<CollidingPair> colliding_pairs;
+    std::vector<CollidingPair> colliding_pairs;
     std::vector<std::pair<ObjectData*, ObjectData*>> potentially_colliding;
 
     PhysicsWorld();

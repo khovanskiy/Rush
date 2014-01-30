@@ -32,14 +32,17 @@ void Explosion::tick(double dt)
     else
     {
         double radius = start_radius + (end_radius - start_radius) * (time - time_to_live) / time;
-        this->setShape(new Circle2D(this->getCoordinates(), radius, this->getAngle()));
+        dynamic_cast<Circle2D*>(this->getShape())->setRadius(radius);
     }
 }
 
 Collision Explosion::solveCollisionWith(PhysicsObject *other, const Point2D &center)
 {
-    return Collision(this->getShape()->cross(other->getShape()).center.toVector(),
-                     other->getSpeed(), Vector2D(this->explosion_impulse, 0), other);
+    double k = 1 - center.getDistTo(Point2D(getCoordinates())) / end_radius;
+    Vector2D impulse = center.toVector();
+    impulse.sub(other->getMassCenter());
+    impulse.setLength(k * k * explosion_impulse);
+    return Collision(center.toVector(), impulse, Vector2D(0, 0), 0.0, other);
 }
 
 void Explosion::applyCollision(const Collision &collision, double dt)

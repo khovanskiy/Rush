@@ -1,7 +1,7 @@
 #include "gamemodelobject.h"
 #include "console.h"
 
-static const double collision_damage_koef = 2e-3;
+static const double collision_damage_koef = 0;
 static const double bullet_damage_koef = 20;
 static const double explosion_damage_koef = 20;
 static const double minimum_damaging_impulse = 200;
@@ -93,21 +93,26 @@ void GameModelObject::update(double dt, Vector2D parent_r, double parent_angle)
     if (object_data != 0)
     {
         PhysicsObject* physics_object = object_data->object;
-        for (auto i = object_data->collisions.begin(); i != object_data->collisions.end(); i++)
+        int num = object_data->collisions.size();
+        if (num > 0)
         {
-            double d_i = i->impulse_change.getLength();
-            if (d_i > minimum_damaging_impulse)
+            Collision* ptr = &object_data->collisions.front();
+            for (int i = 0; i < num; i++)
             {
-                health -= collision_damage_koef * d_i;
-            }
-            int source_type = i->source->getType();
-            if (source_type == PhysicsObject::BULLET)
-            {
-                health -= bullet_damage_koef;
-            }
-            else if (source_type == PhysicsObject::EXPLOSION)
-            {
-                health -= explosion_damage_koef;
+                double d_i = ptr[i].impulse_change.getLength();
+                if (d_i > minimum_damaging_impulse)
+                {
+                    health -= collision_damage_koef * d_i;
+                }
+                int source_type = ptr[i].source->getType();
+                if (source_type == PhysicsObject::BULLET)
+                {
+                    health -= bullet_damage_koef;
+                }
+                else if (source_type == PhysicsObject::EXPLOSION)
+                {
+                    health -= explosion_damage_koef;
+                }
             }
         }
         if (health <= 0)
@@ -133,18 +138,28 @@ void GameModelObject::update(double dt, Vector2D parent_r, double parent_angle)
     global_r.rotate(parent_angle);
     global_r.add(parent_r);
     global_angle = angle + parent_angle;
-    for (auto i = inner_objects.begin(); i != inner_objects.end(); i++)
+    int num = inner_objects.size();
+    if (num > 0)
     {
-        (*i)->update(dt, global_r, global_angle);
+        GameModelObject** ptr = &inner_objects.front();
+        for (int i = 0; i < num; i++)
+        {
+            ptr[i]->update(dt, global_r, global_angle);
+        }
     }
 }
 
 void GameModelObject::invalidate()
 {
     this->object_data->object->invalidate();
-    for (auto i = inner_objects.begin(); i != inner_objects.end(); i++)
+    int num = inner_objects.size();
+    if (num > 0)
     {
-        (*i)->invalidate();
+        GameModelObject** ptr = &inner_objects.front();
+        for (int i = 0; i < num; i++)
+        {
+            ptr[i]->invalidate();
+        }
     }
 }
 

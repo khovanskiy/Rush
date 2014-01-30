@@ -1,6 +1,5 @@
 #include "gameworld.h"
 #include "console.h"
-#include <QElapsedTimer>
 
 GameWorld::~GameWorld()
 {

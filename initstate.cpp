@@ -77,7 +77,7 @@ void InitState::init()
     }/**/
     for (int i = 0; i < 10; i++)
     {
-        for (int j = 0; j < 10; j++)
+        for (int j = 0; j < 30; j++)
         {
             PhysicsObjectFactory::createObstacle(Vector2D(5 + 2 * j, -15 - 2 * i), 0, Obstacle::WOODEN_BARREL);
         }

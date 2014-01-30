@@ -8,16 +8,18 @@ class PhysicsObject;
 
 struct Collision
 {
+    double depth;
     Vector2D center;
-    Vector2D relative_speed;
     Vector2D impulse_change;
+    Vector2D pseudo_impulse_change;
     PhysicsObject* source;
 
     Collision(){}
-    Collision(Vector2D center, Vector2D relative_speed,
-              Vector2D impulse_change, PhysicsObject* source)
-        : center(center), relative_speed(relative_speed),
-          impulse_change(impulse_change)
+    Collision(Vector2D center, Vector2D impulse_change,
+              Vector2D pseudo_impulse_change,
+              double depth, PhysicsObject* source)
+        : center(center), impulse_change(impulse_change),
+          depth(depth), pseudo_impulse_change(pseudo_impulse_change)
     {
         this->source = source;
     }
@@ -35,7 +37,7 @@ protected:
     Shape2D * shape;
     Vector2D v, a, f, pseudo_v;
     double mass, inertia_moment, force_moment;
-    double angular_speed, angular_acceleration;
+    double pseudo_angular_speed, angular_speed, angular_acceleration;
     int physics_object_type;
     bool dynamic;
     bool valid;
@@ -46,9 +48,9 @@ protected:
     virtual ~PhysicsObject();
 
     Vector2D getSpeedAtPoint(Point2D const & point);
+    Vector2D getPseudoSpeedAtPoint(Point2D const & point);
     void addImpulseAtPoint(Vector2D const & impulse, Point2D const & point);
-    void pushAwayFromPoint(Point2D const & point, PhysicsObject* source, double dt);
-    void pushAwayFromExplosion(Point2D const & center, double radius, double impulse_change);
+    void addPseudoImpulseAtPoint(Vector2D const & pseudo_impulse, Point2D const & point);
 
 public:
     static const int TURRET;
