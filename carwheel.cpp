@@ -1,16 +1,22 @@
 #include "carwheel.h"
 #include "math.h"
+#include "console.h"
 
 CarWheel::CarWheel(double mu_parallel_friction, double mu_parallel_roll,
                    double mu_perpendicular_friction, double mu_broken_friction,
                    double max_angle, Vector2D const & r, double radius,
-                   bool driving, RotationReaction const & reaction)
+                   bool driving, bool braking, RotationReaction const & reaction)
     : Wheel(mu_parallel_friction, mu_parallel_roll,
             mu_perpendicular_friction, mu_broken_friction,
             max_angle, r, radius)
 {
     this->driving = driving;
+    this->braking = braking;
     this->reaction = reaction;
+}
+
+CarWheel::~CarWheel()
+{
 }
 
 CarWheel::CarWheel(CarWheel * carWheel)
@@ -19,6 +25,7 @@ CarWheel::CarWheel(CarWheel * carWheel)
             carWheel->max_angle, carWheel->r, carWheel->radius)
 {
     this->driving = carWheel->driving;
+    this->braking = carWheel->braking;
     this->reaction = carWheel->reaction;
 }
 
@@ -55,7 +62,10 @@ void CarWheel::changeState(AccelerationState const & acc_state,
         }
         break;
     case AccelerationState::Brakes:
-        state = WheelState::Braking;
+        if (braking)
+        {
+            state = WheelState::Braking;
+        }
         break;
     }   
     double percent = 0;

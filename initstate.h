@@ -2,12 +2,11 @@
 #define NULLSTATE_H
 
 #include "state.h"
-#include "bitmap.h"
 #include <memory>
-#include "vehicle.h"
 #include "statecontext.h"
+#include "physicsobjectfactory.h"
 
-class InitState : virtual public State
+class InitState : public State
 {
 public:
     InitState();
@@ -18,12 +17,13 @@ public:
     void defocus();
     void release();
     void Invoke(const Event &event);
+
+
+    void calculateView();
+
 private:
-    Bitmap* dodgeBitmap;
-    Bitmap* ferrariBitmap;
+    double time;
     Vehicle* dodge;
-    Vehicle* ferrari;
-    Vehicle* current;
 };
 
 #endif // NULLSTATE_H

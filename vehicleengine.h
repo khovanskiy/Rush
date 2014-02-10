@@ -27,8 +27,11 @@ private:
     double current_torque;   
 
 public:
+    VehicleEngine();
     VehicleEngine(std::vector<Gear> const & gears);
     VehicleEngine(VehicleEngine const & engine);
+    VehicleEngine(double max_torque, double max_spins_per_minute,
+                  std::vector<double> ratios, double final_ratio);
     void setRotations(double rotating_speed);
     double getTorque(double percent = 1);
     double getSpins();

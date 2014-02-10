@@ -43,28 +43,31 @@ SOURCES += background.cpp \
     state.cpp \
     carwheel.cpp \
     track.cpp \
-    box.cpp \
     bullet.cpp \
     chassis.cpp \
-    circle.cpp \
     wheel.cpp \
     turret.cpp \
     vehicle.cpp \
     vehiclebody.cpp \
     vehicleengine.cpp \
-    position.cpp \
-    realwheel.cpp \
-    realengine.cpp \
-    realbody.cpp \
-    realturret.cpp \
-    materialpoint.cpp \
-    shape.cpp \
-    vehiclefactory.cpp \
     exitstate.cpp \
     vehicleview.cpp \
     sprite.cpp \
     gameobject.cpp \
-    view.cpp
+    view.cpp \
+    bulletfactory.cpp \
+    physicsworld.cpp \
+    physicsobjectfactory.cpp \
+    obstacle.cpp \
+    geometry2d.cpp \
+    explosion.cpp \
+    mapview.cpp \
+    gameviewobjectfactory.cpp \
+    gameviewobject.cpp \
+    gamemodelobject.cpp \
+    gameworld.cpp \
+    random.cpp \
+    gameplaystate.cpp
 
 HEADERS  += background.h \
     bitmap.h \
@@ -97,7 +100,6 @@ HEADERS  += background.h \
     state.h \
     carwheel.h \
     track.h \
-    box.h \
     bullet.h \
     chassis.h \
     circle.h \
@@ -106,16 +108,20 @@ HEADERS  += background.h \
     vehiclebody.h \
     vehicleengine.h \
     wheel.h \
-    position.h \
-    realwheel.h \
-    realengine.h \
-    realbody.h \
-    realturret.h \
-    materialpoint.h \
-    shape.h \
-    vehiclefactory.h \
     exitstate.h \
     vehicleview.h \
     sprite.h \
     gameobject.h \
-    view.h
+    view.h \
+    physicsworld.h \
+    physicsobjectfactory.h \
+    obstacle.h \
+    geometry2d.h \
+    explosion.h \
+    mapview.h \
+    gameviewobjectfactory.h \
+    gameviewobject.h \
+    gamemodelobject.h \
+    gameworld.h \
+    random.h \
+    gameplaystate.h

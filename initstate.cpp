@@ -8,19 +8,27 @@
 #include "math.h"
 #include "background.h"
 #include "keyboard.h"
+#include "mouse.h"
 #include "keyboardevent.h"
 #include "random"
 #include "QCoreApplication"
-#include "vehiclefactory.h"
-#include "gameobject.h"
-#include "view.h"
-#include "interface.h"
-#include "mouse.h"
+#include "mapview.h"
 
-static const double scale = 25;
+static double scale = 15;
+static const int FREE_VIEW = 0;
+static const int FIXED_COORDINATES_FIXED_ANGLE = 1;
+static const int FIXED_COORDINATES = 2;
+static const int TOTAL_VIEWS = 3;
+static int view = 0;
+static Vector2D mouse_pointer(0, 0);
+static Vector2D r_center(500, 500);
+static Vector2D dr(0, 0);
+static double d_angle = 0;
+static bool firing = false;
+static double alpha = 0;
 
 InitState::InitState()
-{
+{    
 }
 
 InitState::~InitState()
@@ -29,43 +37,53 @@ InitState::~InitState()
 
 void InitState::init()
 {
-    View* v = new View();
-    Bitmap* t = new Bitmap();
-    t->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Turrets\\1.png");
-    v->addChild(t);
-    v->setX(-100);
-    t->setX(100);
-    t->setY(200);
-    Interface::gi()->addChild(v);
+    time = 0;
 
-    dodge = VehicleFactory::createDodgeChallengerSRT8(Vector2D(20,20), -asin(1), Vector2D(0, 0), 0);
-    ferrari = VehicleFactory::createFerrari599GTO(Vector2D(20, 30), -asin(1), Vector2D(0, 0), 0);
-    current = dodge;
+    dodge = PhysicsObjectFactory::createVehicle(Vehicle::FORD_F150_SVT_RAPTOR);
+    dodge->setCoordinates(Vector2D(5, 0));
+    dodge->setAngle(2 * asin(1));
     dodge->setTorquePercent(1);
-    ferrari->setTorquePercent(1);
-    //dodge->setAccelerationState(ForwardAcc);
-    //ferrari->setAccelerationState(ForwardAcc);
+    Turret * turret = PhysicsObjectFactory::createVehicleTurret(Turret::SAW);
+    turret->setPosition(Vector2D(-0.5, 2.2));
+    dodge->addTurret(turret);
+    turret = PhysicsObjectFactory::createVehicleTurret(Turret::SAW);
+    turret->setPosition(Vector2D(0.5, 2.2));
+    dodge->addTurret(turret);
+    turret = PhysicsObjectFactory::createVehicleTurret(Turret::MACHINEGUN);
+    turret->setPosition(Vector2D(0.5, 1));
+    dodge->addTurret(turret);
+    turret = PhysicsObjectFactory::createVehicleTurret(Turret::MACHINEGUN);
+    turret->setPosition(Vector2D(-0.5, 1));
+    dodge->addTurret(turret);
+    turret = PhysicsObjectFactory::createVehicleTurret(Turret::ROCKET_LAUNCHER);
+    turret->setPosition(Vector2D(0, -0.5));
+    dodge->addTurret(turret);/**/
 
-    dodgeBitmap = new Bitmap();
-    dodgeBitmap->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\dodge.png");
-    dodgeBitmap->setRSPointCenter();
-    dodgeBitmap->setWidth(scale * dodge->getWidth());
-    dodgeBitmap->setHeight(scale * dodge->getLength());
-    dodgeBitmap->addEventListener(this);
-
-    ferrariBitmap = new Bitmap();
-    ferrariBitmap->load(QCoreApplication::applicationDirPath() + "\\DATA\\Textures\\Vehicles\\ferrari.png");
-    ferrariBitmap->setRSPointCenter();
-    ferrariBitmap->setWidth(scale * ferrari->getWidth());
-    ferrariBitmap->setHeight(scale * ferrari->getLength());
-    ferrariBitmap->addEventListener(this);
-
-    Stage::gi()->addChild(dodgeBitmap);
-    Stage::gi()->addChild(ferrariBitmap);
-
-    Mouse::gi()->addEventListener(this);
+    /*for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            Vehicle* ferrari = PhysicsObjectFactory::createVehicle(Vehicle::FERRARI_599GTO);
+            ferrari->setCoordinates(Vector2D(50 + 6 * j, -15 - 5 * i));
+            ferrari->setAngle(-asin(1));
+        }
+    }/**/
+    /*for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            PhysicsObjectFactory::createObstacle(Vector2D(-50 + 2 * j, -50 - 2 * i), 0, Obstacle::WOODEN_BOX);
+        }
+    }/**/
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            PhysicsObjectFactory::createObstacle(Vector2D(5 + 2 * j, -15 - 2 * i), 0, Obstacle::WOODEN_BARREL);
+        }
+    }/**/
     Keyboard::gi()->addEventListener(this);
-
+    Mouse::gi()->addEventListener(this);
 }
 
 void InitState::focus()
@@ -73,125 +91,164 @@ void InitState::focus()
     Console::print("FOCUS");
 }
 
+void InitState::calculateView()
+{
+    switch (view)
+    {
+    case FIXED_COORDINATES:
+    {
+        dr = dodge->getCoordinates().getMul(-1);
+    } break;
+    case FIXED_COORDINATES_FIXED_ANGLE:
+    {
+        dr = dodge->getCoordinates().getMul(-1);
+        d_angle = -2 * asin(1) - dodge->getAngle();
+    } break;
+    }
+}
+
 void InitState::tick(double dt)
 {
-    static double time = 0;
+
+    //Console::print(time);/**/
+
+    if (!dodge->isValid())
+    {
+        dodge = PhysicsObjectFactory::createVehicle(Vehicle::DODGE_CHALLENGER_SRT8);
+        dodge->setCoordinates(Vector2D(5, 0));
+        dodge->setAngle(2 * asin(1));
+        dodge->setTorquePercent(1);
+        Turret * turret = PhysicsObjectFactory::createVehicleTurret(Turret::SAW);
+        turret->setPosition(Vector2D(-0.5, 2.2));
+        dodge->addTurret(turret);
+        turret = PhysicsObjectFactory::createVehicleTurret(Turret::SAW);
+        turret->setPosition(Vector2D(0.5, 2.2));
+        dodge->addTurret(turret);
+        turret = PhysicsObjectFactory::createVehicleTurret(Turret::MACHINEGUN);
+        turret->setPosition(Vector2D(0.5, 1));
+        dodge->addTurret(turret);
+        turret = PhysicsObjectFactory::createVehicleTurret(Turret::MACHINEGUN);
+        turret->setPosition(Vector2D(-0.5, 1));
+        dodge->addTurret(turret);
+        turret = PhysicsObjectFactory::createVehicleTurret(Turret::ROCKET_LAUNCHER);
+        turret->setPosition(Vector2D(0, -0.5));
+        dodge->addTurret(turret);/**/
+    }
+
+    Vector2D r = dodge->getCoordinates();
+    r.add(dr);
+    r.rotate(d_angle);
+    r.mul(scale);
+    r.add(r_center);
+    double dy = mouse_pointer.y - r.y;
+    double dx = mouse_pointer.x - r.x;
+    alpha = -asin(1) +atan2(dy, dx) - dodge->getAngle() - d_angle;
+    dodge->setFiring(firing, alpha);
+
+    calculateView();
+
     time += dt;
-    dodge->tick(dt);
-    ferrari->tick(dt);
-    Vector2D dodge_c = dodge->getCoordinates();
-    dodgeBitmap->setX(dodge_c.x  * scale);
-    dodgeBitmap->setY(dodge_c.y * scale);
-    dodgeBitmap->setRotationZ(dodge->getAngle());
-    Vector2D ferrari_c = ferrari->getCoordinates();
-    ferrariBitmap->setX(ferrari_c.x  * scale);
-    ferrariBitmap->setY(ferrari_c.y * scale);
-    ferrariBitmap->setRotationZ(ferrari->getAngle());
-    //Console::print(dodge->getSpeed());
-    //Console::print(dodge->isStaying());
-    //Console::print(ferrari->getSpeed());
-   // Console::print(time);
-    //Console::print(ferrari->isStaying());
+
+    MapView::gi().tick(dt);
+    MapView::gi().updateView(scale, dr, d_angle, r_center);
 }
 
 void InitState::Invoke(const Event &event)
 {
-    if (event.type == KeyboardEvent::KEY_DOWN)
-    {
-        KeyboardEvent* st = (KeyboardEvent*)(&event);
-        switch (st->keyCode)
-        {
-            case Qt::Key_Up:
-            {
-                current->setAccelerationState(ForwardAcc);
-            } break;
-            case Qt::Key_Down:
-            {
-                current->setAccelerationState(BackwardAcc);
-            } break;
-            case Qt::Key_Left:
-            {
-                current->setRotationPercent(-1);
-            } break;
-            case Qt::Key_Right:
-            {
-                    current->setRotationPercent(1);
-            } break;
-            case Qt::Key_Space:
-            {
-                    current->setAccelerationState(Brakes);
-            } break;
-            case Qt::Key_W:
-            {
-            Console::print("Enter");
-                context->changeState(StateEnum::INIT);
-            } break;
-        case Qt::Key_Escape:
-        {
-            context->changeState(StateEnum::EXIT);
-        } break;
-        }
-    }
-    else if (event.type == KeyboardEvent::KEY_UP)
-    {
-        KeyboardEvent* st = (KeyboardEvent*)(&event);
-        switch (st->keyCode)
-        {
-            case Qt::Key_Up:
-            {
-                    current->setAccelerationState(NoAcc);
-            } break;
-            case Qt::Key_Down:
-            {
-                    current->setAccelerationState(NoAcc);
-            } break;
-            case Qt::Key_Left:
-            {
-                    current->setRotationPercent(0);
-            } break;
-            case Qt::Key_Right:
-            {
-                    current->setRotationPercent(0);
-            } break;
-            case Qt::Key_Space:
-            {
-                    current->setAccelerationState(NoAcc);
-            } break;
-        }
-    }
-    else if (event.type == MouseEvent::MOUSE_OVER)
-    {
-        if (event.target == ferrariBitmap)
-        {
-            Console::print("Over ferrari");
-        }
-    }
-    else if (event.type == MouseEvent::MOUSE_OUT)
-    {
-        if (event.target == ferrariBitmap)
-        {
-            Console::print("Out ferrari");
-        }
-    }
-    else if (event.type == MouseEvent::MOUSE_DOWN)
+    if (dodge != 0)
     {
         if (event.target == Mouse::gi())
-        Console::print("Mouse down");
-    }
-    else if (event.type == MouseEvent::MOUSE_UP)
-    {
-        if (event.target == Mouse::gi())
-        Console::print("Mouse up");
-    }
-    else if (event.type == MouseEvent::CLICK)
-    {
-        if (event.target == ferrariBitmap)
         {
-            current = ferrari;
+            if ((event.type == MouseEvent::MOUSE_DOWN))
+            {
+                firing = true;
+            }
+            else if (event.type == MouseEvent::MOUSE_UP)
+            {
+                firing = false;
+            }
+            else if (event.type == MouseEvent::MOUSE_MOVE)
+            {
+                MouseEvent* me = (MouseEvent*)(&event);
+                mouse_pointer = Vector2D(me->getX(), me->getY());
+            }
         }
-        else if (event.target == dodgeBitmap)
+        else if (event.target == Keyboard::gi())
         {
-            current = dodge;
+            if (event.type == KeyboardEvent::KEY_DOWN)
+            {
+                KeyboardEvent* st = (KeyboardEvent*)(&event);
+                switch (st->keyCode)
+                {
+                    case Qt::Key_W:
+                    {
+                        dodge->setAccelerationState(ForwardAcc);
+                    } break;
+                    case Qt::Key_S:
+                    {
+                        dodge->setAccelerationState(BackwardAcc);
+                    } break;
+                    case Qt::Key_A:
+                    {
+                        dodge->setRotationPercent(-1);
+                    } break;
+                    case Qt::Key_D:
+                    {
+                            dodge->setRotationPercent(1);
+                    } break;
+                    case Qt::Key_Space:
+                    {
+                            dodge->setAccelerationState(Brakes);
+                    } break;
+                    case Qt::Key_Escape:
+                    {
+                        context->changeState(StateEnum::INIT);
+                    } break;
+                    case Qt::Key_Q:
+                    {
+                        view = (view + 1) % TOTAL_VIEWS;
+                    } break;
+                    case Qt::Key_Plus:
+                    {
+                        scale *= 1.5;
+                    } break;
+                    case Qt::Key_Equal:
+                    {
+                        scale *= 1.5;
+                    } break;
+                    case Qt::Key_Minus:
+                    {
+                        scale /= 1.5;
+                    }
+                }
+            }
+            else if (event.type == KeyboardEvent::KEY_UP)
+            {
+                KeyboardEvent* st = (KeyboardEvent*)(&event);
+                switch (st->keyCode)
+                {
+                    case Qt::Key_W:
+                    {
+                            dodge->setAccelerationState(NoAcc);
+                    } break;
+                    case Qt::Key_S:
+                    {
+                            dodge->setAccelerationState(NoAcc);
+                    } break;
+                    case Qt::Key_A:
+                    {
+                            dodge->setRotationPercent(0);
+                    } break;
+                    case Qt::Key_D:
+                    {
+                            dodge->setRotationPercent(0);
+                    } break;
+                    case Qt::Key_Space:
+                    {
+                            dodge->setAccelerationState(NoAcc);
+                    } break;
+                }
+            }
         }
     }
 }
@@ -202,13 +259,7 @@ void InitState::defocus()
 
 void InitState::release()
 {
-    delete dodge;
-    delete ferrari;
-    Stage::gi()->removeChild(dodgeBitmap);
-    Stage::gi()->removeChild(ferrariBitmap);
-    Mouse::gi()->removeEventListener(this);
     Keyboard::gi()->removeEventListener(this);
-    delete dodgeBitmap;
-    delete ferrariBitmap;
-    Console::print("RELEASE");
+    Mouse::gi()->removeEventListener(this);
+    MapView::gi().clear();
 }

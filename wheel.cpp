@@ -4,8 +4,8 @@
 static const double M_PI = 3.14159265358979323846;
 static const double G = 9.80665;
 static const double eps = 1e-9;
-static const double shaking_koef = 0.5;
-static const double default_surface_friction = 2;
+static const double shaking_koef = 0.1;
+static const double default_surface_friction = 2.5;
 
 #include <math.h>
 
@@ -21,6 +21,10 @@ Wheel::Wheel(double mu_parallel_friction, double mu_parallel_roll,
     this->max_angle = max_angle;
     this->radius = radius;
     this->surface_friction = default_surface_friction;
+}
+
+Wheel::~Wheel()
+{
 }
 
 void Wheel::setWheelAngle(double percent)
@@ -57,6 +61,7 @@ void Wheel::setTorque(double percent)
 void Wheel::calculateForces(double dt)
 {
     f = Vector2D(0, 0);
+    force_moment = 0;
     double mu_par, mu_perp;
     switch (state)
     {
@@ -68,10 +73,7 @@ void Wheel::calculateForces(double dt)
         mu_par = mu_parallel_friction;
         mu_perp = mu_perpendicular_friction;
         break;
-    case WheelState::Free:
-        mu_par = mu_parallel_roll / radius;
-        mu_perp = mu_perpendicular_friction;
-        break;
+    case WheelState::Free:        
     case WheelState::Forward:
     case WheelState::Backward:
     default:
@@ -81,7 +83,6 @@ void Wheel::calculateForces(double dt)
     }
     double vl = v.getLength();
     Vector2D w = getWheelDirection();
-    double alpha = Vector2D::angleBetween(w, v);
     double v_par = abs(v.scalar(w));
     double v_perp = sqrt(abs(vl * vl - v_par * v_par));
     if (v_par > eps) {
@@ -90,11 +91,11 @@ void Wheel::calculateForces(double dt)
         {
             f_par.mul(-1);
         }
-        f_par.mul(distributed_weight * getChangedMu(mu_par) * cos(alpha) * cos(alpha));
+        f_par.mul(distributed_weight * getChangedMu(mu_par));
         if (f_par.getLength() > shaking_koef * v_par * (distributed_weight / G) / dt)
         {
             f_par.setLength(shaking_koef * v_par * (distributed_weight / G) / dt);
-        }
+        }/**/
         f.add(f_par);
     }
     if (v_perp > eps) {
@@ -104,12 +105,23 @@ void Wheel::calculateForces(double dt)
         {
             f_perp.mul(-1);
         }
-        f_perp.mul(distributed_weight * getChangedMu(mu_perp) * sin(alpha) * sin(alpha));
+        f_perp.mul(distributed_weight * getChangedMu(mu_perp));
         if (f_perp.getLength() > shaking_koef * v_perp * (distributed_weight / G) / dt)
         {
             f_perp.setLength(shaking_koef * v_perp * (distributed_weight / G) / dt);
+        }/**/
+        force_moment += 10 * r.cross(f_perp);
+        Vector2D p_f_p(f_perp.getLength(), 0);
+        if (p_f_p.scalar(v) > 0)
+        {
+            p_f_p.mul(-1);
         }
-        f.add(f_perp);
+        double p_v_perp = abs(v.scalar(Vector2D(1, 0)));
+        if (p_f_p.getLength() > shaking_koef * p_v_perp * (distributed_weight / G) / dt)
+        {
+            p_f_p.setLength(shaking_koef * p_v_perp * (distributed_weight / G) / dt);
+        }
+        f.add(p_f_p);
     }
     if ((state == WheelState::Forward) || (state == WheelState::Backward))
     {
@@ -118,7 +130,7 @@ void Wheel::calculateForces(double dt)
         acc_force.mul((force_koef * distributed_torque / radius));
         f.add(acc_force);
     }
-    force_moment = r.cross(f);
+    force_moment += r.cross(f);
 }
 
 

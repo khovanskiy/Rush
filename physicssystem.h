@@ -2,7 +2,7 @@
 #define PHYSICSSYSTEM_H
 #include "physicsobject.h"
 
-class PhysicsSystem : public PhysicsObject
+class PhysicsSystem
 {
 public:
     PhysicsSystem();

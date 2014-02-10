@@ -13,6 +13,7 @@ struct Track : public Wheel
           double max_angle, Vector2D const & r, double radius,
           TrackType const & track_type);
     Track(Track * track);
+    virtual ~Track();
     virtual void changeState(AccelerationState const & acc_state,
                              double rotation);
     virtual double getRotatingSpeed();
