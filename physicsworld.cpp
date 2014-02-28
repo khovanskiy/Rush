@@ -19,7 +19,10 @@ PhysicsWorld::PhysicsWorld()
 void PhysicsWorld::removeObjectNode(ObjectNode *node)
 {
     node->data->object->invalidate();
-    if (tree != 0 && node->position != 0) tree->remove(node);
+    if (tree != 0 && node->position != 0)
+    {
+        tree->remove(node);
+    }
     to_delete.push_back(node);
 }
 
@@ -31,10 +34,12 @@ void PhysicsWorld::removeProjectile(ObjectData *projectile)
 
 PhysicsWorld::~PhysicsWorld()
 {
-    for (auto i = nodes.begin(); i != nodes.end(); i++) {
+    for (auto i = nodes.begin(); i != nodes.end(); i++)
+    {
         removeObjectNode(*i);
     }
-    for (auto i = projectiles.begin(); i != projectiles.end(); i++) {
+    for (auto i = projectiles.begin(); i != projectiles.end(); i++)
+    {
         removeProjectile(*i);
     }
     deleteInvalidObjects();
@@ -65,7 +70,7 @@ std::vector<ObjectData*> PhysicsWorld::popNewObjects()
 
 void PhysicsWorld::clear()
 {
-    int num = nodes.size();
+    int num = (int)nodes.size();
     if (num > 0)
     {
         ObjectNode** ptr = &nodes.front();
@@ -75,7 +80,7 @@ void PhysicsWorld::clear()
         }
         nodes.clear();
     }
-    num = projectiles.size();
+    num = (int)projectiles.size();
     if (num > 0)
     {
         ObjectData** ptr = &projectiles.front();
@@ -96,7 +101,7 @@ void PhysicsWorld::broadCollisionSearch()
     if (nodes.size() > 0)
     {
         double minx = +INFINITY, maxx = -INFINITY, miny = +INFINITY, maxy = -INFINITY;
-        const int num = nodes.size();
+        const int num = (int)nodes.size();
         ObjectNode** ptr = &nodes.front();
         for (int i = 0; i < num; i++)
         {
@@ -130,7 +135,7 @@ void PhysicsWorld::broadCollisionSearch()
         for (int i = 0; i < num; i++)
         {
             tree->queryAABB(ptr[i]->bounds, response);
-            const int num_r = response.size();
+            const int num_r = (int)response.size();
             if (num_r > 1)
             {
                 ObjectData** ptr_r = &response.front();
@@ -145,7 +150,7 @@ void PhysicsWorld::broadCollisionSearch()
             response.clear();
         }
     }
-    int num = projectiles.size();
+    int num = (int)projectiles.size();
     if (tree != 0 && num > 0)
     {
         ObjectData** ptr = &projectiles.front();
@@ -153,7 +158,7 @@ void PhysicsWorld::broadCollisionSearch()
         for (int i = 0; i < num; i++)
         {
             tree->queryAABB(ptr[i]->object->getAABB(), response);
-            int num_r = response.size();
+            int num_r = (int)response.size();
             if (num_r > 0)
             {
                 ObjectData** ptr_r = &response.front();
@@ -170,7 +175,7 @@ void PhysicsWorld::broadCollisionSearch()
 
 void PhysicsWorld::narrowCollisionSearch()
 {
-    const int num = potentially_colliding.size();
+    const int num = (int)potentially_colliding.size();
     if (num > 0)
     {
         std::pair<ObjectData*, ObjectData*>* ptr = &potentially_colliding.front();
@@ -215,7 +220,7 @@ void PhysicsWorld::collisionSolving(double dt)
 
 void PhysicsWorld::changingStates(double dt, std::vector<PhysicsObject*>& n_objects)
 {
-    int num = nodes.size();
+    int num = (int)nodes.size();
     if (num > 0)
     {
         std::vector<ObjectNode*> remaining;
@@ -242,7 +247,7 @@ void PhysicsWorld::changingStates(double dt, std::vector<PhysicsObject*>& n_obje
         }
         this->nodes = remaining;
     }
-    num = projectiles.size();
+    num = (int)projectiles.size();
     if (num > 0)
     {
         std::vector<ObjectData*> remaining;
@@ -273,7 +278,7 @@ void PhysicsWorld::changingStates(double dt, std::vector<PhysicsObject*>& n_obje
 
 void PhysicsWorld::integrating(double dt)
 {
-    int num = nodes.size();
+    int num = (int)nodes.size();
     if (num > 0)
     {
         ObjectNode** ptr = &nodes.front();
@@ -282,7 +287,7 @@ void PhysicsWorld::integrating(double dt)
             ptr[i]->data->object->tick(dt);
         }
     }
-    num = projectiles.size();
+    num = (int)projectiles.size();
     if (num > 0)
     {
         ObjectData** ptr = &projectiles.front();
@@ -303,7 +308,7 @@ void PhysicsWorld::collisionSearch(double dt)
 void PhysicsWorld::tick(double dt)
 {
     deleteInvalidObjects();
-    int num = nodes.size();
+    int num = (int)nodes.size();
     if (num > 0)
     {
         ObjectNode** ptr = &nodes.front();
@@ -312,7 +317,7 @@ void PhysicsWorld::tick(double dt)
             ptr[i]->data->collisions.clear();
         }
     }
-    num = projectiles.size();
+    num = (int)projectiles.size();
     if (num > 0)
     {
         ObjectData** ptr = &projectiles.front();
@@ -334,7 +339,7 @@ void PhysicsWorld::tick(double dt)
 
 void PhysicsWorld::addingObjects(std::vector<PhysicsObject *> &n_objects)
 {
-    int num = n_objects.size();
+    int num = (int)n_objects.size();
     if (num > 0)
     {
         PhysicsObject** ptr = &n_objects.front();
@@ -348,7 +353,7 @@ void PhysicsWorld::addingObjects(std::vector<PhysicsObject *> &n_objects)
 
 void PhysicsWorld::deleteInvalidObjects()
 {
-    int num = to_delete.size();
+    int num = (int)to_delete.size();
     if (num > 0)
     {
         ObjectNode** ptr = &to_delete.front();
@@ -358,7 +363,7 @@ void PhysicsWorld::deleteInvalidObjects()
         }
         to_delete.clear();
     }
-    num = projectiles_to_delete.size();
+    num = (int)projectiles_to_delete.size();
     if (num > 0)
     {
         ObjectData** ptr = &projectiles_to_delete.front();

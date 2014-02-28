@@ -9,7 +9,7 @@
 StateContext::StateContext()
 {
     recuirsion_count = 0;
-    push(StateEnum::INIT);
+    push(StateEnum::GAMEPLAY);
 }
 
 void StateContext::tick(double dt)

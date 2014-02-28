@@ -7,8 +7,6 @@ static const double angular_speed_koef = 0.3;
 static const double PI = 3.14159265358979323846;
 static const double INFINITE_TIME = 1e100;
 
-int PhysicsObject::next_id = 0;
-
 const int PhysicsObject::TURRET = 0;
 const int PhysicsObject::VEHICLE = 1;
 const int PhysicsObject::BULLET = 2;
@@ -17,12 +15,10 @@ const int PhysicsObject::OBSTACLE = 4;
 
 PhysicsObject::PhysicsObject(Shape2D * shape, double mass, double inertia_moment, int physics_object_type)
     : shape(shape), mass(mass), inertia_moment(inertia_moment), v(0, 0), a(0, 0), pseudo_v(0, 0),
-      f(0, 0), force_moment(0), angular_speed(0), angular_acceleration(0), valid(true), time_to_live(INFINITE_TIME)
+      f(0, 0), force_moment(0), angular_speed(0), angular_acceleration(0), time_to_live(INFINITE_TIME)
 {    
     this->dynamic = true;
     this->physics_object_type = physics_object_type;
-    this->id = next_id;
-    next_id++;
 }
 
 PhysicsObject::~PhysicsObject()
@@ -75,25 +71,10 @@ int PhysicsObject::getType()
     return this->physics_object_type;
 }
 
-int PhysicsObject::getId()
-{
-    return this->id;
-}
-
 std::vector<PhysicsObject*>* PhysicsObject::calculateInnerState(double dt)
 {
     pseudo_v.mul(0);
     return 0;
-}
-
-bool PhysicsObject::isValid()
-{
-    return this->valid;
-}
-
-void PhysicsObject::invalidate()
-{
-    this->valid = false;
 }
 
 bool PhysicsObject::isDynamic()
@@ -141,7 +122,7 @@ void PhysicsObject::tick(double dt)
     if (time_to_live <= 0) invalidate();
 }
 
-Vector2D PhysicsObject::getCoordinates()
+Vector2D PhysicsObject::getCoordinates() const
 {
     return shape->getGeometryCenter().toVector();
 }
@@ -295,30 +276,30 @@ Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, Point2D const 
 void PhysicsObject::applyCollision(const Collision &collision, double dt)
 {
     int source_type = collision.source->getType();
-    if (source_type != PhysicsObject::EXPLOSION)
-    {
-        addImpulseAtPoint(collision.impulse_change, collision.center);
-    }
-    if (source_type != PhysicsObject::BULLET)
-    {
-        if (source_type == PhysicsObject::EXPLOSION)
+        if (source_type != PhysicsObject::EXPLOSION)
         {
-            pushAwayFromExplosion(collision.source->getCoordinates(), collision.source->getWidth() / 2,
-                                  collision.impulse_change.getLength());
+            addImpulseAtPoint(collision.impulse_change, collision.center);
         }
-        else
+        if (source_type != PhysicsObject::BULLET)
         {
-            pushAwayFromPoint(collision.center, collision.source, dt);
+            if (source_type == PhysicsObject::EXPLOSION)
+            {
+                pushAwayFromExplosion(collision.source->getCoordinates(), collision.source->getWidth() / 2,
+                                      collision.impulse_change.getLength());
+            }
+            else
+            {
+                pushAwayFromPoint(collision.center, collision.source, dt);
+            }
         }
-    }
 }
 
-double PhysicsObject::getMass()
+double PhysicsObject::getMass() const
 {
     return this->mass;
 }
 
-double PhysicsObject::getInertiaMoment()
+double PhysicsObject::getInertiaMoment() const
 {
     return this->inertia_moment;
 }

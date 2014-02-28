@@ -2,8 +2,9 @@
 #define PHYSICSVEHICLEBODY_H
 #include "vector2d.h"
 
-struct VehicleBody
+class VehicleBody
 {
+public:
     double front_air_resistance;
     double rear_air_resistance;
     double left_air_resistance;

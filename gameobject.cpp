@@ -4,7 +4,7 @@ std::map<__int64, GameObject*> GameObject::table;
 
 GameObject::GameObject(__int64 id)
 {
-    insert(id, this);
+    //insert(id, this);
 }
 
 GameObject::~GameObject()

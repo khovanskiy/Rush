@@ -1,8 +1,10 @@
 #ifndef NULLSTATE_H
 #define NULLSTATE_H
 
-#include "state.h"
 #include <memory>
+
+#include "state.h"
+#include "vehicle.h"
 #include "statecontext.h"
 #include "physicsobjectfactory.h"
 

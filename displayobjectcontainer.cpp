@@ -39,13 +39,16 @@ bool DisplayObjectContainer::hasChild(DisplayObject* child) const
     return find(children.begin(), children.end(), child) != children.end();
 }
 
-void DisplayObjectContainer::render(QPainter* render2d, const Matrix& base)
+void DisplayObjectContainer::render(QPainter* render2d, const Matrix& base, bool t, float new_int)
 {
+    DisplayObject::render(render2d, base, t, new_int);
+
     Matrix current = Matrix::mul(*getLocalMatrix(), base);
+
     for (LIST::iterator it = children.begin(); it != children.end(); it++)
     {
         ELEMENT d = *it;
-        d->render(render2d, current);
+        d->render(render2d, current, t, new_int);
     }
 }
 

@@ -1,4 +1,4 @@
-#include "mapview.h"
+/*#include "mapview.h"
 #include "console.h"
 #include <QElapsedTimer>
 
@@ -13,7 +13,7 @@ MapView::~MapView()
 
 void MapView::deleteInvalidObjects()
 {
-    int num = to_delete.size();
+    int num = (int)to_delete.size();
     if (num > 0)
     {
         GameViewObject** ptr = &to_delete.front();
@@ -36,7 +36,7 @@ void MapView::removeFromScene(GameViewObject *game_view_object)
 {
     Stage::gi()->removeChild(game_view_object->getBitmap());
     std::vector<GameViewObject*> inner_objects = game_view_object->getInnerObjects();
-    int num = inner_objects.size();
+    int num = (int)inner_objects.size();
     if (num > 0)
     {
         GameViewObject** ptr = &inner_objects.front();
@@ -51,7 +51,7 @@ void MapView::addToScene(GameViewObject *game_view_object)
 {
     Stage::gi()->addChild(game_view_object->getBitmap());
     std::vector<GameViewObject*> inner_objects = game_view_object->getInnerObjects();
-    int num = inner_objects.size();
+    int num = (int)inner_objects.size();
     if (num > 0)
     {
         GameViewObject** ptr = &inner_objects.front();
@@ -123,4 +123,4 @@ void MapView::clear()
         game_view_objects.clear();
     }
     GameWorld::gi().clear();
-}
+}*/

@@ -25,6 +25,7 @@ private:
     int loops;
     float interpolation;
     qint64 ticksCount();
+    bool new_frame, old_state;
 private slots:
     void onLoop();
 };

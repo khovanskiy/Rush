@@ -37,7 +37,7 @@ InitState::~InitState()
 
 void InitState::init()
 {
-    time = 0;
+    /*time = 0;
 
     dodge = PhysicsObjectFactory::createVehicle(Vehicle::FORD_F150_SVT_RAPTOR);
     dodge->setCoordinates(Vector2D(5, 0));
@@ -57,33 +57,17 @@ void InitState::init()
     dodge->addTurret(turret);
     turret = PhysicsObjectFactory::createVehicleTurret(Turret::ROCKET_LAUNCHER);
     turret->setPosition(Vector2D(0, -0.5));
-    dodge->addTurret(turret);/**/
+    dodge->addTurret(turret);
 
-    /*for (int i = 0; i < 10; i++)
-    {
-        for (int j = 0; j < 10; j++)
-        {
-            Vehicle* ferrari = PhysicsObjectFactory::createVehicle(Vehicle::FERRARI_599GTO);
-            ferrari->setCoordinates(Vector2D(50 + 6 * j, -15 - 5 * i));
-            ferrari->setAngle(-asin(1));
-        }
-    }/**/
-    /*for (int i = 0; i < 10; i++)
-    {
-        for (int j = 0; j < 10; j++)
-        {
-            PhysicsObjectFactory::createObstacle(Vector2D(-50 + 2 * j, -50 - 2 * i), 0, Obstacle::WOODEN_BOX);
-        }
-    }/**/
     for (int i = 0; i < 10; i++)
     {
         for (int j = 0; j < 10; j++)
         {
             PhysicsObjectFactory::createObstacle(Vector2D(5 + 2 * j, -15 - 2 * i), 0, Obstacle::WOODEN_BARREL);
         }
-    }/**/
+    }
     Keyboard::gi()->addEventListener(this);
-    Mouse::gi()->addEventListener(this);
+    Mouse::gi()->addEventListener(this);*/
 }
 
 void InitState::focus()
@@ -93,7 +77,7 @@ void InitState::focus()
 
 void InitState::calculateView()
 {
-    switch (view)
+    /*switch (view)
     {
     case FIXED_COORDINATES:
     {
@@ -104,7 +88,7 @@ void InitState::calculateView()
         dr = dodge->getCoordinates().getMul(-1);
         d_angle = -2 * asin(1) - dodge->getAngle();
     } break;
-    }
+    }*/
 }
 
 void InitState::tick(double dt)
@@ -112,7 +96,7 @@ void InitState::tick(double dt)
 
     //Console::print(time);/**/
 
-    if (!dodge->isValid())
+    /*if (!dodge->isValid())
     {
         dodge = PhysicsObjectFactory::createVehicle(Vehicle::DODGE_CHALLENGER_SRT8);
         dodge->setCoordinates(Vector2D(5, 0));
@@ -132,7 +116,7 @@ void InitState::tick(double dt)
         dodge->addTurret(turret);
         turret = PhysicsObjectFactory::createVehicleTurret(Turret::ROCKET_LAUNCHER);
         turret->setPosition(Vector2D(0, -0.5));
-        dodge->addTurret(turret);/**/
+        dodge->addTurret(turret);
     }
 
     Vector2D r = dodge->getCoordinates();
@@ -150,12 +134,12 @@ void InitState::tick(double dt)
     time += dt;
 
     MapView::gi().tick(dt);
-    MapView::gi().updateView(scale, dr, d_angle, r_center);
+    MapView::gi().updateView(scale, dr, d_angle, r_center);*/
 }
 
 void InitState::Invoke(const Event &event)
 {
-    if (dodge != 0)
+    /*if (dodge != 0)
     {
         if (event.target == Mouse::gi())
         {
@@ -250,7 +234,7 @@ void InitState::Invoke(const Event &event)
                 }
             }
         }
-    }
+    }*/
 }
 
 void InitState::defocus()
@@ -259,7 +243,7 @@ void InitState::defocus()
 
 void InitState::release()
 {
-    Keyboard::gi()->removeEventListener(this);
+    /*Keyboard::gi()->removeEventListener(this);
     Mouse::gi()->removeEventListener(this);
-    MapView::gi().clear();
+    MapView::gi().clear();*/
 }

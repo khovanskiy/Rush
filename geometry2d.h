@@ -109,6 +109,11 @@ public:
     {
     }
 
+    virtual double getInertiaMoment(double mass)
+    {
+        return 0;
+    }
+
     virtual Point2D getGeometryCenter() const
     {
         return this->geometry_center;

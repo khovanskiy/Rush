@@ -18,7 +18,7 @@ public:
     GraphicCore();
     ~GraphicCore();
     static GraphicCore* gi();
-    void render(float interpolation);
+    void render(bool new_frame, float interpolation);
 protected:
     void paintEvent(QPaintEvent *event);
     void mouseMoveEvent(QMouseEvent *);
@@ -28,6 +28,9 @@ protected:
     void keyReleaseEvent(QKeyEvent *);
     void resizeEvent(QResizeEvent *);
 private:
+    float current_interpolation;
+    bool new_frame;
+    float prev_interpolation;
     //void render(DisplayObjectContainer* child);
     static GraphicCore* instance;
     QPainter* render2d;

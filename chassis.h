@@ -6,7 +6,8 @@
 #include "vehicleengine.h"
 #include "vector2d.h"
 
-struct CarTrack {
+struct CarTrack
+{
     double y;
     double width;
     double wheel_radius;

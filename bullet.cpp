@@ -70,13 +70,13 @@ void Bullet::applyCollision(Collision const &collision, double dt)
 std::vector<PhysicsObject*>* Bullet::calculateInnerState(double dt)
 {
     PhysicsObject::calculateInnerState(dt);
-    if (!valid && bullet_type == Bullet::MISSILE)
+    if (!isValid() && bullet_type == Bullet::MISSILE)
     {
         std::vector<PhysicsObject*>* result = new std::vector<PhysicsObject*>();
-        result->push_back(PhysicsObjectFactory::createExplosion(
+        /*result->push_back(PhysicsObjectFactory::createExplosion(
                              this->getCoordinates(),
                              this->getAngle(),
-                             Explosion::MEDIUM));
+                             Explosion::MEDIUM));*/
         return result;
     }
     else

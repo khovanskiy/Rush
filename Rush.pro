@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network opengl
+QT       += core gui network multimedia opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -51,11 +51,9 @@ SOURCES += background.cpp \
     vehiclebody.cpp \
     vehicleengine.cpp \
     exitstate.cpp \
-    vehicleview.cpp \
     sprite.cpp \
     gameobject.cpp \
     view.cpp \
-    bulletfactory.cpp \
     physicsworld.cpp \
     physicsobjectfactory.cpp \
     obstacle.cpp \
@@ -65,9 +63,12 @@ SOURCES += background.cpp \
     gameviewobjectfactory.cpp \
     gameviewobject.cpp \
     gamemodelobject.cpp \
-    gameworld.cpp \
     random.cpp \
-    gameplaystate.cpp
+    gameplaystate.cpp \
+    thread.cpp \
+    loader.cpp \
+    vehicleview.cpp \
+    turretview.cpp
 
 HEADERS  += background.h \
     bitmap.h \
@@ -109,7 +110,6 @@ HEADERS  += background.h \
     vehicleengine.h \
     wheel.h \
     exitstate.h \
-    vehicleview.h \
     sprite.h \
     gameobject.h \
     view.h \
@@ -122,6 +122,9 @@ HEADERS  += background.h \
     gameviewobjectfactory.h \
     gameviewobject.h \
     gamemodelobject.h \
-    gameworld.h \
     random.h \
-    gameplaystate.h
+    gameplaystate.h \
+    thread.h \
+    loader.h \
+    vehicleview.h \
+    turretview.h

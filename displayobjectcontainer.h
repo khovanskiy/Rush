@@ -20,7 +20,7 @@ public:
     void removeChild(DisplayObject* child);
     bool hasChild(DisplayObject* child) const;
     //LIST* getChildrenList() const;
-    void render(QPainter*, const Matrix&);
+    void render(QPainter*, const Matrix&, bool, float);
     void handleEvent(const Event &);
 private:
     LIST children;

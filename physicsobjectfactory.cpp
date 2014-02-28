@@ -1,4 +1,4 @@
-#include "physicsobjectfactory.h"
+/*#include "physicsobjectfactory.h"
 #include "console.h"
 #include "physicsworld.h"
 
@@ -86,7 +86,7 @@ Vehicle* PhysicsObjectFactory::createVehicle(int vehicle_type)
         result->setVehicleBody(VehicleBody(0.356, inchToMeter(232.1), inchToMeter(86.3),
                                            inchToMeter(78.4), result->chassis.getMassCenter()));
     }
-    PhysicsWorld::gi().addObject(result);
+    //PhysicsWorld::gi().addObject(result);
     return result;
 }
 
@@ -231,4 +231,4 @@ Obstacle* PhysicsObjectFactory::createObstacle(Vector2D r, double angle, int obs
     }
     PhysicsWorld::gi().addObject(result);
     return result;
-}
+}*/

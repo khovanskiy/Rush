@@ -173,7 +173,7 @@ public:
     {
         if (boundary.cross(query))
         {
-            const int num = obj_pairs.size();
+            const int num = (int)obj_pairs.size();
             if (num > 0)
             {
                 ObjectNode** ptr = &obj_pairs.front();
@@ -197,7 +197,7 @@ public:
 
     int getSize()
     {
-        int size = obj_pairs.size();
+        int size = (int)obj_pairs.size();
         if (northWest != 0)
         {
             size += northWest->getSize();

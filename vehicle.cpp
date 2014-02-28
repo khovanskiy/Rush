@@ -22,8 +22,7 @@ void Vehicle::setMassCenter(Vector2D mass_center)
     this->recalculateMassCenter();
 }
 
-Vehicle::Vehicle(Rectangle2D * shape, double width_with_mirrors, double mass, double inertia_moment, int vehicle_type)
-    : PhysicsObject(shape, mass, inertia_moment, PhysicsObject::VEHICLE), width_with_mirrors(width_with_mirrors)
+Vehicle::Vehicle(Rectangle2D * shape, int mass) : PhysicsObject(shape, mass, mass * (shape->getWidth() * shape->getWidth() + shape->getHeight() * shape->getHeight()) / 12, PhysicsObject::VEHICLE)
 {
     this->recalculateMassCenter();
     this->setFiring(false, 0);
@@ -32,7 +31,6 @@ Vehicle::Vehicle(Rectangle2D * shape, double width_with_mirrors, double mass, do
     this->setTorquePercent(0);
     this->width = shape->getWidth();
     this->length = shape->getHeight();
-    this->vehicle_type = vehicle_type;
 }
 
 Vehicle::~Vehicle()
@@ -64,12 +62,12 @@ void Vehicle::setEngine(const VehicleEngine &engine)
     this->chassis.setEngine(engine);
 }
 
-void Vehicle::addTurret(Turret * turret)
+void Vehicle::addTurret(Turret* turret)
 {
     this->turrets.push_back(turret);
     this->mass += turret->getMass();
     this->inertia_moment += turret->getInertiaMoment();
-    double d = turret->getPosition().getLength();
+    double d = turret->getCoordinates().getLength();
     this->inertia_moment += d * d * turret->getMass();
 }
 
@@ -94,14 +92,14 @@ void Vehicle::setFiring(bool firing_state, double firing_angle)
     this->firing_state = firing_state;
 }
 
+void Vehicle::turretsToPoint(const Vector2D &target)
+{
+
+}
+
 int Vehicle::getGear()
 {
     return chassis.getGear();
-}
-
-double Vehicle::getImageWidth()
-{
-    return width_with_mirrors;
 }
 
 double Vehicle::getSpins()
@@ -139,11 +137,11 @@ std::vector<PhysicsObject*>* Vehicle::calculateInnerState(double dt)
     std::vector<PhysicsObject*>* result = new std::vector<PhysicsObject*>();
     for (std::vector<Turret*>::iterator i = turrets.begin(); i != turrets.end(); i++)
     {
-        (*i)->setLocalAngle(firing_angle);
+        (*i)->setAngle(firing_angle);
         (*i)->setFiring(firing_state);
         std::vector<PhysicsObject*>* bullets = (*i)->calculateInnerState(dt);
         double angle = this->getAngle();
-        Vector2D r = (*i)->getPosition();
+        Vector2D r = (*i)->getCoordinates();
         r.rotate(angle);
         r.add(this->getMassCenter());
         if (bullets != 0)
@@ -181,15 +179,6 @@ int Vehicle::getVehicleType()
 std::vector<Turret*> Vehicle::getTurrets()
 {
     return this->turrets;
-}
-
-void Vehicle::invalidate()
-{
-    PhysicsObject::invalidate();
-    for (auto i = turrets.begin(); i != turrets.end(); i++)
-    {
-        (*i)->invalidate();
-    }
 }
 
 void Vehicle::tick(double dt)

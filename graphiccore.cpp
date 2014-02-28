@@ -29,6 +29,7 @@ GraphicCore::GraphicCore() : QGLWidget(QGLFormat(QGL::SampleBuffers), 0)
     setWindowTitle("Rush game");
     resize(1280, 800);
     move(0,0);
+    prev_interpolation = 0;
     setAutoFillBackground(false);
     setMouseTracking(true);
     show();
@@ -55,9 +56,10 @@ void GraphicCore::paintEvent(QPaintEvent*)
     render2d->setBackground(QBrush(QColor(0,0,0)));
     render2d->eraseRect(QRect(this->rect()));
     render2d->setRenderHint(QPainter::Antialiasing);
-    Background::gi()->render(render2d, Matrix());
-    Stage::gi()->render(render2d, Matrix());
-    Interface::gi()->render(render2d, Matrix());
+    render2d->setRenderHint(QPainter::SmoothPixmapTransform);
+    Background::gi()->render(render2d, Matrix(), new_frame, current_interpolation);
+    Stage::gi()->render(render2d, Matrix(), new_frame, current_interpolation);
+    Interface::gi()->render(render2d, Matrix(), new_frame, current_interpolation);
     render2d->end();
 }
 
@@ -111,8 +113,10 @@ void GraphicCore::keyReleaseEvent(QKeyEvent* event)
     }
 }
 
-void GraphicCore::render(float interpolation)
+void GraphicCore::render(bool new_frame, float interpolation)
 {
+    this->new_frame = new_frame;
+    this->current_interpolation = interpolation;
     repaint();
     //dispatchEvent(Event(this, Event::ENTER_FRAME));
 }

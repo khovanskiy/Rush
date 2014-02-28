@@ -16,7 +16,6 @@ Turret::Turret(Shape2D *shape, double mass, double inertia_moment,
     this->max_angle = max_angle;
     this->bullet_type = bullet_type;
     this->firing = false;
-    this->local_angle = 0;
     this->fire_delay = fire_delay;
     this->next_shot = fire_delay;
     this->scatter = scatter;
@@ -24,41 +23,7 @@ Turret::Turret(Shape2D *shape, double mass, double inertia_moment,
 
 Turret::~Turret()
 {
-}
 
-void Turret::setPosition(Vector2D local_r)
-{
-    this->local_r = local_r;
-}
-
-Vector2D Turret::getPosition() const
-{
-    return this->local_r;
-}
-
-void Turret::setLocalAngle(double local_angle)
-{
-    while (local_angle < -2 * asin(1)) local_angle += 4 * asin(1);
-    while (local_angle > 2 * asin(1)) local_angle -= 4 * asin(1);
-    if (local_angle < -max_angle) local_angle = -max_angle;
-    if (local_angle > max_angle) local_angle = max_angle;
-    this->local_angle = local_angle;
-    this->setAngle(local_angle);
-}
-
-double Turret::getLocalAngle() const
-{
-    return this->local_angle;
-}
-
-double Turret::getAngle()
-{
-    return this->local_angle + d_angle;
-}
-
-Vector2D Turret::getCoordinates()
-{
-    return this->local_r;
 }
 
 int Turret::getTurretType() const
@@ -80,7 +45,7 @@ std::vector<PhysicsObject*>* Turret::calculateInnerState(double dt)
 {
     PhysicsObject::calculateInnerState(dt);
     next_shot = (dt > next_shot ? 0 : next_shot - dt);
-    if (firing && next_shot < eps)
+    /*if (firing && next_shot < eps)
     {
         next_shot = fire_delay;
         std::vector<PhysicsObject*>* result = new std::vector<PhysicsObject*>();
@@ -138,7 +103,8 @@ std::vector<PhysicsObject*>* Turret::calculateInnerState(double dt)
     else
     {
         return 0;
-    }
+    }*/
+    return 0;
 }
 
 

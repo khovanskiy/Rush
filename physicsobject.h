@@ -1,5 +1,8 @@
 #ifndef PHYSICSOBJECT_H
 #define PHYSICSOBJECT_H
+
+#include "gamemodelobject.h"
+
 #include "geometry2d.h"
 #include <vector>
 #include <QString>
@@ -14,23 +17,18 @@ struct Collision
     PhysicsObject* source;
 
     Collision(){}
-    Collision(Vector2D center, Vector2D relative_speed,
-              Vector2D impulse_change, PhysicsObject* source)
-        : center(center), relative_speed(relative_speed),
-          impulse_change(impulse_change)
+    Collision(Vector2D center, Vector2D relative_speed, Vector2D impulse_change, PhysicsObject* source)
+        : center(center), relative_speed(relative_speed), impulse_change(impulse_change)
     {
         this->source = source;
     }
 };
 
-class PhysicsObject
+class PhysicsObject : public GameModelObject
 {
     friend class PhysicsWorld;
     friend class PhysicsObjectFactory;
     friend struct ObjectData;
-
-    static int next_id;
-
 protected:
     Shape2D * shape;
     Vector2D v, a, f, pseudo_v;
@@ -38,8 +36,6 @@ protected:
     double angular_speed, angular_acceleration;
     int physics_object_type;
     bool dynamic;
-    bool valid;
-    int id;
     double time_to_live;
 
     PhysicsObject(Shape2D* shape, double mass, double inertia_moment, int physics_object_type);
@@ -58,16 +54,13 @@ public:
     static const int OBSTACLE;
 
     virtual int getType();
-    virtual int getId();
     virtual std::vector<PhysicsObject*>* calculateInnerState(double dt);
-    virtual bool isValid();
-    virtual void invalidate();
     virtual bool isDynamic();
     virtual void setStatic();
     virtual void setDynamic();
     virtual bool isProjectile();
     virtual void tick(double dt);
-    virtual Vector2D getCoordinates();
+    virtual Vector2D getCoordinates() const;
     virtual void setCoordinates(Vector2D const & r);
     virtual void move(Vector2D const & dr);
     virtual Vector2D getSpeed();
@@ -87,8 +80,8 @@ public:
     virtual double getImageHeight();
     virtual double getWidth();
     virtual double getImageWidth();
-    virtual double getMass();
-    virtual double getInertiaMoment();
+    virtual double getMass() const;
+    virtual double getInertiaMoment() const;
     virtual Vector2D getRelativeSpeed(PhysicsObject* other);
     virtual CrossingResult2D collidesWith(PhysicsObject* other);
     virtual Collision solveCollisionWith(PhysicsObject* other, Point2D const & center);
