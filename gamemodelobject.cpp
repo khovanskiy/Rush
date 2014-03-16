@@ -28,7 +28,21 @@ bool GameModelObject::isValid()
 
 void GameModelObject::invalidate()
 {
-    this->valid = false;
+    if (this->valid)
+    {
+        dispatchEvent(Event(this, Event::INVALIDATE));
+        this->valid = false;
+    }
+}
+
+void GameModelObject::add(GameModelObject *go)
+{
+
+}
+
+void GameModelObject::update(double dt)
+{
+
 }
 
 __int64 GameModelObject::getId()

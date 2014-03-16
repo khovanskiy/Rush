@@ -109,7 +109,7 @@ public:
     {
     }
 
-    virtual double getInertiaMoment(double mass)
+    virtual double getInertiaMoment(double)
     {
         return 0;
     }
@@ -192,6 +192,7 @@ struct Circle2D : public Shape2D
 
     Circle2D(Point2D const & center, double radius, double angle);
     virtual ~Circle2D();
+    double getInertiaMoment(double mass);
     virtual bool contains(Point2D const & point) const;
     virtual double getRadius();
     virtual void setRadius(double radius);
@@ -210,10 +211,14 @@ struct Circle2D : public Shape2D
 struct Rectangle2D : public Shape2D
 {
     double width, height;
-    Segment2D * ab, * bc, * cd, * da;
+    Segment2D * ab;
+    Segment2D * bc;
+    Segment2D * cd;
+    Segment2D * da;
 
-    Rectangle2D(Point2D const & center, double width, double height, double angle);
+    Rectangle2D(Point2D const & center, double width, double height);
     virtual ~Rectangle2D();
+    double getInertiaMoment(double mass);
     virtual bool contains(Point2D const & point) const;
     virtual void setRotatingPoint(const Point2D &rotating_point);
     virtual void rotate(double angle);

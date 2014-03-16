@@ -4,13 +4,15 @@
 #include "gamemodelobject.h"
 
 #include "geometry2d.h"
+#include "matrix.h"
 #include <vector>
 #include <QString>
 
 class PhysicsObject;
 
-struct Collision
+class Collision
 {
+public:
     Vector2D center;
     Vector2D relative_speed;
     Vector2D impulse_change;
@@ -29,9 +31,13 @@ class PhysicsObject : public GameModelObject
     friend class PhysicsWorld;
     friend class PhysicsObjectFactory;
     friend struct ObjectData;
+
 protected:
     Shape2D * shape;
-    Vector2D v, a, f, pseudo_v;
+    Vector2D v;
+    Vector2D a;
+    Vector2D f;
+    Vector2D pseudo_v;
     double mass, inertia_moment, force_moment;
     double angular_speed, angular_acceleration;
     int physics_object_type;
@@ -53,15 +59,21 @@ public:
     static const int EXPLOSION;
     static const int OBSTACLE;
 
+    QString debug;
+
+    virtual void tick(double dt);
+    virtual void calculateInnerState(double dt);
+
     virtual int getType();
-    virtual std::vector<PhysicsObject*>* calculateInnerState(double dt);
     virtual bool isDynamic();
     virtual void setStatic();
     virtual void setDynamic();
     virtual bool isProjectile();
-    virtual void tick(double dt);
+
+    virtual void applyCollision(Collision const & collision, double dt);
     virtual Vector2D getCoordinates() const;
     virtual void setCoordinates(Vector2D const & r);
+
     virtual void move(Vector2D const & dr);
     virtual Vector2D getSpeed();
     virtual void setSpeed(Vector2D const & v);
@@ -77,15 +89,12 @@ public:
     virtual void setShape(Shape2D* shape);
     virtual AABB getAABB();
     virtual double getHeight();
-    virtual double getImageHeight();
     virtual double getWidth();
-    virtual double getImageWidth();
     virtual double getMass() const;
     virtual double getInertiaMoment() const;
     virtual Vector2D getRelativeSpeed(PhysicsObject* other);
     virtual CrossingResult2D collidesWith(PhysicsObject* other);
     virtual Collision solveCollisionWith(PhysicsObject* other, Point2D const & center);
-    virtual void applyCollision(Collision const & collision, double dt);
 };
 
 #endif // PHYSICSOBJECT_H

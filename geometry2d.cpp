@@ -267,6 +267,11 @@ Circle2D::~Circle2D()
 {
 }
 
+double Circle2D::getInertiaMoment(double mass)
+{
+    return mass * radius * radius / 2;
+}
+
 bool Circle2D::contains(const Point2D &point) const
 {
     return this->geometry_center.getDistTo(point) < this->radius + eps;
@@ -373,6 +378,11 @@ Point2D Circle2D::segmentCrossBorder(const Segment2D *segment) const
     }
 }
 
+double Rectangle2D::getInertiaMoment(double mass)
+{
+    return mass * (width * width + height * height) / 12;
+}
+
 void Rectangle2D::calculatePoints()
 {
     Vector2D va(-width / 2, -height / 2);
@@ -397,8 +407,8 @@ void Rectangle2D::calculatePoints()
     da->setRotatingPoint(rotating_point);
 }
 
-Rectangle2D::Rectangle2D(const Point2D &center, double width, double height, double angle)
-    : Shape2D(center, angle)
+Rectangle2D::Rectangle2D(const Point2D &center, double width, double height)
+    : Shape2D(center, 0)
 {
     this->width = width;
     this->height = height;

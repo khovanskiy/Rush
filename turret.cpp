@@ -41,7 +41,7 @@ bool Turret::getFiring() const
     return this->firing;
 }
 
-std::vector<PhysicsObject*>* Turret::calculateInnerState(double dt)
+void Turret::calculateInnerState(double dt)
 {
     PhysicsObject::calculateInnerState(dt);
     next_shot = (dt > next_shot ? 0 : next_shot - dt);
@@ -104,7 +104,7 @@ std::vector<PhysicsObject*>* Turret::calculateInnerState(double dt)
     {
         return 0;
     }*/
-    return 0;
+    return;
 }
 
 

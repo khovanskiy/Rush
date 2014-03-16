@@ -23,11 +23,9 @@ public:
 
     void setSource(PhysicsObject* source);
     virtual CrossingResult2D collidesWith(PhysicsObject *other);
-    virtual double getImageWidth();
-    virtual double getImageHeight();
     virtual int getBulletType();    
     virtual void applyCollision(const Collision &collision, double dt);
-    virtual std::vector<PhysicsObject*>* calculateInnerState(double dt);
+    virtual void calculateInnerState(double dt);
     virtual bool isProjectile();
 };
 

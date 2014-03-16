@@ -42,16 +42,6 @@ CrossingResult2D Bullet::collidesWith(PhysicsObject *other)
     }
 }
 
-double Bullet::getImageWidth()
-{
-    return this->width;
-}
-
-double Bullet::getImageHeight()
-{
-    return this->height;
-}
-
 int Bullet::getBulletType()
 {
     return this->bullet_type;
@@ -67,7 +57,7 @@ void Bullet::applyCollision(Collision const &collision, double dt)
     invalidate();
 }
 
-std::vector<PhysicsObject*>* Bullet::calculateInnerState(double dt)
+void Bullet::calculateInnerState(double dt)
 {
     PhysicsObject::calculateInnerState(dt);
     if (!isValid() && bullet_type == Bullet::MISSILE)
@@ -77,11 +67,11 @@ std::vector<PhysicsObject*>* Bullet::calculateInnerState(double dt)
                              this->getCoordinates(),
                              this->getAngle(),
                              Explosion::MEDIUM));*/
-        return result;
+        return;// result;
     }
     else
     {
-        return 0;
+        return;// 0;
     }
 }
 

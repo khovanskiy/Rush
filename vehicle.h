@@ -8,7 +8,7 @@
 #include "chassis.h"
 #include "vehiclebody.h"
 #include "turret.h"
-
+#include "console.h"
 
 class Vehicle : public PhysicsObject
 {
@@ -41,7 +41,7 @@ public:
     virtual bool isStaying();
     virtual int getVehicleType();
 
-    virtual std::vector<PhysicsObject*>* calculateInnerState(double dt);
+    virtual void calculateInnerState(double dt);
     virtual std::vector<Turret*> getTurrets();
 
     Chassis chassis;

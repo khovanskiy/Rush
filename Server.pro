@@ -16,10 +16,21 @@ SOURCES += \
     server-main.cpp \
     vector2d.cpp \
     console.cpp \
-    server.cpp
+    server.cpp \
+    event.cpp \
+    eventdispatcher.cpp \
+    gamemodelobject.cpp \
+    networkclient.cpp \
+    api.cpp
 
 HEADERS  += \
     ../background.h \
     vector2d.h \
     console.h \
-    server.h
+    server.h \
+    event.h \
+    eventdispatcher.h \
+    eventhandler.h \
+    gamemodelobject.h \
+    networkclient.h \
+    api.h

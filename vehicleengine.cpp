@@ -8,20 +8,17 @@ VehicleEngine::VehicleEngine()
     setRotations(0);
 }
 
-VehicleEngine::VehicleEngine(std::vector<Gear> const & gears)
-    : gears(gears)
+VehicleEngine::VehicleEngine(std::vector<Gear> const & gears) : gears(gears)
 {
     setRotations(0);
 }
 
-VehicleEngine::VehicleEngine(VehicleEngine const & engine)
-    : gears(engine.gears)
+VehicleEngine::VehicleEngine(VehicleEngine const & engine) : gears(engine.gears)
 {
     setRotations(0);
 }
 
-VehicleEngine::VehicleEngine(double max_torque, double max_spins_per_minute,
-                             std::vector<double> ratios, double final_ratio)
+VehicleEngine::VehicleEngine(double max_torque, double max_spins_per_minute, std::vector<double> ratios, double final_ratio)
 {
     int n = 0;
     for (std::vector<double>::iterator i = ratios.begin(); i != ratios.end(); i++)
@@ -33,17 +30,20 @@ VehicleEngine::VehicleEngine(double max_torque, double max_spins_per_minute,
     setRotations(0);
 }
 
-void VehicleEngine::setRotations(double rotating_speed) {
+void VehicleEngine::setRotations(double rotating_speed)
+{
     spins_per_minute = 60 * rotating_speed / (2 * M_PI);
     current_torque = 0;
     current_gear = 0;
-    for (std::vector<Gear>::iterator i = gears.begin(); i != gears.end(); i++) {
-        if ((rotating_speed <= (*i).max_rotating_speed) && (current_torque <= (*i).torque)) {
+    for (std::vector<Gear>::iterator i = gears.begin(); i != gears.end(); i++)
+    {
+        if ((rotating_speed <= (*i).max_rotating_speed) && (current_torque <= (*i).torque))
+        {
             current_torque = (*i).torque;
             current_gear = (*i).number;
             spins_per_minute *= (*i).ratio;
         }
-    }    
+    }
 }
 
 double VehicleEngine::getSpins()

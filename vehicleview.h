@@ -8,12 +8,13 @@
 
 #include "turretview.h"
 
-class VehicleView : public GameViewObject
+class VehicleView : public GameViewObject, public EventHandler
 {
 public:
     VehicleView(Vehicle* vehicle);
     virtual ~VehicleView();
     virtual void render(QPainter *, const Matrix &, bool, float);
+    virtual void Invoke(const Event &event);
 protected:
     Vehicle* vehicle;
     Bitmap* body;

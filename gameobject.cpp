@@ -52,3 +52,13 @@ GameObject* GameObject::findById(__int64 id)
     }
     return result;
 }
+
+void GameObject::add(GameObject *go)
+{
+
+}
+
+void GameObject::update(double dt)
+{
+
+}

@@ -51,8 +51,7 @@ void PhysicsObject::pushAwayFromPoint(const Point2D &point, PhysicsObject* sourc
 {
     Vector2D d_p_v = this->getMassCenter();
     d_p_v.sub(point.toVector());
-    double l = push_length_koef * (this->shape->getDepth(point))
-            * source->mass / (this->mass + source->mass);
+    double l = push_length_koef * (this->shape->getDepth(point)) * source->mass / (this->mass + source->mass);
     d_p_v.setLength(l);
     move(d_p_v);
 }
@@ -62,7 +61,7 @@ void PhysicsObject::pushAwayFromExplosion(const Point2D &center, double radius, 
     Vector2D d_v = this->getMassCenter();
     d_v.sub(center.toVector());
     d_v.setLength(explosion_pseudo_v_koef * (impulse_change / mass)
-                    * (radius + this->getHeight() / 2 - d_v.getLength()) / radius);
+                  * (radius + this->getHeight() / 2 - d_v.getLength()) / radius);
     v.add(d_v);
 }
 
@@ -71,10 +70,10 @@ int PhysicsObject::getType()
     return this->physics_object_type;
 }
 
-std::vector<PhysicsObject*>* PhysicsObject::calculateInnerState(double dt)
+void PhysicsObject::calculateInnerState(double dt)
 {
     pseudo_v.mul(0);
-    return 0;
+    return;// 0;
 }
 
 bool PhysicsObject::isDynamic()
@@ -119,7 +118,10 @@ void PhysicsObject::tick(double dt)
         force_moment = 0;
     }
     time_to_live -= dt;
-    if (time_to_live <= 0) invalidate();
+    if (time_to_live <= 0)
+    {
+        invalidate();
+    }
 }
 
 Vector2D PhysicsObject::getCoordinates() const
@@ -202,7 +204,7 @@ void PhysicsObject::setShape(Shape2D * shape)
 
 AABB PhysicsObject::getAABB()
 {
-    return this->shape->getAABB();
+    return shape->getAABB();
 }
 
 double PhysicsObject::getHeight()
@@ -211,16 +213,6 @@ double PhysicsObject::getHeight()
 }
 
 double PhysicsObject::getWidth()
-{
-    return shape->getWidth();
-}
-
-double PhysicsObject::getImageHeight()
-{
-    return shape->getHeight();
-}
-
-double PhysicsObject::getImageWidth()
 {
     return shape->getWidth();
 }
@@ -276,22 +268,22 @@ Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, Point2D const 
 void PhysicsObject::applyCollision(const Collision &collision, double dt)
 {
     int source_type = collision.source->getType();
-        if (source_type != PhysicsObject::EXPLOSION)
+    if (source_type != PhysicsObject::EXPLOSION)
+    {
+        addImpulseAtPoint(collision.impulse_change, collision.center);
+    }
+    if (source_type != PhysicsObject::BULLET)
+    {
+        if (source_type == PhysicsObject::EXPLOSION)
         {
-            addImpulseAtPoint(collision.impulse_change, collision.center);
+            pushAwayFromExplosion(collision.source->getCoordinates(), collision.source->getWidth() / 2,
+                                  collision.impulse_change.getLength());
         }
-        if (source_type != PhysicsObject::BULLET)
+        else
         {
-            if (source_type == PhysicsObject::EXPLOSION)
-            {
-                pushAwayFromExplosion(collision.source->getCoordinates(), collision.source->getWidth() / 2,
-                                      collision.impulse_change.getLength());
-            }
-            else
-            {
-                pushAwayFromPoint(collision.center, collision.source, dt);
-            }
+            pushAwayFromPoint(collision.center, collision.source, dt);
         }
+    }
 }
 
 double PhysicsObject::getMass() const

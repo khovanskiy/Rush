@@ -10,18 +10,22 @@
 #include "background.h"
 #include "physicsworld.h"
 #include "vehicleview.h"
+#include "networkserver.h"
+#include "mouse.h"
+#include "mouseevent.h"
 
 class GameplayState : public State
 {
 public:
     void init();
     void tick(double dt);
+    void Invoke(const Event &);
 private:
-    Bitmap* q;
     Vehicle* car;
     Vehicle* car2;
     VehicleView* b;
     VehicleView* b2;
+    NetworkServer* server;
 };
 
 #endif // GAMEPLAYSTATE_H

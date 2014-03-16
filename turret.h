@@ -33,7 +33,7 @@ public:
     int getTurretType() const;
     void setFiring(bool firing);
     bool getFiring() const;
-    virtual std::vector<PhysicsObject*>* calculateInnerState(double dt);
+    virtual void calculateInnerState(double dt);
 };
 
 #endif // PHYSICSTURRET_H

@@ -15,20 +15,7 @@ void GameplayState::init()
     //bg->setY(100);
     Background::gi()->addChild(bg);
 
-    q = new Bitmap();
-    q->setInter(true);
-    q->setRSPointCenter();
-
-    //q->setRSPoint(Vector2D(0.3,0.4));
-    //q->setScaleX(0.3);
-    //q->setScaleY(0.3);
-    q->setX(300);
-    q->setY(300);
-
-    q->load("DATA\\Textures\\Vehicles\\ford-f-150.png");
-    //Interface::gi()->addChild(q);
-
-    car = new Vehicle(new Rectangle2D(Point2D(0,0), 1.962, 4.710, 0), 1887);
+    car = new Vehicle(new Rectangle2D(Point2D(0,0), 1.962, 4.710), 1887);
 
     b = new VehicleView(car);
     Stage::gi()->addChild(b);
@@ -54,7 +41,7 @@ void GameplayState::init()
 
     PhysicsWorld::gi().addObject(car);
 
-    car2 = new Vehicle(new Rectangle2D(Point2D(0,0), 1.962, 4.710, 0), 1887);
+    car2 = new Vehicle(new Rectangle2D(Point2D(0,0), 1.962, 4.710), 1887);
     car2->setWheels(back, front, 1.45);
     car2->setEngine(VehicleEngine(637, 6000, ratios, 3.06));
     car2->setAngle(M_PI);
@@ -62,7 +49,7 @@ void GameplayState::init()
     car2->setAccelerationState(AccelerationState::ForwardAcc);
 
     //Console::print(car2->getId());
-    Turret* t = new Turret(new Rectangle2D(Point2D(0, -0.5), 1.5, 1.5, 0), 100, 7, 0.1, 2 * asin(1), Bullet::BULLET, 0);
+    Turret* t = new Turret(new Rectangle2D(Point2D(0, -0.5), 1.5, 1.5), 100, 7, 0.1, 2 * asin(1), Bullet::BULLET, 0);
     car2->addTurret(t);
     //PhysicsWorld::gi().addObject(t);
     car2->setCoordinates(Vector2D(30, 10));
@@ -72,11 +59,25 @@ void GameplayState::init()
 
 
     PhysicsWorld::gi().addObject(car2);
+
+    Mouse::gi()->addEventListener(this);
+}
+
+void GameplayState::Invoke(const Event &event)
+{
+    if (event.type == MouseEvent::MOUSE_MOVE)
+    {
+        const MouseEvent* e = static_cast<const MouseEvent*>(&event);
+        Vector2D v(e->getX() / 35, e->getY() / 35);
+        //Console::print(v);
+        Matrix m;
+        //car2->turretsToPoint(v);
+    }
 }
 
 void GameplayState::tick(double dt)
 {
     PhysicsWorld::gi().tick(dt);
     //car2->setAngle(car2->getAngle()+2.9f);
-    //->setRotationZ(q->getRotationZ()+5.9f);
+    //q->setRotationZ(q->getRotationZ()+1.9f);
 }

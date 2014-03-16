@@ -1,6 +1,6 @@
 #include "physicsworld.h"
+
 #include <algorithm>
-//#include <QElapsedTimer>
 #include "console.h"
 #include "math.h"
 
@@ -220,22 +220,37 @@ void PhysicsWorld::collisionSolving(double dt)
 
 void PhysicsWorld::changingStates(double dt, std::vector<PhysicsObject*>& n_objects)
 {
-    int num = (int)nodes.size();
+    for (std::vector<ObjectNode*>::iterator i = nodes.begin(); i != nodes.end();)
+    {
+        if ((*i)->data->object->isValid())
+        {
+            (*i)->data->object->calculateInnerState(dt);
+            ++i;
+        }
+        else
+        {
+            if (tree != 0)
+            {
+                tree->remove(*i);
+            }
+            (*i)->data->object->debug = "invalid Object";
+
+
+            ObjectNode* a = *i;
+            i = nodes.erase(i);
+            delete a;
+        }
+    }
+    /*int num = (int)nodes.size();
     if (num > 0)
     {
         std::vector<ObjectNode*> remaining;
         ObjectNode** ptr = &nodes.front();
         for (int i = 0; i < num; i++)
         {
-            std::vector<PhysicsObject*>* result = ptr[i]->data->object->calculateInnerState(dt);
-            if (result != 0)
-            {
-                for (auto ii = result->begin(); ii != result->end(); ii++)
-                {
-                    n_objects.push_back(*ii);
-                }
-                delete result;
-            }
+            //td::vector<PhysicsObject*>* result =
+            ptr[i]->data->object->calculateInnerState(dt);
+
             if (ptr[i]->data->object->isValid())
             {                
                 remaining.push_back(ptr[i]);
@@ -254,15 +269,9 @@ void PhysicsWorld::changingStates(double dt, std::vector<PhysicsObject*>& n_obje
         ObjectData** ptr = &projectiles.front();
         for (int i = 0; i < num; i++)
         {
-            std::vector<PhysicsObject*>* result = ptr[i]->object->calculateInnerState(dt);
-            if (result != 0)
-            {
-                for (auto ii = result->begin(); ii != result->end(); ii++)
-                {
-                    n_objects.push_back(*ii);
-                }
-                delete result;
-            }
+            //std::vector<PhysicsObject*>* result =
+            ptr[i]->object->calculateInnerState(dt);
+
             if (ptr[i]->object->isValid())
             {
                 remaining.push_back(ptr[i]);
@@ -273,7 +282,7 @@ void PhysicsWorld::changingStates(double dt, std::vector<PhysicsObject*>& n_obje
             }
         }
         this->projectiles = remaining;
-    }
+    }*/
 }
 
 void PhysicsWorld::integrating(double dt)
@@ -308,31 +317,22 @@ void PhysicsWorld::collisionSearch(double dt)
 void PhysicsWorld::tick(double dt)
 {
     deleteInvalidObjects();
-    int num = (int)nodes.size();
-    if (num > 0)
+    for (std::vector<ObjectNode*>::iterator i = nodes.begin(); i != nodes.end(); ++i)
     {
-        ObjectNode** ptr = &nodes.front();
-        for (int i = 0; i < num; i++)
-        {
-            ptr[i]->data->collisions.clear();
-        }
+        (*i)->data->collisions.clear();
     }
-    num = (int)projectiles.size();
-    if (num > 0)
+    for (std::vector<ObjectData*>::iterator i = projectiles.begin(); i != projectiles.end(); ++i)
     {
-        ObjectData** ptr = &projectiles.front();
-        for (int i = 0; i < num; i++)
-        {
-            ptr[i]->collisions.clear();
-        }
+        (*i)->collisions.clear();
     }
+
     double ddt = dt / calc_koef;
     for (int i = 0; i < calc_koef; i++)
     {
         integrating(ddt);
         std::vector<PhysicsObject*> n_objects;
         changingStates(ddt, n_objects);
-        addingObjects(n_objects);
+        //addingObjects(n_objects);
         collisionSearch(ddt);
     }
 }

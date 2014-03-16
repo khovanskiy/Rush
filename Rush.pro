@@ -68,7 +68,8 @@ SOURCES += background.cpp \
     thread.cpp \
     loader.cpp \
     vehicleview.cpp \
-    turretview.cpp
+    turretview.cpp \
+    networkserver.cpp
 
 HEADERS  += background.h \
     bitmap.h \
@@ -127,4 +128,5 @@ HEADERS  += background.h \
     thread.h \
     loader.h \
     vehicleview.h \
-    turretview.h
+    turretview.h \
+    networkserver.h

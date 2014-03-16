@@ -17,7 +17,7 @@ Obstacle::~Obstacle()
 {
 }
 
-std::vector<PhysicsObject*>* Obstacle::calculateInnerState(double dt)
+void Obstacle::calculateInnerState(double dt)
 {
     PhysicsObject::calculateInnerState(dt);
     double vl = v.getLength();
@@ -35,7 +35,7 @@ std::vector<PhysicsObject*>* Obstacle::calculateInnerState(double dt)
         }
     }
     this->force_moment = -this->angular_speed * rotation_friction * this->inertia_moment * G;
-    return 0;
+    return;// 0;
 }
 
 

@@ -3,6 +3,7 @@
 #include <vector>
 #include <queue>
 #include "physicsobject.h"
+#include "console.h"
 
 struct ObjectData
 {
@@ -16,6 +17,7 @@ struct ObjectData
 
     ~ObjectData()
     {
+        Console::print("Delete object data");
         delete this->object;
     }
 };
@@ -51,6 +53,7 @@ struct ObjectNode
 
     ~ObjectNode()
     {
+        Console::print("Delete object node");
         delete data;
     }
 };
@@ -161,7 +164,14 @@ public:
 
     void remove(ObjectNode* node)
     {
-        node->position->innerRemove(node);
+        if (node->position = this)
+        {
+            node->position->innerRemove(node);
+        }
+        else
+        {
+
+        }
     }
 
     void update(ObjectNode* node)

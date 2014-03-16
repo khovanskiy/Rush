@@ -4,7 +4,9 @@
 #include <map>
 #include <vector>
 
-class GameModelObject
+#include "eventdispatcher.h"
+
+class GameModelObject : public EventDispatcher
 {
 public:
     GameModelObject(__int64 id);
@@ -14,10 +16,13 @@ public:
     __int64 getId();
     void setId(__int64);
 
+    void add(GameModelObject* go);
+    void update(double dt);
     bool isValid();
     void invalidate();
 
 private:
+    std::vector<GameModelObject*> inners;
     bool valid;
     void insert(__int64, const GameModelObject*);
     void erase(__int64);
