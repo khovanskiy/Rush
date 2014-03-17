@@ -13,6 +13,7 @@
 #include "networkserver.h"
 #include "mouse.h"
 #include "mouseevent.h"
+#include "uivehiclecontroller.h"
 
 class GameplayState : public State
 {
@@ -21,6 +22,7 @@ public:
     void tick(double dt);
     void Invoke(const Event &);
 private:
+    Bitmap* point;
     Vehicle* car;
     Vehicle* car2;
     VehicleView* b;

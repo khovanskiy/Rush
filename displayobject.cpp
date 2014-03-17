@@ -74,11 +74,6 @@ void DisplayObject::render(QPainter *, const Matrix &base, bool new_frame, float
     }
 }
 
-Matrix* DisplayObject::getRenderMatrix()
-{
-    return getGlobalMatrix();
-}
-
 Matrix* DisplayObject::getGlobalMatrix()
 {
     if (root != 0)
@@ -103,9 +98,10 @@ Matrix* DisplayObject::getLocalMatrix()
     }
     Matrix a = Matrix::translation(Vector2D(-rx * inner_width, -ry * inner_height));
     Matrix b = Matrix::scaling(Vector2D(current_scaleX * kx, current_scaleY * ky));
-    Matrix c = Matrix::rotationZ(-current_rotationZ);
+    Matrix c = Matrix::rotationZ(current_rotationZ);
     Matrix d = Matrix::translation(Vector2D(rx * inner_width, ry * inner_height));
     Matrix e = Matrix::translation(Vector2D(current_x - rx * inner_width, current_y - ry * inner_height));
+    //QMatrix
     a.mul(b);
     a.mul(c);
     a.mul(d);
@@ -162,11 +158,11 @@ void DisplayObject::setWidth(float value)
     isWHsettedup = true;
 }
 
-float DisplayObject::getWidth()
+/*float DisplayObject::getWidth()
 {
     Matrix* res = getRenderMatrix();
     return (float)(inner_height * abs(res->M12) + inner_width * abs(res->M11));
-}
+}*/
 
 void DisplayObject::setHeight(float value)
 {
@@ -174,11 +170,11 @@ void DisplayObject::setHeight(float value)
     isWHsettedup = true;
 }
 
-float DisplayObject::getHeight()
+/*float DisplayObject::getHeight()
 {
     Matrix* res = getRenderMatrix();
     return (float)(inner_width * abs(res->M12) + inner_height * abs(res->M11));
-}
+}*/
 
 bool DisplayObject::isVisible() const
 {

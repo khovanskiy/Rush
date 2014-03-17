@@ -2,6 +2,7 @@
 #define MOUSE_H
 
 #include "eventdispatcher.h"
+#include "mouseevent.h"
 #include "vector2d.h"
 
 class Mouse : public EventDispatcher, public EventHandler

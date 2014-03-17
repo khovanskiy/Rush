@@ -52,7 +52,6 @@ SOURCES += background.cpp \
     vehicleengine.cpp \
     exitstate.cpp \
     sprite.cpp \
-    gameobject.cpp \
     view.cpp \
     physicsworld.cpp \
     physicsobjectfactory.cpp \
@@ -60,7 +59,6 @@ SOURCES += background.cpp \
     geometry2d.cpp \
     explosion.cpp \
     mapview.cpp \
-    gameviewobjectfactory.cpp \
     gameviewobject.cpp \
     gamemodelobject.cpp \
     random.cpp \
@@ -69,7 +67,9 @@ SOURCES += background.cpp \
     loader.cpp \
     vehicleview.cpp \
     turretview.cpp \
-    networkserver.cpp
+    networkserver.cpp \
+    sampleview.cpp \
+    uivehiclecontroller.cpp
 
 HEADERS  += background.h \
     bitmap.h \
@@ -104,7 +104,6 @@ HEADERS  += background.h \
     track.h \
     bullet.h \
     chassis.h \
-    circle.h \
     turret.h \
     vehicle.h \
     vehiclebody.h \
@@ -112,7 +111,6 @@ HEADERS  += background.h \
     wheel.h \
     exitstate.h \
     sprite.h \
-    gameobject.h \
     view.h \
     physicsworld.h \
     physicsobjectfactory.h \
@@ -120,7 +118,6 @@ HEADERS  += background.h \
     geometry2d.h \
     explosion.h \
     mapview.h \
-    gameviewobjectfactory.h \
     gameviewobject.h \
     gamemodelobject.h \
     random.h \
@@ -129,4 +126,6 @@ HEADERS  += background.h \
     loader.h \
     vehicleview.h \
     turretview.h \
-    networkserver.h
+    networkserver.h \
+    sampleview.h \
+    uivehiclecontroller.h

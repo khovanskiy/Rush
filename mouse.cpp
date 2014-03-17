@@ -23,7 +23,7 @@ void Mouse::Invoke(const Event &event)
 {
     if (event.type == MouseEvent::CLICK || event.type == MouseEvent::MOUSE_MOVE || event.type == MouseEvent::MOUSE_DOWN || event.type == MouseEvent::MOUSE_UP || event.type == MouseEvent::MOUSE_WHEEL)
     {
-        MouseEvent* e = (MouseEvent*)(&event);
+        const MouseEvent* e = static_cast<const MouseEvent*>(&event);
         int nx = e->getX();
         int ny = e->getY();
         if (p.x == nx && p.y == ny && event.type == MouseEvent::MOUSE_UP)

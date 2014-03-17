@@ -60,10 +60,14 @@ void Bitmap::render(QPainter* render2d, const Matrix& base, bool t, float new_in
 
         render2d->save();
         render2d->setMatrix(QMatrix());
-        render2d->setBrush(QBrush(QColor(0,255,0, 50)));
+        render2d->setBrush(QBrush(QColor(0,255,0, 255)));
+
         render2d->drawRect(render_bounds);
         render2d->setMatrix(current.toQMatrix());
+
         render2d->drawImage(0, 0, *source);
+        //render2d->drawLine(0,0,0,100);
+        //render2d->drawLine(0, 0, 0, 100);
         render2d->restore();
     }
 }

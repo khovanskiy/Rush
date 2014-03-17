@@ -63,7 +63,7 @@ Matrix Matrix::rotationZ(double angle)
 {
     double cosa = cos(angle);
     double sina = sin(angle);
-    return Matrix(cosa, -sina, sina, cosa, 0, 0);
+    return Matrix(cosa, sina, -sina, cosa, 0, 0);
 }
 
 Matrix Matrix::mul(const Matrix &a, const Matrix &b)

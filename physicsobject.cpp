@@ -19,6 +19,7 @@ PhysicsObject::PhysicsObject(Shape2D * shape, double mass, double inertia_moment
 {    
     this->dynamic = true;
     this->physics_object_type = physics_object_type;
+    local_matrix = new Matrix();
 }
 
 PhysicsObject::~PhysicsObject()
@@ -54,6 +55,19 @@ void PhysicsObject::pushAwayFromPoint(const Point2D &point, PhysicsObject* sourc
     double l = push_length_koef * (this->shape->getDepth(point)) * source->mass / (this->mass + source->mass);
     d_p_v.setLength(l);
     move(d_p_v);
+}
+
+Matrix& PhysicsObject::getTransform()
+{
+    Matrix a = Matrix::translation(Vector2D(-getCoordinates().x, -getCoordinates().y));
+    Matrix b = Matrix::rotationZ(-getAngle());
+    a.mul(b);
+    /*Matrix a = Matrix::rotationZ(getAngle());
+    Matrix b = Matrix::translation(Vector2D(getCoordinates().x, getCoordinates().y));
+    a.mul(b);/**/
+
+    *local_matrix = a;
+    return *local_matrix;
 }
 
 void PhysicsObject::pushAwayFromExplosion(const Point2D &center, double radius, double impulse_change)

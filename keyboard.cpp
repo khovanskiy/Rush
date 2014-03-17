@@ -19,7 +19,7 @@ void Keyboard::Invoke(const Event &event)
 {
     if (event.type == KeyboardEvent::KEY_UP || event.type == KeyboardEvent::KEY_DOWN)
     {
-        KeyboardEvent* st = (KeyboardEvent*)(&event);
+        const KeyboardEvent* st = static_cast<const KeyboardEvent*>(&event);
         dispatchEvent(KeyboardEvent(this, event.type, st->keyCode));
     }
 }

@@ -17,8 +17,7 @@ void GameplayState::init()
 
     car = new Vehicle(new Rectangle2D(Point2D(0,0), 1.962, 4.710), 1887);
 
-    b = new VehicleView(car);
-    Stage::gi()->addChild(b);
+
 
     //1887 * (1.923 * 1.923 + 4.710 * 4.710) / 12
 
@@ -37,7 +36,7 @@ void GameplayState::init()
     car->setAngle(-asin(1));
     car->setTorquePercent(1);
 
-    car->setAccelerationState(AccelerationState::ForwardAcc);
+    //car->setAccelerationState(AccelerationState::ForwardAcc);
 
     PhysicsWorld::gi().addObject(car);
 
@@ -46,13 +45,19 @@ void GameplayState::init()
     car2->setEngine(VehicleEngine(637, 6000, ratios, 3.06));
     car2->setAngle(M_PI);
     car2->setTorquePercent(0.2);
-    car2->setAccelerationState(AccelerationState::ForwardAcc);
+    //car2->setAccelerationState(AccelerationState::ForwardAcc);
 
     //Console::print(car2->getId());
-    Turret* t = new Turret(new Rectangle2D(Point2D(0, -0.5), 1.5, 1.5), 100, 7, 0.1, 2 * asin(1), Bullet::BULLET, 0);
-    car2->addTurret(t);
+    Turret* t = new Turret(new Rectangle2D(Point2D(0, -1.5), 1.5, 1.5), 100, 7, 0.1, 2 * asin(1), Bullet::BULLET, 0);
+    car->addTurret(t);
+    Turret* t2 = new Turret(new Rectangle2D(Point2D(0, 1.5), 1.5, 1.5), 100, 7, 0.1, 2 * asin(1), Bullet::BULLET, 0);
+    car->addTurret(t2);
+
     //PhysicsWorld::gi().addObject(t);
     car2->setCoordinates(Vector2D(30, 10));
+
+    b = new VehicleView(car);
+    Stage::gi()->addChild(b);
 
     b2 = new VehicleView(car2);
     Stage::gi()->addChild(b2);
@@ -61,6 +66,15 @@ void GameplayState::init()
     PhysicsWorld::gi().addObject(car2);
 
     Mouse::gi()->addEventListener(this);
+
+    UIVehicleController* u = new UIVehicleController(car);
+    point = new Bitmap();
+    point->load("DATA\\Textures\\Vehicles\\dodge.png");
+    //Stage::gi()->addChild(point);
+
+    point->setInter(true);
+    point->setX(300);
+    point->setY(400);
 }
 
 void GameplayState::Invoke(const Event &event)
@@ -68,7 +82,7 @@ void GameplayState::Invoke(const Event &event)
     if (event.type == MouseEvent::MOUSE_MOVE)
     {
         const MouseEvent* e = static_cast<const MouseEvent*>(&event);
-        Vector2D v(e->getX() / 35, e->getY() / 35);
+        Vector2D v(200, 100);
         //Console::print(v);
         Matrix m;
         //car2->turretsToPoint(v);
@@ -77,7 +91,9 @@ void GameplayState::Invoke(const Event &event)
 
 void GameplayState::tick(double dt)
 {
+    //car->turretsToPoint();
     PhysicsWorld::gi().tick(dt);
+    //point->setRotationZ(point->getRotationZ()+1);
     //car2->setAngle(car2->getAngle()+2.9f);
     //q->setRotationZ(q->getRotationZ()+1.9f);
 }

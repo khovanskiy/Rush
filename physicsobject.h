@@ -48,10 +48,12 @@ protected:
     virtual ~PhysicsObject();
 
     Vector2D getSpeedAtPoint(Point2D const & point);
+
     void addImpulseAtPoint(Vector2D const & impulse, Point2D const & point);
     void pushAwayFromPoint(Point2D const & point, PhysicsObject* source, double dt);
     void pushAwayFromExplosion(Point2D const & center, double radius, double impulse_change);
 
+    Matrix* local_matrix;
 public:
     static const int TURRET;
     static const int VEHICLE;
@@ -60,6 +62,8 @@ public:
     static const int OBSTACLE;
 
     QString debug;
+
+    Matrix& getTransform();
 
     virtual void tick(double dt);
     virtual void calculateInnerState(double dt);

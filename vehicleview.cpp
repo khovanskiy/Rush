@@ -47,8 +47,8 @@ void VehicleView::render(QPainter *render2d, const Matrix &base, bool new_frame,
         this->setX(m_to_px * vehicle->getCoordinates().x);
         this->setY(m_to_px * vehicle->getCoordinates().y);
         this->setRotationZ(vehicle->getAngle());
-
         Sprite::render(render2d, base, new_frame, interpolation);
+
     }
 }
 

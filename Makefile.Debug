@@ -83,7 +83,6 @@ SOURCES       = background.cpp \
 		vehicleengine.cpp \
 		exitstate.cpp \
 		sprite.cpp \
-		gameobject.cpp \
 		view.cpp \
 		physicsworld.cpp \
 		physicsobjectfactory.cpp \
@@ -91,7 +90,6 @@ SOURCES       = background.cpp \
 		geometry2d.cpp \
 		explosion.cpp \
 		mapview.cpp \
-		gameviewobjectfactory.cpp \
 		gameviewobject.cpp \
 		gamemodelobject.cpp \
 		random.cpp \
@@ -100,7 +98,9 @@ SOURCES       = background.cpp \
 		loader.cpp \
 		vehicleview.cpp \
 		turretview.cpp \
-		networkserver.cpp debug\moc_bitmap.cpp \
+		networkserver.cpp \
+		sampleview.cpp \
+		uivehiclecontroller.cpp debug\moc_bitmap.cpp \
 		debug\moc_game.cpp \
 		debug\moc_program.cpp \
 		debug\moc_thread.cpp \
@@ -145,7 +145,6 @@ OBJECTS       = debug\background.obj \
 		debug\vehicleengine.obj \
 		debug\exitstate.obj \
 		debug\sprite.obj \
-		debug\gameobject.obj \
 		debug\view.obj \
 		debug\physicsworld.obj \
 		debug\physicsobjectfactory.obj \
@@ -153,7 +152,6 @@ OBJECTS       = debug\background.obj \
 		debug\geometry2d.obj \
 		debug\explosion.obj \
 		debug\mapview.obj \
-		debug\gameviewobjectfactory.obj \
 		debug\gameviewobject.obj \
 		debug\gamemodelobject.obj \
 		debug\random.obj \
@@ -163,6 +161,8 @@ OBJECTS       = debug\background.obj \
 		debug\vehicleview.obj \
 		debug\turretview.obj \
 		debug\networkserver.obj \
+		debug\sampleview.obj \
+		debug\uivehiclecontroller.obj \
 		debug\moc_bitmap.obj \
 		debug\moc_game.obj \
 		debug\moc_program.obj \
@@ -178,26 +178,6 @@ DESTDIR_TARGET = debug\Rush.exe
 ####### Implicit rules
 
 .SUFFIXES: .c .cpp .cc .cxx
-
-{debug}.cpp{debug\}.obj::
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
-	$<
-<<
-
-{debug}.cc{debug\}.obj::
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
-	$<
-<<
-
-{debug}.cxx{debug\}.obj::
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
-	$<
-<<
-
-{debug}.c{debug\}.obj::
-	$(CC) -c $(CFLAGS) $(INCPATH) -Fodebug\ @<<
-	$<
-<<
 
 {.}.cpp{debug\}.obj::
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
@@ -215,6 +195,26 @@ DESTDIR_TARGET = debug\Rush.exe
 <<
 
 {.}.c{debug\}.obj::
+	$(CC) -c $(CFLAGS) $(INCPATH) -Fodebug\ @<<
+	$<
+<<
+
+{debug}.cpp{debug\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
+	$<
+<<
+
+{debug}.cc{debug\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
+	$<
+<<
+
+{debug}.cxx{debug\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
+	$<
+<<
+
+{debug}.c{debug\}.obj::
 	$(CC) -c $(CFLAGS) $(INCPATH) -Fodebug\ @<<
 	$<
 <<
@@ -250,7 +250,7 @@ dist:
 	$(ZIP) Rush.zip $(SOURCES) $(DIST) Rush.pro C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\spec_pre.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\common\shell-win32.conf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\qconfig.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_axbase.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_axbase_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_axcontainer.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_axcontainer_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_axserver.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_axserver_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_bluetooth.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_bluetooth_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_bootstrap_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_clucene_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_concurrent.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_concurrent_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_core.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_core_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_declarative.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_declarative_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_designer.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_designer_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_designercomponents_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_gui.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_gui_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_help.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_help_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_multimedia.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_multimedia_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_multimediawidgets.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_multimediawidgets_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_network.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_network_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_nfc.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_nfc_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_opengl.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_opengl_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_openglextensions.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_openglextensions_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_platformsupport_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_positioning.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_positioning_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_printsupport.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_printsupport_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_qml.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_qml_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_qmldevtools_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_qmltest.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_qmltest_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_quick.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_quick_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_quickparticles_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_script.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_script_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_scripttools.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_scripttools_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_sensors.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_sensors_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_serialport.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_serialport_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_sql.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_sql_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_svg.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_svg_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_testlib.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_testlib_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_uitools.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_uitools_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_webkit.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_webkit_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_webkitwidgets.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_webkitwidgets_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_widgets.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_widgets_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_winextras.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_winextras_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_xml.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_xml_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_xmlpatterns.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\modules\qt_lib_xmlpatterns_private.pri C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\qt_functions.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\qt_config.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\win32-msvc2012\qmake.conf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\spec_post.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\exclusive_builds.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\default_pre.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\win32\default_pre.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\resolve_config.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\exclusive_builds_post.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\default_post.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\build_pass.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\qml_debug.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\declarative_debug.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\win32\rtti.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\warn_on.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\qt.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\resources.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\moc.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\win32\opengl.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\uic.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\win32\windows.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\testcase_targets.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\exceptions.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\yacc.prf C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\mkspecs\features\lex.prf Rush.pro C:/Qt/Qt5.2.1/5.2.1/msvc2012_64_opengl/lib/Qt5OpenGLd.prl C:/Qt/Qt5.2.1/5.2.1/msvc2012_64_opengl/lib/Qt5Multimediad.prl C:/Qt/Qt5.2.1/5.2.1/msvc2012_64_opengl/lib/Qt5Widgetsd.prl C:/Qt/Qt5.2.1/5.2.1/msvc2012_64_opengl/lib/Qt5Networkd.prl C:/Qt/Qt5.2.1/5.2.1/msvc2012_64_opengl/lib/Qt5Guid.prl C:/Qt/Qt5.2.1/5.2.1/msvc2012_64_opengl/lib/Qt5Cored.prl  RESOURCES HEADERS SOURCES OBJECTIVE_SOURCES FORMS YACCSOURCES YACCSOURCES LEXSOURCES 
 
 clean: compiler_clean 
-	-$(DEL_FILE) debug\background.obj debug\bitmap.obj debug\camera.obj debug\console.obj debug\displayobject.obj debug\displayobjectcontainer.obj debug\event.obj debug\eventdispatcher.obj debug\game.obj debug\graphiccore.obj debug\initstate.obj debug\interactiveobject.obj debug\interface.obj debug\keyboard.obj debug\keyboardevent.obj debug\main.obj debug\matrix.obj debug\movieclip.obj debug\mouseevent.obj debug\mouse.obj debug\physicsobject.obj debug\physicssystem.obj debug\program.obj debug\vector2d.obj debug\stage.obj debug\statecontext.obj debug\statefactory.obj debug\stateevent.obj debug\state.obj debug\carwheel.obj debug\track.obj debug\bullet.obj debug\chassis.obj debug\wheel.obj debug\turret.obj debug\vehicle.obj debug\vehiclebody.obj debug\vehicleengine.obj debug\exitstate.obj debug\sprite.obj debug\gameobject.obj debug\view.obj debug\physicsworld.obj debug\physicsobjectfactory.obj debug\obstacle.obj debug\geometry2d.obj debug\explosion.obj debug\mapview.obj debug\gameviewobjectfactory.obj debug\gameviewobject.obj debug\gamemodelobject.obj debug\random.obj debug\gameplaystate.obj debug\thread.obj debug\loader.obj debug\vehicleview.obj debug\turretview.obj debug\networkserver.obj debug\moc_bitmap.obj debug\moc_game.obj debug\moc_program.obj debug\moc_thread.obj debug\moc_networkserver.obj
+	-$(DEL_FILE) debug\background.obj debug\bitmap.obj debug\camera.obj debug\console.obj debug\displayobject.obj debug\displayobjectcontainer.obj debug\event.obj debug\eventdispatcher.obj debug\game.obj debug\graphiccore.obj debug\initstate.obj debug\interactiveobject.obj debug\interface.obj debug\keyboard.obj debug\keyboardevent.obj debug\main.obj debug\matrix.obj debug\movieclip.obj debug\mouseevent.obj debug\mouse.obj debug\physicsobject.obj debug\physicssystem.obj debug\program.obj debug\vector2d.obj debug\stage.obj debug\statecontext.obj debug\statefactory.obj debug\stateevent.obj debug\state.obj debug\carwheel.obj debug\track.obj debug\bullet.obj debug\chassis.obj debug\wheel.obj debug\turret.obj debug\vehicle.obj debug\vehiclebody.obj debug\vehicleengine.obj debug\exitstate.obj debug\sprite.obj debug\view.obj debug\physicsworld.obj debug\physicsobjectfactory.obj debug\obstacle.obj debug\geometry2d.obj debug\explosion.obj debug\mapview.obj debug\gameviewobject.obj debug\gamemodelobject.obj debug\random.obj debug\gameplaystate.obj debug\thread.obj debug\loader.obj debug\vehicleview.obj debug\turretview.obj debug\networkserver.obj debug\sampleview.obj debug\uivehiclecontroller.obj debug\moc_bitmap.obj debug\moc_game.obj debug\moc_program.obj debug\moc_thread.obj debug\moc_networkserver.obj
 	-$(DEL_FILE) debug\Rush.exp debug\Rush.ilk debug\Rush.idb debug\Rush.exe.embed.manifest debug\Rush.exe_manifest.rc debug\Rush.exe_manifest.res
 
 distclean: clean
@@ -2001,8 +2001,8 @@ debug\graphiccore.obj: graphiccore.cpp graphiccore.h \
 		interface.h \
 		mouse.h \
 		keyboard.h \
-		mouseevent.h \
 		keyboardevent.h \
+		mouseevent.h \
 		camera.h
 
 debug\initstate.obj: initstate.cpp initstate.h \
@@ -2144,16 +2144,12 @@ debug\initstate.obj: initstate.cpp initstate.h \
 		displayobjectcontainer.h \
 		background.h \
 		keyboard.h \
-		mouse.h \
 		keyboardevent.h \
+		mouse.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QCoreApplication \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcoreapplication.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qeventloop.h \
-		mapview.h \
-		gameviewobjectfactory.h \
-		gameviewobject.h \
-		sprite.h \
-		gameworld.h
+		mapview.h
 
 debug\interactiveobject.obj: interactiveobject.cpp interactiveobject.h \
 		displayobject.h \
@@ -2908,6 +2904,7 @@ debug\mouse.obj: mouse.cpp mouse.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringbuilder.h \
 		eventhandler.h \
 		event.h \
+		vector2d.h \
 		graphiccore.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtOpenGL\QGLWidget \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtOpenGL\qgl.h \
@@ -2998,7 +2995,6 @@ debug\mouse.obj: mouse.cpp mouse.h \
 		displayobject.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QRectF \
-		vector2d.h \
 		matrix.h \
 		background.h \
 		stage.h \
@@ -3062,51 +3058,51 @@ debug\physicsobject.obj: physicsobject.cpp physicsobject.h \
 		event.h \
 		geometry2d.h \
 		vector2d.h \
-		console.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QVariant \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvariant.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlist.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qalgorithms.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiterator.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmetatype.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvarlengtharray.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontainerfwd.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qisenum.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs_impl.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmap.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpair.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdebug.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qhash.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qtextstream.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiodevice.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcoreevent.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qscopedpointer.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject_impl.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlocale.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qshareddata.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvector.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpoint.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qset.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontiguouscache.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringlist.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdatastream.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qregexp.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringmatcher.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QThread \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qthread.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QTextStream \
 		matrix.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpolygon.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvector.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qalgorithms.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiterator.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlist.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpoint.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qrect.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsize.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qregion.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs_impl.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs_win.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdatastream.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qscopedpointer.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiodevice.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcoreevent.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmetatype.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvarlengtharray.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontainerfwd.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qisenum.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject_impl.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpair.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
+		console.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QVariant \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvariant.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmap.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdebug.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qhash.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qtextstream.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlocale.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qshareddata.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qset.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontiguouscache.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringlist.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qregexp.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringmatcher.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QThread \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qthread.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QTextStream
 
 debug\physicssystem.obj: physicssystem.cpp physicssystem.h \
 		physicsobject.h \
@@ -3160,7 +3156,35 @@ debug\physicssystem.obj: physicssystem.cpp physicssystem.h \
 		eventhandler.h \
 		event.h \
 		geometry2d.h \
-		vector2d.h
+		vector2d.h \
+		matrix.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpolygon.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvector.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qalgorithms.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiterator.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlist.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpoint.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qrect.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsize.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qregion.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdatastream.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qscopedpointer.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiodevice.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcoreevent.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmetatype.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvarlengtharray.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontainerfwd.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qisenum.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject_impl.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpair.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h
 
 debug\program.obj: program.cpp program.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtWidgets\QMainWindow \
@@ -3319,7 +3343,8 @@ debug\program.obj: program.cpp program.h \
 		displayobject.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QRectF \
 		mouse.h \
-		keyboard.h
+		keyboard.h \
+		keyboardevent.h
 
 debug\vector2d.obj: vector2d.cpp vector2d.h
 
@@ -3722,6 +3747,16 @@ debug\statefactory.obj: statefactory.cpp statefactory.h \
 		gameviewobject.h \
 		sprite.h \
 		turretview.h \
+		networkserver.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QObject \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtNetwork\QTcpSocket \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtNetwork\qtcpsocket.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtNetwork\qabstractsocket.h \
+		mouse.h \
+		mouseevent.h \
+		uivehiclecontroller.h \
+		keyboard.h \
+		keyboardevent.h \
 		exitstate.h
 
 debug\stateevent.obj: stateevent.cpp stateevent.h \
@@ -4067,6 +4102,34 @@ debug\bullet.obj: bullet.cpp bullet.h \
 		event.h \
 		geometry2d.h \
 		vector2d.h \
+		matrix.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpolygon.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvector.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qalgorithms.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiterator.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlist.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpoint.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qrect.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsize.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qregion.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdatastream.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qscopedpointer.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiodevice.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcoreevent.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmetatype.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvarlengtharray.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontainerfwd.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qisenum.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject_impl.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpair.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
 		explosion.h \
 		physicsobjectfactory.h \
 		vehicle.h \
@@ -4076,6 +4139,23 @@ debug\bullet.obj: bullet.cpp bullet.h \
 		vehicleengine.h \
 		vehiclebody.h \
 		turret.h \
+		console.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QVariant \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvariant.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmap.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdebug.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qhash.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qtextstream.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlocale.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qshareddata.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qset.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontiguouscache.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringlist.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qregexp.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringmatcher.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QThread \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qthread.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QTextStream \
 		obstacle.h
 
 debug\chassis.obj: chassis.cpp chassis.h \
@@ -4319,7 +4399,52 @@ debug\turret.obj: turret.cpp turret.h \
 		event.h \
 		geometry2d.h \
 		vector2d.h \
+		matrix.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpolygon.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvector.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qalgorithms.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiterator.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlist.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpoint.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qrect.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsize.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qregion.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdatastream.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qscopedpointer.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiodevice.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcoreevent.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmetatype.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvarlengtharray.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontainerfwd.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qisenum.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject_impl.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpair.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
 		physicsworld.h \
+		console.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QVariant \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvariant.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmap.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdebug.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qhash.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qtextstream.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlocale.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qshareddata.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qset.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontiguouscache.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringlist.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qregexp.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringmatcher.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QThread \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qthread.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QTextStream \
 		physicsobjectfactory.h \
 		vehicle.h \
 		chassis.h \
@@ -4384,6 +4509,34 @@ debug\vehicle.obj: vehicle.cpp vehicle.h \
 		physicsobject.h \
 		geometry2d.h \
 		vector2d.h \
+		matrix.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpolygon.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvector.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qalgorithms.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiterator.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlist.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpoint.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qrect.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsize.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qregion.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdatastream.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qscopedpointer.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiodevice.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcoreevent.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmetatype.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvarlengtharray.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontainerfwd.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qisenum.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject_impl.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpair.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
 		chassis.h \
 		wheel.h \
 		carwheel.h \
@@ -4394,48 +4547,20 @@ debug\vehicle.obj: vehicle.cpp vehicle.h \
 		console.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QVariant \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvariant.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlist.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qalgorithms.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiterator.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmetatype.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvarlengtharray.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontainerfwd.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qisenum.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs_impl.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmap.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpair.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdebug.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qhash.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qtextstream.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiodevice.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcoreevent.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qscopedpointer.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject_impl.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlocale.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qshareddata.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvector.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpoint.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qset.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontiguouscache.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringlist.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdatastream.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qregexp.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringmatcher.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QThread \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qthread.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QTextStream \
-		matrix.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpolygon.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qrect.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsize.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qregion.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs_win.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QTextStream
 
 debug\vehiclebody.obj: vehiclebody.cpp vehiclebody.h \
 		vector2d.h
@@ -4785,8 +4910,6 @@ debug\sprite.obj: sprite.cpp sprite.h \
 		vector2d.h \
 		matrix.h
 
-debug\gameobject.obj: gameobject.cpp gameobject.h
-
 debug\view.obj: view.cpp view.h \
 		sprite.h \
 		displayobjectcontainer.h \
@@ -4946,51 +5069,51 @@ debug\physicsworld.obj: physicsworld.cpp physicsworld.h \
 		event.h \
 		geometry2d.h \
 		vector2d.h \
-		console.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QVariant \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvariant.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlist.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qalgorithms.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiterator.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmetatype.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvarlengtharray.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontainerfwd.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qisenum.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs_impl.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmap.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpair.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdebug.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qhash.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qtextstream.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiodevice.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcoreevent.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qscopedpointer.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject_impl.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlocale.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qshareddata.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvector.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpoint.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qset.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontiguouscache.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringlist.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdatastream.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qregexp.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringmatcher.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QThread \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qthread.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QTextStream \
 		matrix.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpolygon.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvector.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qalgorithms.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiterator.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlist.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpoint.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qrect.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsize.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qregion.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs_impl.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs_win.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdatastream.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qscopedpointer.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiodevice.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcoreevent.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmetatype.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvarlengtharray.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontainerfwd.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qisenum.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject_impl.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpair.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
+		console.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QVariant \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvariant.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmap.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdebug.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qhash.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qtextstream.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlocale.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qshareddata.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qset.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontiguouscache.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringlist.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qregexp.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringmatcher.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QThread \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qthread.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QTextStream
 
 debug\physicsobjectfactory.obj: physicsobjectfactory.cpp 
 
@@ -5047,6 +5170,34 @@ debug\obstacle.obj: obstacle.cpp obstacle.h \
 		event.h \
 		geometry2d.h \
 		vector2d.h \
+		matrix.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpolygon.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvector.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qalgorithms.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiterator.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlist.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpoint.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qrect.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsize.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qregion.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdatastream.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qscopedpointer.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiodevice.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcoreevent.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmetatype.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvarlengtharray.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontainerfwd.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qisenum.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject_impl.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpair.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
 		carwheel.h \
 		wheel.h
 
@@ -5194,79 +5345,27 @@ debug\explosion.obj: explosion.cpp explosion.h \
 		eventhandler.h \
 		event.h \
 		geometry2d.h \
-		vector2d.h
-
-debug\mapview.obj: mapview.cpp 
-
-debug\gameviewobjectfactory.obj: gameviewobjectfactory.cpp gameviewobjectfactory.h \
-		gameviewobject.h \
-		sprite.h \
-		displayobjectcontainer.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QString \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstring.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qchar.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qglobal.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qconfig.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qfeatures.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsystemdetection.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qprocessordetection.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcompilerdetection.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qglobalstatic.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qbasicatomic.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_bootstrap.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qgenericatomic.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_msvc.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_integrity.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qoldbasicatomic.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_vxworks.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_power.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_alpha.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_armv7.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_armv6.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_armv5.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_bfin.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_ia64.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_mips.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_s390.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_sh4a.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_sparc.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_x86.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_cxx11.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_gcc.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_unix.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmutex.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlogging.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qflags.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qtypeinfo.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qtypetraits.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsysinfo.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qbytearray.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qrefcount.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qnamespace.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qarraydata.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringbuilder.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QPainter \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpainter.h \
+		vector2d.h \
+		matrix.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpolygon.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvector.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qalgorithms.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiterator.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlist.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpoint.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qrect.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsize.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpoint.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qscopedpointer.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpixmap.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpaintdevice.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qregion.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs_impl.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs_win.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qcolor.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qrgb.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringlist.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qalgorithms.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdatastream.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qscopedpointer.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiodevice.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlist.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiterator.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcoreevent.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmetatype.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvarlengtharray.h \
@@ -5274,51 +5373,9 @@ debug\gameviewobjectfactory.obj: gameviewobjectfactory.cpp gameviewobjectfactory
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qisenum.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject_impl.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpair.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qregexp.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringmatcher.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsharedpointer.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qshareddata.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsharedpointer_impl.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qhash.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qimage.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qtransform.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpolygon.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvector.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qregion.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpainterpath.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qtextoption.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpen.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qbrush.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qfontinfo.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qfont.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qfontmetrics.h \
-		interactiveobject.h \
-		displayobject.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QRectF \
-		eventdispatcher.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QMutex \
-		eventhandler.h \
-		event.h \
-		vector2d.h \
-		matrix.h \
-		bitmap.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QImage \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QThread \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qthread.h \
-		console.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QVariant \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvariant.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmap.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdebug.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qtextstream.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlocale.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qset.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontiguouscache.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QTextStream \
-		gamemodelobject.h
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h
+
+debug\mapview.obj: mapview.cpp mapview.h
 
 debug\gameviewobject.obj: gameviewobject.cpp gameviewobject.h \
 		sprite.h \
@@ -5680,8 +5737,17 @@ debug\gameplaystate.obj: gameplaystate.cpp gameplaystate.h \
 		gameviewobject.h \
 		sprite.h \
 		turretview.h \
-		thread.h \
+		networkserver.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QObject \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtNetwork\QTcpSocket \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtNetwork\qtcpsocket.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtNetwork\qabstractsocket.h \
+		mouse.h \
+		mouseevent.h \
+		uivehiclecontroller.h \
+		keyboard.h \
+		keyboardevent.h \
+		thread.h \
 		random.h
 
 debug\thread.obj: thread.cpp thread.h \
@@ -6238,6 +6304,237 @@ debug\networkserver.obj: networkserver.cpp networkserver.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs_win.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h
+
+debug\sampleview.obj: sampleview.cpp sampleview.h \
+		gameviewobject.h \
+		sprite.h \
+		displayobjectcontainer.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QString \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstring.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qchar.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qglobal.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qconfig.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qfeatures.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsystemdetection.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qprocessordetection.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcompilerdetection.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qglobalstatic.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qbasicatomic.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_bootstrap.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qgenericatomic.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_msvc.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_integrity.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qoldbasicatomic.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_vxworks.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_power.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_alpha.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_armv7.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_armv6.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_armv5.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_bfin.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_ia64.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_mips.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_s390.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_sh4a.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_sparc.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_x86.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_cxx11.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_gcc.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_unix.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmutex.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlogging.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qflags.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qtypeinfo.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qtypetraits.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsysinfo.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qbytearray.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qrefcount.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qnamespace.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qarraydata.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringbuilder.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QPainter \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpainter.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qrect.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsize.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpoint.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qscopedpointer.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpixmap.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpaintdevice.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qcolor.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qrgb.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringlist.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qalgorithms.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdatastream.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiodevice.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlist.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiterator.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcoreevent.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmetatype.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvarlengtharray.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontainerfwd.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qisenum.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject_impl.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpair.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qregexp.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringmatcher.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsharedpointer.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qshareddata.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qhash.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qimage.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qtransform.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpolygon.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvector.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qregion.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpainterpath.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qtextoption.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpen.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qbrush.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qfontinfo.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qfont.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qfontmetrics.h \
+		interactiveobject.h \
+		displayobject.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QRectF \
+		eventdispatcher.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QMutex \
+		eventhandler.h \
+		event.h \
+		vector2d.h \
+		matrix.h \
+		bitmap.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QImage \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QThread \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qthread.h \
+		console.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QVariant \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvariant.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmap.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdebug.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qtextstream.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlocale.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qset.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontiguouscache.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QTextStream \
+		gamemodelobject.h
+
+debug\uivehiclecontroller.obj: uivehiclecontroller.cpp uivehiclecontroller.h \
+		vehicle.h \
+		gamemodelobject.h \
+		eventdispatcher.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QMutex \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmutex.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qglobal.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qconfig.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qfeatures.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsystemdetection.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qprocessordetection.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcompilerdetection.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qglobalstatic.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qbasicatomic.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_bootstrap.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qgenericatomic.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_msvc.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_integrity.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qoldbasicatomic.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_vxworks.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_power.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_alpha.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_armv7.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_armv6.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_armv5.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_bfin.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_ia64.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_mips.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_s390.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_sh4a.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_sparc.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_x86.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_cxx11.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_gcc.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qatomic_unix.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlogging.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qflags.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qtypeinfo.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qtypetraits.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsysinfo.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QString \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstring.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qchar.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qbytearray.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qrefcount.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qnamespace.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qarraydata.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringbuilder.h \
+		eventhandler.h \
+		event.h \
+		physicsobject.h \
+		geometry2d.h \
+		vector2d.h \
+		matrix.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qpolygon.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvector.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qalgorithms.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiterator.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlist.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpoint.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qrect.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qsize.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qregion.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdatastream.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qscopedpointer.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qiodevice.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcoreevent.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmetatype.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvarlengtharray.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontainerfwd.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qisenum.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject_impl.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpair.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
+		chassis.h \
+		wheel.h \
+		carwheel.h \
+		vehicleengine.h \
+		vehiclebody.h \
+		turret.h \
+		bullet.h \
+		console.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QVariant \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvariant.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmap.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdebug.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qhash.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qtextstream.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlocale.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qshareddata.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qset.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontiguouscache.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringlist.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qregexp.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringmatcher.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QThread \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qthread.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QTextStream \
+		keyboard.h \
+		keyboardevent.h
 
 debug\moc_bitmap.obj: debug\moc_bitmap.cpp 
 

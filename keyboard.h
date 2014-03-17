@@ -4,6 +4,8 @@
 #include "eventdispatcher.h"
 #include "eventhandler.h"
 
+#include "keyboardevent.h"
+
 class Keyboard : public EventDispatcher, public EventHandler
 {
 public:

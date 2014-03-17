@@ -98,11 +98,26 @@ void Vehicle::turretsToPoint(const Vector2D &target)
     for (std::vector<Turret*>::iterator i = turrets.begin(); i != turrets.end(); ++i)
     {
         Turret* t = *i;
-        Vector2D r = getCoordinates();
+        /*Vector2D r = getCoordinates();
         double dy = target.y - r.y;
         double dx = target.x - r.x;
         double alpha = -asin(1) + atan2(dy, dx) - getAngle();
-        t->setAngle(alpha);
+        t->setAngle(alpha);*/
+        Console::print("-------");
+        Console::print(target);
+
+        Matrix m = Matrix::mul(getTransform(), t->getTransform());
+        Console::print(t->getCoordinates());
+        Console::print(m);
+        //Console::print(getAngle());
+        //Console::print(QString("M = ")+QVariant(m.M22).toString());
+        //Console::print(m);
+        float nx = m.M11 * target.x + m.M21 * target.y + m.M31;
+        float ny = m.M12 * target.x + m.M22 * target.y + m.M32;
+        Console::print(nx);
+        Console::print(ny);
+        //t->setAngle(3.1459/2);
+        t->rotate(-atan2(nx, ny));
     }
 }
 

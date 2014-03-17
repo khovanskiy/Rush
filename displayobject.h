@@ -16,7 +16,6 @@ class DisplayObject : public EventDispatcher
 public:
     DisplayObject();
     virtual ~DisplayObject();
-    Matrix* getRenderMatrix();
     Matrix* getLocalMatrix();
     Matrix* getGlobalMatrix();
     virtual void render(QPainter* render2d, const Matrix& base, bool t, float new_int);
@@ -131,9 +130,9 @@ public:
     void setVisible(bool visible) { _visible = visible; }
     bool isVisible() const;
     void setWidth(float);
-    float getWidth();
+    //float getWidth();
     void setHeight(float);
-    float getHeight();
+    //float getHeight();
     void setRatio(bool ratio) { _ratio = ratio; }
     bool isRatio() const { return _ratio; }
     void setRSPointCenter();
