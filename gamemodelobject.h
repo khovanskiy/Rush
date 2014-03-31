@@ -5,29 +5,32 @@
 #include <vector>
 
 #include "eventdispatcher.h"
+#include "gameobjectevent.h"
 
-class GameModelObject : public EventDispatcher
+enum GameObjectType
+{
+    VEHICLE, TURRET, BULLET, UNKNOWN
+};
+
+class GameModelObject : public EventDispatcher, public EventHandler
 {
 public:
     GameModelObject(__int64 id);
     GameModelObject();
     virtual ~GameModelObject();
-    static GameModelObject* findById(__int64 id);
-    __int64 getId();
-    void setId(__int64);
 
     void add(GameModelObject* go);
-    void update(double dt);
+    const std::vector<GameModelObject*>& getInners() const;
+
+    virtual void tick(double dt);
     bool isValid();
     void invalidate();
-
+    virtual GameObjectType getFamilyId();
+    int uses_count;
 private:
+
     std::vector<GameModelObject*> inners;
     bool valid;
-    void insert(__int64, const GameModelObject*);
-    void erase(__int64);
-    __int64 my_id;
-    static std::map<__int64, GameModelObject*> table;
 };
 
 #endif // GAMEMODELOBJECT_H

@@ -7,17 +7,16 @@
 
 #include "eventdispatcher.h"
 #include "eventhandler.h"
+#include "transformableobject.h"
 
 #include "vector2d.h"
 #include "matrix.h"
 
-class DisplayObject : public EventDispatcher
+class DisplayObject : public TransformableObject, public EventDispatcher
 {
 public:
     DisplayObject();
     virtual ~DisplayObject();
-    Matrix* getLocalMatrix();
-    Matrix* getGlobalMatrix();
     virtual void render(QPainter* render2d, const Matrix& base, bool t, float new_int);
 
     void setX(float x)
@@ -29,7 +28,7 @@ public:
         }
         else
         {
-            current_x = x;
+            position.x = x;
         }
     }
 
@@ -41,7 +40,7 @@ public:
         }
         else
         {
-            return current_x;
+            return position.x;
         }
     }
     void setY(float y)
@@ -53,10 +52,13 @@ public:
         }
         else
         {
-            current_y = y;
+            position.y = y;
         }
     }
-    float getY() const { return current_y; }
+    float getY() const
+    {
+        return position.y;
+    }
     void setInter(bool i) { isInt = i; }
     void setRotationZ(float rotationZ)
     {
@@ -67,7 +69,7 @@ public:
         }
         else
         {
-            current_rotationZ = rotationZ;
+            this->rotationZ = rotationZ;
         }
     }
     float getRotationZ() const
@@ -78,7 +80,7 @@ public:
         }
         else
         {
-            return current_rotationZ;
+            return rotationZ;
         }
     }
     void setScaleX(float scaleX)
@@ -90,7 +92,7 @@ public:
         }
         else
         {
-            current_scaleX = scaleX;
+            scaling.x = scaleX;
         }
     }
     float getScaleX() const
@@ -101,7 +103,7 @@ public:
         }
         else
         {
-            return current_scaleX;
+            return scaling.x;
         }
     }
     void setScaleY(float scaleY)
@@ -113,7 +115,7 @@ public:
         }
         else
         {
-            current_scaleY = scaleY;
+            scaling.y = scaleY;
         }
     }
     float getScaleY() const
@@ -124,7 +126,7 @@ public:
         }
         else
         {
-            return current_scaleY;
+            return scaling.y;
         }
     }
     void setVisible(bool visible) { _visible = visible; }
@@ -135,20 +137,12 @@ public:
     //float getHeight();
     void setRatio(bool ratio) { _ratio = ratio; }
     bool isRatio() const { return _ratio; }
-    void setRSPointCenter();
-    void setRSPoint(const Vector2D&);
     bool hitTestPoint(float x, float y);
     QString h(int, QString);
 protected:
     float prev_rotationZ;
-    float current_rotationZ;
     float target_rotationZ;
     float speed_rotationZ;
-
-    float current_x;
-    float current_y;
-    float current_scaleX;
-    float current_scaleY;
 
     float target_x;
     float target_y;
@@ -160,23 +154,9 @@ protected:
     float prev_scaleX;
     float prev_scaleY;
 
-    float rx;
-    float ry;
-
-    float inner_width;
-    float inner_height;
-
-    float outer_width;
-    float outer_height;
-
     bool _visible;
     bool _ratio;
-    Matrix* gmatrix;
-    Matrix* lmatrix;
 
-    bool isWHsettedup;
-
-    QRectF getBounds(Matrix*) const;
     QRectF render_bounds;
 private:
     DisplayObject* root;

@@ -46,8 +46,9 @@ PhysicsWorld::~PhysicsWorld()
     delete tree;
 }
 
-void PhysicsWorld::addObject(PhysicsObject *object)
+void PhysicsWorld::add(PhysicsObject *object)
 {
+    ++object->uses_count;
     ObjectData* object_data = new ObjectData(object);
     new_objects.push_back(object_data);
     if (object->isProjectile())
@@ -233,61 +234,32 @@ void PhysicsWorld::changingStates(double dt, std::vector<PhysicsObject*>& n_obje
             {
                 tree->remove(*i);
             }
-            (*i)->data->object->debug = "invalid Object";
-
-
             ObjectNode* a = *i;
+            a->data->object->uses_count--;
             i = nodes.erase(i);
             delete a;
         }
     }
-    /*int num = (int)nodes.size();
-    if (num > 0)
+    for (std::vector<ObjectData*>::iterator i = projectiles.begin(); i != projectiles.end();)
     {
-        std::vector<ObjectNode*> remaining;
-        ObjectNode** ptr = &nodes.front();
-        for (int i = 0; i < num; i++)
+        if ((*i)->object->isValid())
         {
-            //td::vector<PhysicsObject*>* result =
-            ptr[i]->data->object->calculateInnerState(dt);
-
-            if (ptr[i]->data->object->isValid())
-            {                
-                remaining.push_back(ptr[i]);
-            }
-            else
-            {
-                removeObjectNode(ptr[i]);
-            }
+            (*i)->object->calculateInnerState(dt);
+            ++i;
         }
-        this->nodes = remaining;
+        else
+        {
+            ObjectData* a = *i;
+            a->object->uses_count--;
+            i = projectiles.erase(i);
+            delete a;
+        }
     }
-    num = (int)projectiles.size();
-    if (num > 0)
-    {
-        std::vector<ObjectData*> remaining;
-        ObjectData** ptr = &projectiles.front();
-        for (int i = 0; i < num; i++)
-        {
-            //std::vector<PhysicsObject*>* result =
-            ptr[i]->object->calculateInnerState(dt);
-
-            if (ptr[i]->object->isValid())
-            {
-                remaining.push_back(ptr[i]);
-            }
-            else
-            {
-                removeProjectile(ptr[i]);
-            }
-        }
-        this->projectiles = remaining;
-    }*/
 }
 
 void PhysicsWorld::integrating(double dt)
 {
-    int num = (int)nodes.size();
+    /*int num = (int)nodes.size();
     if (num > 0)
     {
         ObjectNode** ptr = &nodes.front();
@@ -304,7 +276,7 @@ void PhysicsWorld::integrating(double dt)
         {
             ptr[i]->object->tick(dt);
         }
-    }
+    }*/
 }
 
 void PhysicsWorld::collisionSearch(double dt)
@@ -316,7 +288,7 @@ void PhysicsWorld::collisionSearch(double dt)
 
 void PhysicsWorld::tick(double dt)
 {
-    deleteInvalidObjects();
+    //deleteInvalidObjects();
     for (std::vector<ObjectNode*>::iterator i = nodes.begin(); i != nodes.end(); ++i)
     {
         (*i)->data->collisions.clear();
@@ -329,7 +301,7 @@ void PhysicsWorld::tick(double dt)
     double ddt = dt / calc_koef;
     for (int i = 0; i < calc_koef; i++)
     {
-        integrating(ddt);
+        //integrating(ddt);
         std::vector<PhysicsObject*> n_objects;
         changingStates(ddt, n_objects);
         //addingObjects(n_objects);
@@ -345,7 +317,7 @@ void PhysicsWorld::addingObjects(std::vector<PhysicsObject *> &n_objects)
         PhysicsObject** ptr = &n_objects.front();
         for (int i = 0; i < num; i++)
         {
-            addObject(ptr[i]);
+            add(ptr[i]);
         }
     }
 

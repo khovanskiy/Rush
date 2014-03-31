@@ -43,7 +43,7 @@ void DisplayObjectContainer::render(QPainter* render2d, const Matrix& base, bool
 {
     DisplayObject::render(render2d, base, t, new_int);
 
-    Matrix current = Matrix::mul(*getLocalMatrix(), base);
+    Matrix current = Matrix::mul(getTransform(), base);
 
     for (LIST::iterator it = children.begin(); it != children.end(); it++)
     {

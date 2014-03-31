@@ -12,14 +12,16 @@ class Bullet : public PhysicsObject
     PhysicsObject* source;
     double width, height;
 
-    Bullet(Vector2D r, Vector2D speed, double mass, int bullet_type,
-           double width, double height, double dt, double time_to_live);
-    virtual ~Bullet();
-
 public:
     static const int BULLET;
     static const int MISSILE;
     static const int CUT;
+
+    Bullet(Vector2D r, Vector2D speed, double mass, int bullet_type,
+           double width, double height, double dt, double time_to_live);
+    virtual ~Bullet();
+
+    GameObjectType getFamilyId();
 
     void setSource(PhysicsObject* source);
     virtual CrossingResult2D collidesWith(PhysicsObject *other);

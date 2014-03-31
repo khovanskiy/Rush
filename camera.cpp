@@ -4,20 +4,14 @@ Camera* Camera::instance = 0;
 
 Camera::Camera()
 {
-    width = 800;
-    height = 600;
-    matrix = new QMatrix();
+    inner_size.x = 800;
+    inner_size.y = 600;
 }
 
 void Camera::resize(int width, int height)
 {
-    this->width = width;
-    this->height = height;
-}
-
-QMatrix* Camera::getMatrix()
-{
-    return matrix;
+    inner_size.x = width;
+    inner_size.y = height;
 }
 
 Camera* Camera::gi()

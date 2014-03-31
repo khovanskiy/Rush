@@ -19,9 +19,6 @@ class Turret : public PhysicsObject
 
     double d_angle;
 
-
-
-
 public:
     static const int MACHINEGUN;
     static const int ROCKET_LAUNCHER;

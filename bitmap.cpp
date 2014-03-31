@@ -16,8 +16,8 @@ void Bitmap::Invoke(const Event &event)
     {
         TextureLoader* loader = (TextureLoader*)(event.target);
         source = loader->getTexture();
-        inner_width = source->width();
-        inner_height = source->height();
+        inner_size.x = source->width();
+        inner_size.y = source->height();
         loader->removeEventListener(this);
         loader->deleteLater();
     }
@@ -54,13 +54,13 @@ void Bitmap::render(QPainter* render2d, const Matrix& base, bool t, float new_in
     {
         DisplayObject::render(render2d, base, t, new_int);
 
-        Matrix current = Matrix::mul(*getLocalMatrix(), base);
+        Matrix current = Matrix::mul(getTransform(), base);
 
-        render_bounds = getBounds(&current);
+        render_bounds = getBounds(current);
 
         render2d->save();
         render2d->setMatrix(QMatrix());
-        render2d->setBrush(QBrush(QColor(0,255,0, 255)));
+        render2d->setBrush(QBrush(QColor(0,255,0, 5)));
 
         render2d->drawRect(render_bounds);
         render2d->setMatrix(current.toQMatrix());

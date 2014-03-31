@@ -37,6 +37,7 @@ void VehicleView::Invoke(const Event &event)
         }
         turrets.clear();
         Console::print("invalidate");
+        dispatchEvent(Event(this, Event::INVALIDATE));
     }
 }
 

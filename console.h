@@ -29,6 +29,18 @@ public:
         print(QString("(")+QVariant(v.x).toString()+","+QVariant(v.y).toString()+")");
     }
 
+    static void print(QMatrix m)
+    {
+        QString temp = "[";
+        temp += QVariant(m.m11()).toString() + ",";
+        temp += QVariant(m.m12()).toString() + ",0,";
+        temp += QVariant(m.m21()).toString() + ",";
+        temp += QVariant(m.m22()).toString() + ",0,";
+        temp += QVariant(m.dx()).toString() + ",";
+        temp += QVariant(m.dy()).toString() + ",1]";
+        print(temp);
+    }
+
     static void print(Matrix m)
     {
         QString temp = "[";

@@ -91,7 +91,7 @@ void InitState::calculateView()
     }*/
 }
 
-void InitState::tick(double dt)
+void InitState::tick(double)
 {
 
     //Console::print(time);/**/
@@ -137,7 +137,7 @@ void InitState::tick(double dt)
     MapView::gi().updateView(scale, dr, d_angle, r_center);*/
 }
 
-void InitState::Invoke(const Event &event)
+void InitState::Invoke(const Event &)
 {
     /*if (dodge != 0)
     {

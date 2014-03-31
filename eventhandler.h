@@ -7,7 +7,10 @@ class FunctionProxy;
 class EventHandler
 {
 public:
-    virtual void Invoke(const Event& event) = 0;
+    virtual void Invoke(const Event&)
+    {
+
+    }
 };
 
 class FunctionProxy : public EventHandler

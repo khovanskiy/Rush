@@ -16,6 +16,20 @@ void Vehicle::recalculateMassCenter()
     body.r = this->mass_center;
 }
 
+void Vehicle::Invoke(const Event &event)
+{
+    if (event.type == "TURRET_FIRE")
+    {
+        const GameObjectEvent* e = static_cast<const GameObjectEvent*>(&event);
+        dispatchEvent(GameObjectEvent(this, "TURRET_FIRE", e->v));
+    }
+}
+
+GameObjectType Vehicle::getFamilyId()
+{
+    return GameObjectType::VEHICLE;
+}
+
 void Vehicle::setMassCenter(Vector2D mass_center)
 {
     this->PhysicsObject::setMassCenter(mass_center);
@@ -25,7 +39,7 @@ void Vehicle::setMassCenter(Vector2D mass_center)
 Vehicle::Vehicle(Rectangle2D * shape, int mass) : PhysicsObject(shape, mass, shape->getInertiaMoment(mass), PhysicsObject::VEHICLE)
 {
     this->recalculateMassCenter();
-    this->setFiring(false, 0);
+    this->setFiring(false);
     this->setAccelerationState(AccelerationState::NoAcc);
     this->setRotationPercent(0);
     this->setTorquePercent(0);
@@ -65,6 +79,8 @@ void Vehicle::setEngine(const VehicleEngine &engine)
 
 void Vehicle::addTurret(Turret* turret)
 {
+    turret->addEventListener(this);
+
     this->turrets.push_back(turret);
     this->mass += turret->getMass();
     this->inertia_moment += turret->getInertiaMoment();
@@ -87,9 +103,17 @@ void Vehicle::setTorquePercent(double torque_percent)
     this->torque_percent = torque_percent;
 }
 
-void Vehicle::setFiring(bool firing_state, double firing_angle)
+void Vehicle::setFiring(bool firing_state)
 {
-    this->firing_angle = firing_angle;
+    /*if (firing_state)
+    {
+        Console::print("Click");
+        //Matrix a = Matrix::mul(getTransform(), Matrix::scaling(Vector2D(3,2)));
+        //Matrix b = turrets[0]->getTransform();
+        //Console::print(a.invert());
+        //Console::print(a.toQMatrix().inverted());
+
+    }*/
     this->firing_state = firing_state;
 }
 
@@ -98,26 +122,10 @@ void Vehicle::turretsToPoint(const Vector2D &target)
     for (std::vector<Turret*>::iterator i = turrets.begin(); i != turrets.end(); ++i)
     {
         Turret* t = *i;
-        /*Vector2D r = getCoordinates();
-        double dy = target.y - r.y;
-        double dx = target.x - r.x;
-        double alpha = -asin(1) + atan2(dy, dx) - getAngle();
-        t->setAngle(alpha);*/
-        Console::print("-------");
-        Console::print(target);
-
         Matrix m = Matrix::mul(getTransform(), t->getTransform());
-        Console::print(t->getCoordinates());
-        Console::print(m);
-        //Console::print(getAngle());
-        //Console::print(QString("M = ")+QVariant(m.M22).toString());
-        //Console::print(m);
-        float nx = m.M11 * target.x + m.M21 * target.y + m.M31;
-        float ny = m.M12 * target.x + m.M22 * target.y + m.M32;
-        Console::print(nx);
-        Console::print(ny);
-        //t->setAngle(3.1459/2);
-        t->rotate(-atan2(nx, ny));
+
+        Vector2D v = m.map(target);
+        t->rotate(-atan2(v.x, v.y));
     }
 }
 
@@ -158,9 +166,12 @@ void Vehicle::calculateInnerState(double dt)
     body.f.rotate(angle);
     f.add(body.f);
     force_moment += body.force_moment;
-    std::vector<PhysicsObject*>* result = new std::vector<PhysicsObject*>();
+
     for (std::vector<Turret*>::iterator i = turrets.begin(); i != turrets.end(); i++)
     {
+        (*i)->setFiring(firing_state);
+        (*i)->calculateInnerState(dt);
+
         //(*i)->setAngle(firing_angle);
         //(*i)->setFiring(firing_state);
         /*std::vector<PhysicsObject*>* bullets = (*i)->calculateInnerState(dt);

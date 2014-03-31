@@ -21,6 +21,8 @@ public:
 
     virtual void tick(double dt);
 
+    void Invoke(const Event &);
+
     static const int DODGE_CHALLENGER_SRT8;
     static const int FERRARI_599GTO;
     static const int FORD_F150_SVT_RAPTOR;
@@ -33,7 +35,7 @@ public:
     virtual void setAccelerationState(AccelerationState const & acc_state);
     virtual void setTorquePercent(double torque_percent);
     virtual void setRotationPercent(double rotation_percent);
-    virtual void setFiring(bool firing_state, double firing_angle);
+    virtual void setFiring(bool firing_state);
     virtual void turretsToPoint(const Vector2D& target);
 
     virtual int getGear();
@@ -43,6 +45,8 @@ public:
 
     virtual void calculateInnerState(double dt);
     virtual std::vector<Turret*> getTurrets();
+
+    virtual GameObjectType getFamilyId();
 
     Chassis chassis;
     VehicleBody body;

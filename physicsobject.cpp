@@ -84,7 +84,7 @@ int PhysicsObject::getType()
     return this->physics_object_type;
 }
 
-void PhysicsObject::calculateInnerState(double dt)
+void PhysicsObject::calculateInnerState(double)
 {
     pseudo_v.mul(0);
     return;// 0;

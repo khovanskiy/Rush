@@ -20,11 +20,13 @@ public:
     double M22;
     double M31;
     double M32;
+    Vector2D map(const Vector2D& v);
     static Matrix translation(const Vector2D&);
     static Matrix scaling(const Vector2D&);
     static Matrix rotationZ(double);
     static Matrix mul(const Matrix &, const Matrix&);
     void mul(const Matrix&);
+    Matrix invert();
 };
 
 #endif // MATRIX_H

@@ -69,7 +69,11 @@ SOURCES += background.cpp \
     turretview.cpp \
     networkserver.cpp \
     sampleview.cpp \
-    uivehiclecontroller.cpp
+    uivehiclecontroller.cpp \
+    transformableobject.cpp \
+    bulletview.cpp \
+    gameworld.cpp \
+    gameobjectevent.cpp
 
 HEADERS  += background.h \
     bitmap.h \
@@ -128,4 +132,8 @@ HEADERS  += background.h \
     turretview.h \
     networkserver.h \
     sampleview.h \
-    uivehiclecontroller.h
+    uivehiclecontroller.h \
+    transformableobject.h \
+    bulletview.h \
+    gameworld.h \
+    gameobjectevent.h

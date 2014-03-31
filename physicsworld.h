@@ -18,7 +18,10 @@ struct ObjectData
     ~ObjectData()
     {
         Console::print("Delete object data");
-        delete this->object;
+        if (!object->uses_count)
+        {
+            delete this->object;
+        }
     }
 };
 
@@ -295,7 +298,7 @@ public:
         return instance;
     }
 
-    void addObject(PhysicsObject* object);
+    void add(PhysicsObject* object);
     std::vector<ObjectData*> popNewObjects();
     void clear();
     void tick(double dt);

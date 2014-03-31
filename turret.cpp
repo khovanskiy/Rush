@@ -45,6 +45,13 @@ void Turret::calculateInnerState(double dt)
 {
     PhysicsObject::calculateInnerState(dt);
     next_shot = (dt > next_shot ? 0 : next_shot - dt);
+
+    if (firing && next_shot < eps)
+    {
+        next_shot = fire_delay;
+        dispatchEvent(GameObjectEvent(this, "TURRET_FIRE", Vector2D(0,1)));
+    }
+
     /*if (firing && next_shot < eps)
     {
         next_shot = fire_delay;
@@ -59,6 +66,7 @@ void Turret::calculateInnerState(double dt)
             Bullet* bullet = PhysicsObjectFactory::createBullet(r, local_angle + d_a, bullet_type, dt);
             bullet->setSource(this);
             result->push_back(bullet);
+
             d_a = scatter * Random::gi().getRandom(-1, 1);
             r = local_r;
             dr = Vector2D(-this->getWidth() * 0.3, this->getHeight() / 2);

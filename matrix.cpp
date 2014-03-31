@@ -2,6 +2,7 @@
 
 #include "vector2d.h"
 #include "math.h"
+#include "console.h"
 
 Matrix::Matrix()
 {
@@ -64,6 +65,49 @@ Matrix Matrix::rotationZ(double angle)
     double cosa = cos(angle);
     double sina = sin(angle);
     return Matrix(cosa, sina, -sina, cosa, 0, 0);
+}
+
+/**
+ * @brief Matrix::invert
+ * @see http://en.wikipedia.org/wiki/Inverse_matrix#Methods_of_matrix_inversion
+ * @return
+ */
+Matrix Matrix::invert()
+{
+    double a = M11;
+    double b = M12;
+    //double c = 0;
+    double d = M21;
+    double e = M22;
+    //double f = 0;
+    double g = M31;
+    double h = M32;
+    //double i = 1;
+    //double det = a * (e * i - f * h) - b * (i * d - f * g) + c * (d * h - e * g);
+    double det = a * e - b * d; //optimized
+    double det1 = 1 / det;
+    if (fabs(det) < 1e-32)
+    {
+        return Matrix();
+    }
+    double ki = 1 / (a * e - b * d);
+    return Matrix(e * det1, -b * det1, -d * det1, a * det1, (d * h - e * g) * ki, -(a * h - b * g) * ki);//optimized
+    /*double A = e * i - f * h;
+    double B = -(d * i - f * g);
+    double C = d * h - e * g;
+    double D = -(b * i - c * h);
+    double E = (a * i - c * g);
+    double F = -(a * h - b * g);
+    //double G = (b * f - c * e); //0
+    //double H = -(a * f - c * d);//0
+    //double I = (a * e - b * d); //1
+    //Console::print(I);
+    return Matrix(A, D, B, E, C, F);*/
+}
+
+Vector2D Matrix::map(const Vector2D& v)
+{
+    return Vector2D(M11 * v.x + M21 * v.y + M31, M12 * v.x + M22 * v.y + M32);
 }
 
 Matrix Matrix::mul(const Matrix &a, const Matrix &b)

@@ -42,6 +42,7 @@ void VehicleEngine::setRotations(double rotating_speed)
             current_torque = (*i).torque;
             current_gear = (*i).number;
             spins_per_minute *= (*i).ratio;
+            // switch gear
         }
     }
 }

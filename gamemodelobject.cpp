@@ -1,24 +1,21 @@
 #include "gamemodelobject.h"
 #include "console.h"
 
-std::map<__int64, GameModelObject*> GameModelObject::table;
-
 GameModelObject::~GameModelObject()
 {
-    erase(this->my_id);
+
 }
 
 GameModelObject::GameModelObject(__int64 id)
 {
-    //insert(id, this);
-    this->my_id = 0;
     this->valid = true;
+    uses_count = 0;
 }
 
 GameModelObject::GameModelObject()
 {
-    this->my_id = 0;
     this->valid = true;
+    uses_count = 0;
 }
 
 bool GameModelObject::isValid()
@@ -28,60 +25,51 @@ bool GameModelObject::isValid()
 
 void GameModelObject::invalidate()
 {
-    if (this->valid)
+    if (valid)
     {
+        Console::print("i am invalidate");
+        Console::print(this);
+        valid = false;
         dispatchEvent(Event(this, Event::INVALIDATE));
-        this->valid = false;
     }
 }
 
 void GameModelObject::add(GameModelObject *go)
 {
-
+    ++go->uses_count;
+    inners.push_back(go);
+    dispatchEvent(GameObjectEvent(this, GameObjectEvent::ADDED_OBJECT, go));
 }
 
-void GameModelObject::update(double dt)
+const std::vector<GameModelObject*>& GameModelObject::getInners() const
 {
-
+    return inners;
 }
 
-__int64 GameModelObject::getId()
+void GameModelObject::tick(double dt)
 {
-    return this->my_id;
-}
-
-void GameModelObject::insert(__int64 id, const GameModelObject * obj)
-{
-    this->my_id = id;
-    table[id] = this;
-}
-
-void GameModelObject::erase(__int64 id)
-{
-    std::map<__int64, GameModelObject*>::iterator i = table.find(id);
-    if (i != table.end())
+    for (int i = 0; i < inners.size(); ++i)
     {
-        table.erase(i);
+        if (inners[i]->isValid())
+        {
+            inners[i]->tick(dt);
+        }
+        else
+        {
+            Console::print("must delete");
+            GameModelObject* go = inners[i];
+            --go->uses_count;
+            inners[i] = inners[inners.size() - 1];
+            inners.pop_back();
+            if (!go->uses_count)
+            {
+                delete go;
+            }
+        }
     }
 }
 
-void GameModelObject::setId(__int64 id)
+GameObjectType GameModelObject::getFamilyId()
 {
-    if (findById(id) == 0)
-    {
-        erase(id);
-        erase(my_id);
-        insert(id, this);
-    }
-}
-
-GameModelObject* GameModelObject::findById(__int64 id)
-{
-    GameModelObject* result = 0;
-    std::map<__int64, GameModelObject*>::iterator i = table.find(id);
-    if (i != table.end())
-    {
-        result = i->second;
-    }
-    return result;
+    return GameObjectType::UNKNOWN;
 }

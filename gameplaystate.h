@@ -14,6 +14,7 @@
 #include "mouse.h"
 #include "mouseevent.h"
 #include "uivehiclecontroller.h"
+#include "mapview.h"
 
 class GameplayState : public State
 {
@@ -22,6 +23,7 @@ public:
     void tick(double dt);
     void Invoke(const Event &);
 private:
+    MapView* map_view;
     Bitmap* point;
     Vehicle* car;
     Vehicle* car2;

@@ -21,6 +21,11 @@ Bullet::Bullet(Vector2D r, Vector2D speed, double mass, int bullet_type,
     this->bullet_type = bullet_type;
 }
 
+GameObjectType Bullet::getFamilyId()
+{
+    return GameObjectType::BULLET;
+}
+
 void Bullet::setSource(PhysicsObject *source)
 {
     this->source = source;
@@ -28,6 +33,7 @@ void Bullet::setSource(PhysicsObject *source)
 
 Bullet::~Bullet()
 {
+    Console::print("Bullet is deleted");
 }
 
 CrossingResult2D Bullet::collidesWith(PhysicsObject *other)
@@ -49,6 +55,7 @@ int Bullet::getBulletType()
 
 void Bullet::applyCollision(Collision const &collision, double dt)
 {
+    Console::print("DAMAGE");
     Vector2D q = this->getCoordinates();
     q.add(this->getSpeed());
     Segment2D * segment = new Segment2D(Point2D(this->getCoordinates()), Point2D(q));
@@ -60,6 +67,7 @@ void Bullet::applyCollision(Collision const &collision, double dt)
 void Bullet::calculateInnerState(double dt)
 {
     PhysicsObject::calculateInnerState(dt);
+    //Console::print(getCoordinates());
     if (!isValid() && bullet_type == Bullet::MISSILE)
     {
         std::vector<PhysicsObject*>* result = new std::vector<PhysicsObject*>();
