@@ -45,15 +45,16 @@ Vehicle::Vehicle(Rectangle2D * shape, int mass) : PhysicsObject(shape, mass, sha
     this->setTorquePercent(0);
     this->width = shape->getWidth();
     this->length = shape->getHeight();
+    health = 100;
 }
 
 Vehicle::~Vehicle()
 {
-    Console::print("Delete vehicle");
-    for (auto i = turrets.begin(); i != turrets.end(); i++)
+    for (int i = 0; i < turrets.size(); ++i)
     {
-        delete *i;
+        delete turrets[i];
     }
+    Console::print("Vehicle is deleted");
 }
 
 void Vehicle::setVehicleBody(const VehicleBody &body)
@@ -105,15 +106,6 @@ void Vehicle::setTorquePercent(double torque_percent)
 
 void Vehicle::setFiring(bool firing_state)
 {
-    /*if (firing_state)
-    {
-        Console::print("Click");
-        //Matrix a = Matrix::mul(getTransform(), Matrix::scaling(Vector2D(3,2)));
-        //Matrix b = turrets[0]->getTransform();
-        //Console::print(a.invert());
-        //Console::print(a.toQMatrix().inverted());
-
-    }*/
     this->firing_state = firing_state;
 }
 
@@ -142,6 +134,24 @@ double Vehicle::getSpins()
 bool Vehicle::isStaying()
 {
     return ((v.getLength() < eps) && (angular_speed < eps));
+}
+
+void Vehicle::applyCollision(const Collision &collision, double dt)
+{
+    PhysicsObject::applyCollision(collision, dt);
+    if (collision.source->getFamilyId() == GameObjectType::BULLET)
+    {
+        Bullet* bullet = static_cast<Bullet*>(collision.source);
+        health -= bullet->getDamage();
+    }
+    else if (collision.source->getFamilyId() == GameObjectType::VEHICLE)
+    {
+        health -= collision.relative_speed.getLength();
+    }
+    if (health <= 0)
+    {
+        invalidate();
+    }
 }
 
 void Vehicle::calculateInnerState(double dt)

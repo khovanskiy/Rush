@@ -11,8 +11,10 @@ public:
     TransformableObject();
     virtual ~TransformableObject();
     QRectF getBounds(const Matrix&);
-    virtual const Matrix& getTransform();
+    virtual Matrix& getTransform();
 
+    void setPosition(const Vector2D& p);
+    const Vector2D& getPosition() const;
     void setRSPoint(const Vector2D& m);
     void setRSPointCenter();
 protected:

@@ -4,10 +4,21 @@
 
 GameViewObject::GameViewObject()
 {
-    m_to_px = 35;
+    m_to_px = 1;
+    valid = true;
 }
 
 GameViewObject::~GameViewObject()
 {
 
+}
+
+bool GameViewObject::isValid()
+{
+    return valid;
+}
+
+void GameViewObject::invalidate()
+{
+    valid = false;
 }

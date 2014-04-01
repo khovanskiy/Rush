@@ -16,12 +16,12 @@ void StateContext::tick(double dt)
 {
     ++recuirsion_count;
     for (LIST::iterator i = states.begin(); i != states.end(); ++i)
+    {
+        if (*i)
         {
-            if (*i)
-            {
-                (*i)->tick(dt);
-            }
+            (*i)->tick(dt);
         }
+    }
     --recuirsion_count;
 }
 

@@ -31,8 +31,9 @@ void Game::onLoop()
         new_frame = false;
     }
 
+    //Console::print("START Render");
     GraphicCore::gi()->render(new_frame, interpolation);
-
+    //Console::print("END Render");
 
     while (ticksCount() > next_game_tick && loops < MAX_FRAMESKIP)
     {

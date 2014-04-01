@@ -25,6 +25,7 @@ public:
     static Matrix scaling(const Vector2D&);
     static Matrix rotationZ(double);
     static Matrix mul(const Matrix &, const Matrix&);
+    static Matrix transformation(const Vector2D& pos, const Vector2D& scale, double rotationZ, const Vector2D& rs_point);
     void mul(const Matrix&);
     Matrix invert();
 };

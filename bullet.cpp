@@ -19,6 +19,17 @@ Bullet::Bullet(Vector2D r, Vector2D speed, double mass, int bullet_type,
     this->setMassCenter(r);
     this->time_to_live = time_to_live;
     this->bullet_type = bullet_type;
+    damage = 10;
+}
+
+void Bullet::setDamage(double damage)
+{
+    this->damage = damage;
+}
+
+double Bullet::getDamage() const
+{
+    return damage;
 }
 
 GameObjectType Bullet::getFamilyId()
@@ -55,7 +66,7 @@ int Bullet::getBulletType()
 
 void Bullet::applyCollision(Collision const &collision, double dt)
 {
-    Console::print("DAMAGE");
+    //Console::print("DAMAGE");
     Vector2D q = this->getCoordinates();
     q.add(this->getSpeed());
     Segment2D * segment = new Segment2D(Point2D(this->getCoordinates()), Point2D(q));

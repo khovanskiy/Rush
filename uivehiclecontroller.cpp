@@ -1,5 +1,7 @@
 #include "uivehiclecontroller.h"
 
+#include "camera.h"
+
 UIVehicleController::UIVehicleController(Vehicle* vehicle)
 {
     this->vehicle = vehicle;
@@ -12,6 +14,7 @@ UIVehicleController::~UIVehicleController()
 {
     vehicle->removeEventListener(this);
     Mouse::gi()->removeEventListener(this);
+    Keyboard::gi()->removeEventListener(this);
 }
 
 void UIVehicleController::Invoke(const Event &event)
@@ -19,7 +22,17 @@ void UIVehicleController::Invoke(const Event &event)
     if (event.type == MouseEvent::MOUSE_MOVE)
     {
         const MouseEvent* e = static_cast<const MouseEvent*>(&event);
-        vehicle->turretsToPoint(Vector2D(e->getX() / 35.0, e->getY() / 35.0));
+        Vector2D v = Camera::gi()->getTransform().invert().map(Vector2D(e->getX(), e->getY()));
+        Console::print(v);
+        vehicle->turretsToPoint(v);
+    }
+    else if (event.type == MouseEvent::MOUSE_DOWN)
+    {
+        vehicle->setFiring(true);
+    }
+    else if (event.type == MouseEvent::MOUSE_UP)
+    {
+        vehicle->setFiring(false);
     }
     else if (event.type == Event::INVALIDATE)
     {

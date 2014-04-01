@@ -32,6 +32,7 @@ public:
     virtual void setWheels(CarTrack back, CarTrack front, double height);
     virtual void addTurret(Turret* turret);
 
+    void applyCollision(const Collision &collision, double dt);
     virtual void setAccelerationState(AccelerationState const & acc_state);
     virtual void setTorquePercent(double torque_percent);
     virtual void setRotationPercent(double rotation_percent);
@@ -47,6 +48,8 @@ public:
     virtual std::vector<Turret*> getTurrets();
 
     virtual GameObjectType getFamilyId();
+
+    double health;
 
     Chassis chassis;
     VehicleBody body;

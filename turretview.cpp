@@ -16,15 +16,18 @@ TurretView::TurretView(Turret* turret)
 
 TurretView::~TurretView()
 {
-    this->removeChild(body);
     delete body;
+    Console::print("TurretView is deleted");
 }
 
 void TurretView::render(QPainter *render2d, const Matrix &base, bool new_frame, float interpolation)
 {
-    this->setX(m_to_px * turret->getCoordinates().x);
-    this->setY(m_to_px * turret->getCoordinates().y);
-    this->setRotationZ(turret->getAngle());
+    //if (valid)
+    {
+        this->setX(m_to_px * turret->getCoordinates().x);
+        this->setY(m_to_px * turret->getCoordinates().y);
+        this->setRotationZ(turret->getAngle());
 
-    Sprite::render(render2d, base, new_frame, interpolation);
+        GameViewObject::render(render2d, base, new_frame, interpolation);
+    }
 }

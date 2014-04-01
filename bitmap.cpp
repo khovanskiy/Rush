@@ -2,8 +2,10 @@
 
 #include <QFile>
 #include <QApplication>
-
+#include "camera.h"
 #include "console.h"
+
+std::map<QString, QImage*> Bitmap::cache;
 
 Bitmap::Bitmap()
 {
@@ -15,7 +17,7 @@ void Bitmap::Invoke(const Event &event)
     if (event.type == Event::COMPLETE)
     {
         TextureLoader* loader = (TextureLoader*)(event.target);
-        source = loader->getTexture();
+        cache[source_path] = source = loader->getTexture();
         inner_size.x = source->width();
         inner_size.y = source->height();
         loader->removeEventListener(this);
@@ -25,7 +27,7 @@ void Bitmap::Invoke(const Event &event)
 
 Bitmap::~Bitmap()
 {
-    delete source;
+    //delete source;
 }
 
 QImage* Bitmap::getSource() const
@@ -36,11 +38,21 @@ QImage* Bitmap::getSource() const
 void Bitmap::load(QString path)
 {
     path = QApplication::applicationDirPath().append("/").append(path);
+    source_path = path;
     if (QFile::exists(path))
     {
-        loader = new TextureLoader(path);
-        loader->addEventListener(this);
-        loader->start();
+        if (!cache[path])
+        {
+            loader = new TextureLoader(path);
+            loader->addEventListener(this);
+            loader->start();
+        }
+        else
+        {
+            source = cache[source_path];
+            inner_size.x = source->width();
+            inner_size.y = source->height();
+        }
     }
     else
     {
@@ -60,8 +72,14 @@ void Bitmap::render(QPainter* render2d, const Matrix& base, bool t, float new_in
 
         render2d->save();
         render2d->setMatrix(QMatrix());
-        render2d->setBrush(QBrush(QColor(0,255,0, 5)));
+        render2d->setBrush(QBrush(QColor(0,255,0, 255)));
 
+        //Console::print("BASE");
+        //Console::print(base);
+        /*Console::print(base);
+        Console::print(Camera::gi()->getTransform());
+        Console::print(getTransform());
+        Console::print(current);*/
         render2d->drawRect(render_bounds);
         render2d->setMatrix(current.toQMatrix());
 

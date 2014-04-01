@@ -27,7 +27,8 @@ GraphicCore::GraphicCore() : QGLWidget(QGLFormat(QGL::SampleBuffers), 0)
     //this->showFullScreen();
     pen = new QPen(QColor(255,255,255));
     setWindowTitle("Rush game");
-    resize(1280, 800);
+    Camera::gi()->resize(1200, 800);
+    resize(1200, 800);
     move(0,0);
     prev_interpolation = 0;
     setAutoFillBackground(false);
@@ -58,7 +59,7 @@ void GraphicCore::paintEvent(QPaintEvent*)
     render2d->setRenderHint(QPainter::Antialiasing);
     render2d->setRenderHint(QPainter::SmoothPixmapTransform);
     Background::gi()->render(render2d, Matrix(), new_frame, current_interpolation);
-    Stage::gi()->render(render2d, Matrix(), new_frame, current_interpolation);
+    Stage::gi()->render(render2d, Camera::gi()->getTransform(), new_frame, current_interpolation);
     Interface::gi()->render(render2d, Matrix(), new_frame, current_interpolation);
     render2d->end();
 }

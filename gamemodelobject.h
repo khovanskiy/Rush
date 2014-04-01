@@ -26,10 +26,9 @@ public:
     bool isValid();
     void invalidate();
     virtual GameObjectType getFamilyId();
-    int uses_count;
-private:
-
+protected:
     std::vector<GameModelObject*> inners;
+private:
     bool valid;
 };
 

@@ -6,15 +6,13 @@
 
 class GameWorld : public GameModelObject
 {
+
+public:
     GameWorld();
     virtual ~GameWorld();
-public:
-    static GameWorld& gi()
-    {
-        static GameWorld instance;
-        return instance;
-    }
     void tick(double dt);
+private:
+    std::vector<GameModelObject*> unused;
 };
 
 #endif // GAMEWORLD_H

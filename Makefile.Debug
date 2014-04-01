@@ -187,26 +187,6 @@ DESTDIR_TARGET = debug\Rush.exe
 
 .SUFFIXES: .c .cpp .cc .cxx
 
-{.}.cpp{debug\}.obj::
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
-	$<
-<<
-
-{.}.cc{debug\}.obj::
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
-	$<
-<<
-
-{.}.cxx{debug\}.obj::
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
-	$<
-<<
-
-{.}.c{debug\}.obj::
-	$(CC) -c $(CFLAGS) $(INCPATH) -Fodebug\ @<<
-	$<
-<<
-
 {debug}.cpp{debug\}.obj::
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
 	$<
@@ -223,6 +203,26 @@ DESTDIR_TARGET = debug\Rush.exe
 <<
 
 {debug}.c{debug\}.obj::
+	$(CC) -c $(CFLAGS) $(INCPATH) -Fodebug\ @<<
+	$<
+<<
+
+{.}.cpp{debug\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
+	$<
+<<
+
+{.}.cc{debug\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
+	$<
+<<
+
+{.}.cxx{debug\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
+	$<
+<<
+
+{.}.c{debug\}.obj::
 	$(CC) -c $(CFLAGS) $(INCPATH) -Fodebug\ @<<
 	$<
 <<
@@ -369,8 +369,8 @@ debug\moc_bitmap.cpp: C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QImag
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qfontinfo.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qfont.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qfontmetrics.h \
-		event.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QString \
+		event.h \
 		eventdispatcher.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QMutex \
 		eventhandler.h \
@@ -891,12 +891,12 @@ debug\moc_networkserver.cpp: C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCo
 		eventhandler.h \
 		event.h \
 		gameobjectevent.h \
+		vector2d.h \
 		console.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QVariant \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QThread \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qthread.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QTextStream \
-		vector2d.h \
 		matrix.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
@@ -1125,8 +1125,8 @@ debug\bitmap.obj: bitmap.cpp bitmap.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qfontinfo.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qfont.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qfontmetrics.h \
-		event.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QString \
+		event.h \
 		eventdispatcher.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QMutex \
 		eventhandler.h \
@@ -1245,7 +1245,25 @@ debug\camera.obj: camera.cpp camera.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject_impl.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpair.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
-		vector2d.h
+		vector2d.h \
+		console.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QString \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QVariant \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvariant.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qmap.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qdebug.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qhash.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qtextstream.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qlocale.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qshareddata.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qset.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontiguouscache.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringlist.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qregexp.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringmatcher.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QThread \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qthread.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QTextStream
 
 debug\console.obj: console.cpp console.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QString \
@@ -2123,6 +2141,7 @@ debug\initstate.obj: initstate.cpp initstate.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs_win.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
+		statecontext.h \
 		vehicle.h \
 		gamemodelobject.h \
 		gameobjectevent.h \
@@ -2135,7 +2154,6 @@ debug\initstate.obj: initstate.cpp initstate.h \
 		vehiclebody.h \
 		turret.h \
 		bullet.h \
-		statecontext.h \
 		physicsobjectfactory.h \
 		explosion.h \
 		obstacle.h \
@@ -3110,8 +3128,8 @@ debug\physicsobject.obj: physicsobject.cpp physicsobject.h \
 		eventhandler.h \
 		event.h \
 		gameobjectevent.h \
-		geometry2d.h \
 		vector2d.h \
+		geometry2d.h \
 		matrix.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
@@ -3210,8 +3228,8 @@ debug\physicssystem.obj: physicssystem.cpp physicssystem.h \
 		eventhandler.h \
 		event.h \
 		gameobjectevent.h \
-		geometry2d.h \
 		vector2d.h \
+		geometry2d.h \
 		matrix.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
@@ -3821,6 +3839,7 @@ debug\statefactory.obj: statefactory.cpp statefactory.h \
 		mapview.h \
 		gameworld.h \
 		bulletview.h \
+		camera.h \
 		exitstate.h
 
 debug\stateevent.obj: stateevent.cpp stateevent.h \
@@ -3918,7 +3937,8 @@ debug\stateevent.obj: stateevent.cpp stateevent.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qregion.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs_win.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
+		statecontext.h
 
 debug\state.obj: state.cpp state.h \
 		eventhandler.h \
@@ -4014,7 +4034,8 @@ debug\state.obj: state.cpp state.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qregion.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs_win.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
+		statecontext.h
 
 debug\carwheel.obj: carwheel.cpp carwheel.h \
 		wheel.h \
@@ -4165,8 +4186,8 @@ debug\bullet.obj: bullet.cpp bullet.h \
 		eventhandler.h \
 		event.h \
 		gameobjectevent.h \
-		geometry2d.h \
 		vector2d.h \
+		geometry2d.h \
 		matrix.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
@@ -4463,8 +4484,8 @@ debug\turret.obj: turret.cpp turret.h \
 		eventhandler.h \
 		event.h \
 		gameobjectevent.h \
-		geometry2d.h \
 		vector2d.h \
+		geometry2d.h \
 		matrix.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
@@ -4573,9 +4594,9 @@ debug\vehicle.obj: vehicle.cpp vehicle.h \
 		eventhandler.h \
 		event.h \
 		gameobjectevent.h \
+		vector2d.h \
 		physicsobject.h \
 		geometry2d.h \
-		vector2d.h \
 		matrix.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
@@ -4820,6 +4841,7 @@ debug\exitstate.obj: exitstate.cpp exitstate.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs_win.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
+		statecontext.h \
 		graphiccore.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtOpenGL\QGLWidget \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtOpenGL\qgl.h \
@@ -5138,8 +5160,8 @@ debug\physicsworld.obj: physicsworld.cpp physicsworld.h \
 		eventhandler.h \
 		event.h \
 		gameobjectevent.h \
-		geometry2d.h \
 		vector2d.h \
+		geometry2d.h \
 		matrix.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
@@ -5240,8 +5262,8 @@ debug\obstacle.obj: obstacle.cpp obstacle.h \
 		eventhandler.h \
 		event.h \
 		gameobjectevent.h \
-		geometry2d.h \
 		vector2d.h \
+		geometry2d.h \
 		matrix.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
@@ -5417,8 +5439,8 @@ debug\explosion.obj: explosion.cpp explosion.h \
 		eventhandler.h \
 		event.h \
 		gameobjectevent.h \
-		geometry2d.h \
 		vector2d.h \
+		geometry2d.h \
 		matrix.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
@@ -5763,6 +5785,7 @@ debug\gamemodelobject.obj: gamemodelobject.cpp gamemodelobject.h \
 		eventhandler.h \
 		event.h \
 		gameobjectevent.h \
+		vector2d.h \
 		console.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QVariant \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvariant.h \
@@ -5798,7 +5821,6 @@ debug\gamemodelobject.obj: gamemodelobject.cpp gamemodelobject.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QThread \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qthread.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QTextStream \
-		vector2d.h \
 		matrix.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
@@ -5908,6 +5930,7 @@ debug\gameplaystate.obj: gameplaystate.cpp gameplaystate.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qwindowdefs_win.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
+		statecontext.h \
 		vehicle.h \
 		gamemodelobject.h \
 		gameobjectevent.h \
@@ -5965,6 +5988,7 @@ debug\gameplaystate.obj: gameplaystate.cpp gameplaystate.h \
 		mapview.h \
 		gameworld.h \
 		bulletview.h \
+		camera.h \
 		thread.h \
 		random.h
 
@@ -6511,12 +6535,12 @@ debug\networkserver.obj: networkserver.cpp networkserver.h \
 		eventhandler.h \
 		event.h \
 		gameobjectevent.h \
+		vector2d.h \
 		console.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QVariant \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QThread \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qthread.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QTextStream \
-		vector2d.h \
 		matrix.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
@@ -6704,9 +6728,9 @@ debug\uivehiclecontroller.obj: uivehiclecontroller.cpp uivehiclecontroller.h \
 		eventhandler.h \
 		event.h \
 		gameobjectevent.h \
+		vector2d.h \
 		physicsobject.h \
 		geometry2d.h \
-		vector2d.h \
 		matrix.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
@@ -6892,8 +6916,8 @@ debug\bulletview.obj: bulletview.cpp bulletview.h \
 		eventhandler.h \
 		event.h \
 		gameobjectevent.h \
-		geometry2d.h \
 		vector2d.h \
+		geometry2d.h \
 		matrix.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qmatrix.h \
@@ -7112,7 +7136,8 @@ debug\gameobjectevent.obj: gameobjectevent.cpp gameobjectevent.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringbuilder.h \
 		eventdispatcher.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QMutex \
-		eventhandler.h
+		eventhandler.h \
+		vector2d.h
 
 debug\moc_bitmap.obj: debug\moc_bitmap.cpp 
 

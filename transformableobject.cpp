@@ -12,6 +12,17 @@ TransformableObject::~TransformableObject()
 
 }
 
+void TransformableObject::setPosition(const Vector2D &p)
+{
+    position.x = p.x;
+    position.y = p.y;
+}
+
+const Vector2D& TransformableObject::getPosition() const
+{
+    return position;
+}
+
 void TransformableObject::setRSPointCenter()
 {
     rs_point.x = 0.5;
@@ -65,7 +76,7 @@ QRectF TransformableObject::getBounds(const Matrix& p)
     return QRectF(x1, y1, x2 - x1, y2 - y1);
 }
 
-const Matrix& TransformableObject::getTransform()
+Matrix& TransformableObject::getTransform()
 {
     float kx = 1;
     float ky = 1;
@@ -75,14 +86,19 @@ const Matrix& TransformableObject::getTransform()
         ky = outer_size.y / inner_size.y;
     }
     Matrix a = Matrix::translation(Vector2D(-rs_point.x * inner_size.x, -rs_point.y * inner_size.y));
-    Matrix b = Matrix::scaling(Vector2D(scaling.x * kx, scaling.y * ky));
-    Matrix c = Matrix::rotationZ(rotationZ);
-    Matrix d = Matrix::translation(Vector2D(rs_point.x * inner_size.x, rs_point.y * inner_size.y));
-    Matrix e = Matrix::translation(Vector2D(position.x - rs_point.x * inner_size.x, position.y - rs_point.y * inner_size.y));
+    Matrix b = Matrix::rotationZ(rotationZ);
+    Matrix c = Matrix::scaling(Vector2D(scaling.x * kx, scaling.y * ky));
+
+    Matrix d = Matrix::translation(Vector2D(position.x, position.y));
+
+    /*Matrix a = Matrix::translation(Vector2D(-position.x, -position.y));
+    Matrix b = Matrix::rotationZ(rotationZ);
+    Matrix c = Matrix::scaling(Vector2D(scaling.x * kx, scaling.y * ky));
+    Matrix d = Matrix::translation(Vector2D(position.x - rs_point.x * inner_size.x, position.y - rs_point.y * inner_size.y));*/
+
     a.mul(b);
     a.mul(c);
     a.mul(d);
-    a.mul(e);
     matrix = a;
     return matrix;
 }

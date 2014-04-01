@@ -3,6 +3,8 @@
 
 #include <QImage>
 #include <QPainter>
+#include <QString>
+#include <map>
 #include "event.h"
 #include "interactiveobject.h"
 #include "QThread"
@@ -40,11 +42,8 @@ public slots:
     void run()
     {
         QImage* temp = new QImage();
-
         temp->load(this->path);
-        //Console::printThreadId();
         thread->quit();
-        //Console::printThreadId();
         texture =  temp;
         dispatchEvent(Event(this, Event::COMPLETE));
     }
@@ -64,7 +63,9 @@ public:
     void render(QPainter*, const Matrix&, bool, float);
     void Invoke(const Event &event);
 private:
+    static std::map<QString, QImage*> cache;
     QImage* source;
+    QString source_path;
     TextureLoader* loader;
 };
 

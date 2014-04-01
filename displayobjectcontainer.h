@@ -12,18 +12,17 @@
 class DisplayObjectContainer : public InteractiveObject
 {
 public:
-    typedef DisplayObject* ELEMENT;
-    typedef std::vector<ELEMENT> LIST;
     DisplayObjectContainer();
     virtual ~DisplayObjectContainer();
+
     void addChild(DisplayObject* child);
     void removeChild(DisplayObject* child);
-    bool hasChild(DisplayObject* child) const;
-    //LIST* getChildrenList() const;
+
     void render(QPainter*, const Matrix&, bool, float);
+
     void handleEvent(const Event &);
 private:
-    LIST children;
+    std::vector<DisplayObject*> children;
 };
 
 #endif // DISPLAYOBJECTCONTAINER_H

@@ -9,6 +9,7 @@ class Camera : public TransformableObject
 public:
     static Camera* gi();
     void resize(int width, int height);
+    Matrix& getTransform();
 private:
     Camera();
     static Camera* instance;

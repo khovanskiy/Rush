@@ -5,11 +5,14 @@
 #include "eventdispatcher.h"
 #include "console.h"
 
-class StateContext;
+#include "statecontext.h"
+
 enum StateEnum
 {
     INIT, MAIN_MENU, GAMEPLAY, EXIT, GAMEOVER
 };
+
+class StateContext;
 
 class State : public EventDispatcher, public EventHandler
 {

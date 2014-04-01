@@ -8,6 +8,9 @@
 #include "eventhandler.h"
 #include "state.h"
 
+enum StateEnum;
+class State;
+
 class StateContext
 {
 public:

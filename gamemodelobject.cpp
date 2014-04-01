@@ -9,13 +9,11 @@ GameModelObject::~GameModelObject()
 GameModelObject::GameModelObject(__int64 id)
 {
     this->valid = true;
-    uses_count = 0;
 }
 
 GameModelObject::GameModelObject()
 {
     this->valid = true;
-    uses_count = 0;
 }
 
 bool GameModelObject::isValid()
@@ -27,8 +25,6 @@ void GameModelObject::invalidate()
 {
     if (valid)
     {
-        Console::print("i am invalidate");
-        Console::print(this);
         valid = false;
         dispatchEvent(Event(this, Event::INVALIDATE));
     }
@@ -36,7 +32,6 @@ void GameModelObject::invalidate()
 
 void GameModelObject::add(GameModelObject *go)
 {
-    ++go->uses_count;
     inners.push_back(go);
     dispatchEvent(GameObjectEvent(this, GameObjectEvent::ADDED_OBJECT, go));
 }
@@ -56,15 +51,9 @@ void GameModelObject::tick(double dt)
         }
         else
         {
-            Console::print("must delete");
-            GameModelObject* go = inners[i];
-            --go->uses_count;
             inners[i] = inners[inners.size() - 1];
             inners.pop_back();
-            if (!go->uses_count)
-            {
-                delete go;
-            }
+            --i;
         }
     }
 }

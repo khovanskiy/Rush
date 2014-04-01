@@ -18,10 +18,6 @@ struct ObjectData
     ~ObjectData()
     {
         Console::print("Delete object data");
-        if (!object->uses_count)
-        {
-            delete this->object;
-        }
     }
 };
 
@@ -261,46 +257,30 @@ public:
     }
 };
 
+
 class PhysicsWorld
 {
     QuadTree* tree;
 
     std::vector<ObjectNode*> nodes;
     std::vector<ObjectData*> projectiles;
-    std::vector<ObjectNode*> to_delete;
-    std::vector<ObjectData*> projectiles_to_delete;
-
 
     std::vector<ObjectData*> new_objects;
     std::queue<CollidingPair> colliding_pairs;
     std::vector<std::pair<ObjectData*, ObjectData*>> potentially_colliding;
 
-    PhysicsWorld();
-    PhysicsWorld(PhysicsWorld const &);
-    void operator=(PhysicsWorld const&);
-    ~PhysicsWorld();
-
     void broadCollisionSearch();
     void narrowCollisionSearch();
     void collisionSolving(double dt);
     void collisionSearch(double dt);
-    void changingStates(double dt, std::vector<PhysicsObject*> & n_objects);
+    void changingStates(double dt);
     void integrating(double dt);
-    void addingObjects(std::vector<PhysicsObject*> & n_objects);
-    void removeObjectNode(ObjectNode* node);
-    void removeProjectile(ObjectData* projectile);
-    void deleteInvalidObjects();    
 
 public:
-    static PhysicsWorld& gi()
-    {
-        static PhysicsWorld instance;
-        return instance;
-    }
-
+    PhysicsWorld();
+    virtual ~PhysicsWorld();
     void add(PhysicsObject* object);
     std::vector<ObjectData*> popNewObjects();
-    void clear();
     void tick(double dt);
 };
 

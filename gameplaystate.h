@@ -15,6 +15,7 @@
 #include "mouseevent.h"
 #include "uivehiclecontroller.h"
 #include "mapview.h"
+#include "camera.h"
 
 class GameplayState : public State
 {
@@ -22,14 +23,15 @@ public:
     void init();
     void tick(double dt);
     void Invoke(const Event &);
+    void release();
 private:
-    MapView* map_view;
-    Bitmap* point;
+    PhysicsWorld* physics_world;
+    GameWorld* game_world;
     Vehicle* car;
-    Vehicle* car2;
-    VehicleView* b;
-    VehicleView* b2;
+    MapView* map_view;
+    UIVehicleController* controls;
     NetworkServer* server;
+    Bitmap* b;
 };
 
 #endif // GAMEPLAYSTATE_H

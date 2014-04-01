@@ -105,6 +105,20 @@ Matrix Matrix::invert()
     return Matrix(A, D, B, E, C, F);*/
 }
 
+Matrix Matrix::transformation(const Vector2D &position, const Vector2D &scaling, double rotationZ, const Vector2D &rs_point)
+{
+    Matrix a = Matrix::translation(Vector2D(-rs_point.x, -rs_point.y));
+    Matrix b = Matrix::scaling(Vector2D(scaling.x, scaling.y));
+    Matrix c = Matrix::rotationZ(rotationZ);
+    Matrix d = Matrix::translation(Vector2D(rs_point.x, rs_point.y));
+    Matrix e = Matrix::translation(Vector2D(position.x - rs_point.x, position.y - rs_point.y));
+    a.mul(b);
+    a.mul(c);
+    a.mul(d);
+    a.mul(e);
+    return a;
+}
+
 Vector2D Matrix::map(const Vector2D& v)
 {
     return Vector2D(M11 * v.x + M21 * v.y + M31, M12 * v.x + M22 * v.y + M32);

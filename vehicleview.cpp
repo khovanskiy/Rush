@@ -7,7 +7,7 @@ VehicleView::VehicleView(Vehicle* vehicle)
 
     body = new Bitmap();
     body->load("DATA\\Textures\\Vehicles\\dodge.png");
-    body->setInter(true);
+    //body->setInter(true);
     body->setRSPointCenter();
     body->setWidth(m_to_px * vehicle->getWidth());
     body->setHeight(m_to_px * vehicle->getHeight());
@@ -27,42 +27,31 @@ void VehicleView::Invoke(const Event &event)
 {
     if (event.type == Event::INVALIDATE)
     {
-        vehicle->removeEventListener(this);
-        vehicle = 0;
-        for (int i = 0; i < turrets.size(); ++i)
-        {
-            TurretView* turret = turrets[i];
-            this->removeChild(turret);
-            delete turret;
-        }
-        turrets.clear();
-        Console::print("invalidate");
-        dispatchEvent(Event(this, Event::INVALIDATE));
+        Console::print("get invalidate from vehicle");
+        invalidate();
     }
 }
 
 void VehicleView::render(QPainter *render2d, const Matrix &base, bool new_frame, float interpolation)
 {
-    if (vehicle != 0)
+    //if (valid)
     {
-        this->setX(m_to_px * vehicle->getCoordinates().x);
-        this->setY(m_to_px * vehicle->getCoordinates().y);
+        //Console::print(vehicle->getCoordinates());
+        this->setX(vehicle->getCoordinates().x);
+        this->setY(vehicle->getCoordinates().y);
         this->setRotationZ(vehicle->getAngle());
-        Sprite::render(render2d, base, new_frame, interpolation);
-
+        //Console::print(getTransform());
+        GameViewObject::render(render2d, base, new_frame, interpolation);
     }
 }
 
 VehicleView::~VehicleView()
 {
+    Console::print("Vehicle View is deleted");
+    vehicle->removeEventListener(this);
     for (int i = 0; i < turrets.size(); ++i)
     {
-        TurretView* turret = turrets[i];
-        this->removeChild(turret);
-        delete turret;
+        delete turrets[i];
     }
-    turrets.clear();
-
-    this->removeChild(body);
     delete body;
 }
