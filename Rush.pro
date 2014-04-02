@@ -73,7 +73,10 @@ SOURCES += background.cpp \
     transformableobject.cpp \
     bulletview.cpp \
     gameworld.cpp \
-    gameobjectevent.cpp
+    gameobjectevent.cpp \
+    terrainview.cpp \
+    terrain.cpp \
+    cameracontroller.cpp
 
 HEADERS  += background.h \
     bitmap.h \
@@ -136,4 +139,7 @@ HEADERS  += background.h \
     transformableobject.h \
     bulletview.h \
     gameworld.h \
-    gameobjectevent.h
+    gameobjectevent.h \
+    terrainview.h \
+    terrain.h \
+    cameracontroller.h

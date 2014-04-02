@@ -6,7 +6,9 @@
 #include "gameworld.h"
 #include "vehicleview.h"
 #include "bulletview.h"
+#include "terrainview.h"
 #include "stage.h"
+#include "background.h"
 #include "sprite.h"
 
 class MapView : public EventHandler

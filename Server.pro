@@ -21,7 +21,8 @@ SOURCES += \
     eventdispatcher.cpp \
     gamemodelobject.cpp \
     networkclient.cpp \
-    api.cpp
+    api.cpp \
+    gameobjectevent.cpp
 
 HEADERS  += \
     ../background.h \
@@ -33,4 +34,5 @@ HEADERS  += \
     eventhandler.h \
     gamemodelobject.h \
     networkclient.h \
-    api.h
+    api.h \
+    gameobjectevent.h

@@ -13,6 +13,8 @@ public:
     QRectF getBounds(const Matrix&);
     virtual Matrix& getTransform();
 
+    void setSize(const Vector2D& size);
+    const Vector2D& getSize() const;
     void setPosition(const Vector2D& p);
     const Vector2D& getPosition() const;
     void setRSPoint(const Vector2D& m);

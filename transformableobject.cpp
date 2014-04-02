@@ -1,5 +1,7 @@
 #include "transformableobject.h"
 
+#include "console.h"
+
 TransformableObject::TransformableObject()
 {
     scaling.x = scaling.y = 1;
@@ -10,6 +12,21 @@ TransformableObject::TransformableObject()
 TransformableObject::~TransformableObject()
 {
 
+}
+
+void TransformableObject::setSize(const Vector2D &size)
+{
+    outer_size = size;
+    isWHsettedup = true;
+}
+
+const Vector2D& TransformableObject::getSize() const
+{
+    if (isWHsettedup)
+    {
+        return outer_size;
+    }
+    return inner_size;
 }
 
 void TransformableObject::setPosition(const Vector2D &p)

@@ -27,7 +27,8 @@ public:
     virtual void tick(double dt);
     void broadcast(const QString&);
 public slots:
-    void onResult(QNetworkReply* reply);
+    void onLoop();
+    //void onResult(QNetworkReply* reply);
 protected slots:
     void onClientConnected();
     void onClientDisconnected();

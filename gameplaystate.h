@@ -14,6 +14,7 @@
 #include "mouse.h"
 #include "mouseevent.h"
 #include "uivehiclecontroller.h"
+#include "cameracontroller.h"
 #include "mapview.h"
 #include "camera.h"
 
@@ -25,11 +26,13 @@ public:
     void Invoke(const Event &);
     void release();
 private:
+    Vehicle* player;
     PhysicsWorld* physics_world;
     GameWorld* game_world;
     Vehicle* car;
     MapView* map_view;
     UIVehicleController* controls;
+    CameraController* camera_controls;
     NetworkServer* server;
     Bitmap* b;
 };

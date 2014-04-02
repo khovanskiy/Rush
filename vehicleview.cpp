@@ -9,8 +9,8 @@ VehicleView::VehicleView(Vehicle* vehicle)
     body->load("DATA\\Textures\\Vehicles\\dodge.png");
     //body->setInter(true);
     body->setRSPointCenter();
-    body->setWidth(m_to_px * vehicle->getWidth());
-    body->setHeight(m_to_px * vehicle->getHeight());
+    body->setWidth(vehicle->getWidth());
+    body->setHeight(vehicle->getHeight());
 
     this->addChild(body);
 
@@ -34,15 +34,10 @@ void VehicleView::Invoke(const Event &event)
 
 void VehicleView::render(QPainter *render2d, const Matrix &base, bool new_frame, float interpolation)
 {
-    //if (valid)
-    {
-        //Console::print(vehicle->getCoordinates());
-        this->setX(vehicle->getCoordinates().x);
-        this->setY(vehicle->getCoordinates().y);
-        this->setRotationZ(vehicle->getAngle());
-        //Console::print(getTransform());
-        GameViewObject::render(render2d, base, new_frame, interpolation);
-    }
+    this->setX(vehicle->getCoordinates().x);
+    this->setY(vehicle->getCoordinates().y);
+    this->setRotationZ(vehicle->getAngle());
+    GameViewObject::render(render2d, base, new_frame, interpolation);
 }
 
 VehicleView::~VehicleView()

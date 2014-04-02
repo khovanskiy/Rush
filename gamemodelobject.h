@@ -9,7 +9,7 @@
 
 enum GameObjectType
 {
-    VEHICLE, TURRET, BULLET, UNKNOWN
+    VEHICLE, TURRET, BULLET, TERRAIN, UNKNOWN
 };
 
 class GameModelObject : public EventDispatcher, public EventHandler

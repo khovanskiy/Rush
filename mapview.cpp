@@ -67,6 +67,14 @@ void MapView::createObject(GameModelObject *go)
 
         Stage::gi()->addChild(view);
     } break;
+    case GameObjectType::TERRAIN:
+    {
+        GameViewObject* view = new TerrainView(static_cast<Terrain*>(go));
+        view->addEventListener(this);
+        list.push_back(view);
+
+        Stage::gi()->addChild(view);
+    } break;
     }
 }
 

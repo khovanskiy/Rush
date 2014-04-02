@@ -20,6 +20,9 @@ void GameplayState::init()
     game_world = new GameWorld();
     physics_world = new PhysicsWorld();
 
+
+    game_world->add(new Terrain());
+
     b = new Bitmap();
     b->load("DATA\\Textures\\Vehicles\\dodge.png");
 
@@ -64,8 +67,10 @@ void GameplayState::init()
     physics_world->add(car2);
 
     controls = new UIVehicleController(car);
+    camera_controls = new CameraController(car);
 
     car->addEventListener(this);
+
 
     map_view = new MapView(game_world);
 
@@ -108,15 +113,14 @@ void GameplayState::tick(double dt)
     game_world->tick(dt);
     physics_world->tick(dt);
     map_view->update();
-    //Vector2D v = car->getCoordinates();
-    //Console::print(v);
-    //Camera::gi()->setPosition(Vector2D(v.x, v.y));
+    camera_controls->update();
 }
 
 void GameplayState::release()
 {
     Keyboard::gi()->removeEventListener(this);
     Mouse::gi()->removeEventListener(this);
+    delete camera_controls;
     delete controls;
     delete map_view;
     delete physics_world;
