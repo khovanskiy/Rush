@@ -18,7 +18,7 @@ void API::onResult(QNetworkReply *reply)
     QJsonDocument doc = QJsonDocument::fromJson(buffer.toUtf8());
     QJsonObject obj = doc.object();
 
-    int result = obj.value("result").toInt();
+    int result = obj.value("result").toVariant().toInt();
     if (result > 0)
     {
         QJsonArray arr = obj["data"].toArray();

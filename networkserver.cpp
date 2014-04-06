@@ -1,6 +1,7 @@
 #include "networkserver.h"
 
 #include "gameobjectevent.h"
+#include <QStringList>
 
 NetworkServer::NetworkServer()
 {
