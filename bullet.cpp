@@ -2,6 +2,7 @@
 #include "math.h"
 #include "explosion.h"
 #include "physicsobjectfactory.h"
+#include "console.h"
 
 static const double infinity = 1e100;
 
@@ -9,9 +10,9 @@ const int Bullet::BULLET = 0;
 const int Bullet::MISSILE = 1;
 const int Bullet::CUT = 2;
 
-Bullet::Bullet(Vector2D r, Vector2D speed, double mass, int bullet_type,
+Bullet::Bullet(int id, Vector2D r, Vector2D speed, double mass, int bullet_type,
                double width, double height, double dt, double time_to_live)
-    : PhysicsObject(new Segment2D(Point2D(r), Point2D(r).getPoint(speed.getMul(dt))),
+    : PhysicsObject(id, new Segment2D(Point2D(r), Point2D(r).getPoint(speed.getMul(dt))),
                     mass, infinity, PhysicsObject::BULLET),
       width(width), height(height)
 {

@@ -9,7 +9,7 @@ class Obstacle : public PhysicsObject
 
     int obstacle_type;
 
-    Obstacle(Shape2D* shape, double mass, double inertia_moment, int obstacle_type);
+    Obstacle(int id, Shape2D* shape, double mass, double inertia_moment, int obstacle_type);
     virtual ~Obstacle();
 
 public:

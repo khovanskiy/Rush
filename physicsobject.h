@@ -28,10 +28,6 @@ public:
 
 class PhysicsObject : public GameModelObject
 {
-    friend class PhysicsWorld;
-    friend class PhysicsObjectFactory;
-    friend struct ObjectData;
-
 protected:
     Shape2D * shape;
     Vector2D v;
@@ -44,7 +40,7 @@ protected:
     bool dynamic;
     double time_to_live;
 
-    PhysicsObject(Shape2D* shape, double mass, double inertia_moment, int physics_object_type);
+    PhysicsObject(int id, Shape2D* shape, double mass, double inertia_moment, int physics_object_type);
     virtual ~PhysicsObject();
 
     Vector2D getSpeedAtPoint(Point2D const & point);

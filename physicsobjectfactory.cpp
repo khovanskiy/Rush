@@ -1,14 +1,9 @@
-/*#include "physicsobjectfactory.h"
+#include "physicsobjectfactory.h"
 #include "console.h"
-#include "physicsworld.h"
 
 static const double G = 9.80665;
 static const double M_PI = 3.14159265358979323846;
 static const double inch_to_meter = 0.0254;
-
-PhysicsObjectFactory::PhysicsObjectFactory()
-{
-}
 
 double PhysicsObjectFactory::revsPerKmToRadius(double revsPerKilometer)
 {
@@ -26,21 +21,22 @@ double PhysicsObjectFactory::inchToMeter(double inches)
     return inches * 0.0254;
 }
 
-Vehicle* PhysicsObjectFactory::createEmptyCar(double length, double width, double width_with_mirrors,
+/*Vehicle* PhysicsObjectFactory::createEmptyCar(double length, double width, double width_with_mirrors,
                                               double mass, int vehicle_type)
 
 {
     return new Vehicle(new Rectangle2D(Point2D(0, 0), width, length, 0), width_with_mirrors,
                        mass, mass * (width * width + length * length) / 12, vehicle_type);
-}
+}*/
 
 
-Vehicle* PhysicsObjectFactory::createVehicle(int vehicle_type)
+Vehicle* PhysicsObjectFactory::createVehicle(int id_object, int vehicle_type)
 {
     Vehicle* result;
-    if (vehicle_type == Vehicle::DODGE_CHALLENGER_SRT8)
+    if (vehicle_type == 0)//Vehicle::DODGE_CHALLENGER_SRT8)
     {
-        result = createEmptyCar(5.0, 1.923, 2.270, 1887, vehicle_type);
+        result = new Vehicle(id_object, new Rectangle2D(Point2D(0, 0), 1.923, 5.0), 2270);
+        result->type_object = result->vehicle_type = vehicle_type;
         double r[] = {3.59, 2.19, 1.41, 1, 0.83};
         std::vector<double> ratios(r, r + sizeof(r) / sizeof(double));
         result->setEngine(VehicleEngine(637, 6000, ratios, 3.06));
@@ -53,9 +49,10 @@ Vehicle* PhysicsObjectFactory::createVehicle(int vehicle_type)
         result->setWheels(back, front, 1.45);
         result->setVehicleBody(VehicleBody(0.356, 5.0, 1.923, 1.45, result->chassis.getMassCenter()));
     }
-    else if (vehicle_type == Vehicle::FERRARI_599GTO)
+    else if (vehicle_type == 1)//Vehicle::FERRARI_599GTO)
     {
-        result = createEmptyCar(4.710, 1.962, 2.180, 1605, vehicle_type);
+        result = new Vehicle(id_object, new Rectangle2D(Point2D(0, 0), 1.962, 4.710), 1605);
+        result->type_object = result->vehicle_type = vehicle_type;
         double r[] = {3.15, 2.18, 1.57, 1.19, 0.94, 0.76};
         std::vector<double> ratios(r, r + sizeof(r) / sizeof(double));
         result->setEngine(VehicleEngine(620, 8400, ratios, 4.18));
@@ -70,8 +67,10 @@ Vehicle* PhysicsObjectFactory::createVehicle(int vehicle_type)
     }
     else if (vehicle_type == Vehicle::FORD_F150_SVT_RAPTOR)
     {
-        result = createEmptyCar(inchToMeter(232.1), inchToMeter(86.3),
-                                inchToMeter(104.1), 2813, vehicle_type);
+        /*result = createEmptyCar(inchToMeter(232.1), inchToMeter(86.3),
+                                inchToMeter(104.1), 2813, vehicle_type);*/
+        result = new Vehicle(id_object, new Rectangle2D(Point2D(0, 0), inchToMeter(100), inchToMeter(232.1)), 2813);
+        result->type_object = result->vehicle_type = vehicle_type;
         double r[] = {4.17, 2.34, 1.52, 1.14, 0.86, 0.69};
         std::vector<double> ratios(r, r + sizeof(r) / sizeof(double));
         result->setEngine(VehicleEngine(1001, 7000, ratios, 4.10));
@@ -86,11 +85,19 @@ Vehicle* PhysicsObjectFactory::createVehicle(int vehicle_type)
         result->setVehicleBody(VehicleBody(0.356, inchToMeter(232.1), inchToMeter(86.3),
                                            inchToMeter(78.4), result->chassis.getMassCenter()));
     }
-    //PhysicsWorld::gi().addObject(result);
+    result->setTorquePercent(1);
     return result;
 }
 
-Bullet* PhysicsObjectFactory::createBullet(Vector2D r, double angle, int bullet_type, double dt)
+Turret* PhysicsObjectFactory::createTurret(int id_object, int turret_type)
+{
+    Turret* result;
+    result = new Turret(id_object, new Rectangle2D(Point2D(0, -0.5), 1.5, 1.5), 100, 7, 0.1, 2 * asin(1), Bullet::BULLET, 0);
+    result->type_object = turret_type;
+    return result;
+}
+
+Bullet* PhysicsObjectFactory::createBullet(int id_object, Vector2D r, double angle, int bullet_type, double dt)
 {
     double width, height, mass, speed, time_to_live;
     if (bullet_type == Bullet::BULLET)
@@ -119,10 +126,10 @@ Bullet* PhysicsObjectFactory::createBullet(Vector2D r, double angle, int bullet_
     }
     Vector2D v(0, speed);
     v.rotate(angle);
-    return new Bullet(r, v, mass, bullet_type, width, height, dt, time_to_live);
+    return new Bullet(id_object, r, v, mass, bullet_type, width, height, dt, time_to_live);
 }
 
-Turret* PhysicsObjectFactory::createVehicleTurret(int turret_type)
+/*Turret* PhysicsObjectFactory::createVehicleTurret(int turret_type)
 {
     double width, height, max_angle;
     double fire_delay = 0.4, mass = 100, inertia_moment = 7, scatter = 0;
@@ -165,9 +172,9 @@ Turret* PhysicsObjectFactory::createVehicleTurret(int turret_type)
     result->setStatic();
     result->turret_type = turret_type;
     return result;
-}
+}*/
 
-Explosion* PhysicsObjectFactory::createExplosion(Vector2D r, double angle, int explosion_type)
+/*Explosion* PhysicsObjectFactory::createExplosion(Vector2D r, double angle, int explosion_type)
 {
     double start_radius, end_radius, time, explosion_impulse;
     if (explosion_type == Explosion::SMALL)

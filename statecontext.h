@@ -2,11 +2,10 @@
 #define STATECONTEXT_H
 
 #include <vector>
-#include <memory>
-#include <QMutex>
 
 #include "eventhandler.h"
 #include "state.h"
+#include "renderdata.h"
 
 enum StateEnum;
 class State;
@@ -18,11 +17,11 @@ public:
     void push(StateEnum name);
     void pop();
     void changeState(StateEnum name);
+    void render(const RenderData&);
     void tick(double dt);
 private:
     typedef std::vector<State*> LIST;
     LIST states;
-    int recuirsion_count;
 };
 
 #endif // STATECONTEXT_H

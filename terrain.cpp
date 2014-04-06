@@ -1,6 +1,6 @@
 #include "terrain.h"
 
-Terrain::Terrain()
+Terrain::Terrain(int id) : GameModelObject(id)
 {
     type = 0;
     setSize(Vector2D(30,30));

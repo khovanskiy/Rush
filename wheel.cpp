@@ -1,6 +1,7 @@
 #include "wheel.h"
 #include "console.h"
 #include <QVariant>
+
 static const double M_PI = 3.14159265358979323846;
 static const double G = 9.80665;
 static const double eps = 1e-9;

@@ -4,75 +4,24 @@ static const double M_PI = 3.14159265358979323846;
 
 #include "thread.h"
 #include "random.h"
-
-class Bclass : public Sprite
-{
-
-};
-
-class Cclass : public Sprite
-{
-
-};
+#include "gameobjectevent.h"
+#include "physicsobjectfactory.h"
 
 void GameplayState::init()
 {
     game_world = new GameWorld();
-    physics_world = new PhysicsWorld();
-
-
-    game_world->add(new Terrain());
-
-    b = new Bitmap();
-    b->load("DATA\\Textures\\Vehicles\\dodge.png");
-
-    /*b->setRSPointCenter();
-    b->setPosition(Vector2D(0,0));
-    b->setScaleX(1.5);
-    b->setScaleY(1.5);
-    b->setX(100);
-
-    Console::print("Other");
-    Stage::gi()->addChild(b);*/
-
-    car = new Vehicle(new Rectangle2D(Point2D(0,0), 1.962, 4.710), 1887);
-    double r[] = {3.59, 2.19, 1.41, 1, 0.83};
-    std::vector<double> ratios(r, r + sizeof(r) / sizeof(double));
-    car->setEngine(VehicleEngine(637, 6000, ratios, 3.06));
-    CarTrack back(-1.62724, 1.604, 1000 / (2 * M_PI * 456), 0.466, true, true, RotationReaction::NoRotation, 0.9, 0.025, 1.5, 1.5, M_PI / 6);
-    CarTrack front(1.74552, 1.603, 1000 / (2 * M_PI * 456), 0.544, false, true, RotationReaction::StraightRot, 0.9, 0.025, 1.5, 1.5, M_PI / 6);
-    car->setWheels(back, front, 1.45);
-    car->setVehicleBody(VehicleBody(0.356, 5.0, 1.923, 1.45, car->chassis.getMassCenter()));
-    car->setCoordinates(Vector2D(0, 0));
-    car->setAngle(-asin(1));
-    car->setTorquePercent(1);
-
-
-
-    Turret* t = new Turret(new Rectangle2D(Point2D(0, -0.5), 1.5, 1.5), 100, 7, 0.1, 2 * asin(1), Bullet::BULLET, 0);
-    car->addTurret(t);
-
-    game_world->add(car);
-    physics_world->add(car);
-
-    Vehicle* car2 = new Vehicle(new Rectangle2D(Point2D(0,0), 1.962, 4.710), 1887);
-    car2->setWheels(back, front, 1.45);
-    car2->setEngine(VehicleEngine(637, 6000, ratios, 3.06));
-    car2->setAngle(M_PI);
-    car2->setTorquePercent(0.2);
-
-    car2->setCoordinates(Vector2D(15, 15));
-
-    game_world->add(car2);
-    physics_world->add(car2);
-
-    controls = new UIVehicleController(car);
-    camera_controls = new CameraController(car);
-
-    car->addEventListener(this);
-
+    server = new NetworkServer();
+    server->addEventListener(this);
+    server->connect("127.0.0.1", 560);
 
     map_view = new MapView(game_world);
+
+    current_state = WAIT_VEHICLE;
+    controls = 0;
+    camera_controls = 0;
+    current_vehicle = 0;
+    current_id_player = 0;
+    current_id_vehicle = 0;
 
     Mouse::gi()->addEventListener(this);
     Keyboard::gi()->addEventListener(this);
@@ -88,41 +37,181 @@ void GameplayState::Invoke(const Event &event)
             context->changeState(StateEnum::GAMEPLAY);
         }
     }
-    else if (event.type == "TURRET_FIRE")
+    else if (event.type == NetworkEvent::PROTOCOL)
     {
-        const GameObjectEvent* e = static_cast<const GameObjectEvent*>(&event);
-        Vehicle* obj = static_cast<Vehicle*>(event.target);
-        Matrix A = obj->getTransform();
-        Matrix B = obj->getTurrets()[0]->getTransform();
+        const NetworkEvent* e = static_cast<const NetworkEvent*>(&event);
+        Protocol* protocol = e->protocol;
+        int action = protocol->nextInt();
+        if (action == UPDATE_OBJECT)
+        {
+            int id_object = protocol->nextInt();
+            int id_parent = protocol->nextInt();
+            GameObjectType class_object = (GameObjectType)protocol->nextInt();
+            int type_object = protocol->nextInt();
+            Vector2D position;
+            position.x = protocol->nextDouble();
+            position.y = protocol->nextDouble();
+            double rotation = protocol->nextDouble();
+            GameModelObject* object = GameModelObject::findById(id_object);
+            GameModelObject* parent = GameModelObject::findById(id_parent);
+            if (object != 0)
+            {
+                if (object->getFamilyId() != GameObjectType::TERRAIN)
+                {
+                    PhysicsObject* physics_object = static_cast<PhysicsObject*>(object);
+                    physics_object->setCoordinates(position);
+                    physics_object->setAngle(rotation);
+                }
+            }
+            else
+            {
+                switch (class_object)
+                {
+                case GameObjectType::TERRAIN:
+                {
+                    Terrain* terrain = new Terrain(id_object);
+                    terrain->setPosition(position);
+                    parent->add(terrain);
+                } break;
+                case GameObjectType::VEHICLE:
+                {
+                    Vehicle* vehicle = PhysicsObjectFactory::createVehicle(id_object, type_object);
+                    vehicle->setCoordinates(position);
+                    vehicle->setAngle(rotation);
+                    parent->add(vehicle);
+                } break;
+                case GameObjectType::BULLET:
+                {
+                    Bullet* bullet = PhysicsObjectFactory::createBullet(id_object,position,rotation, type_object, 0.05);
+                    parent->add(bullet);
+                } break;
+                case GameObjectType::TURRET:
+                {
+                    Vehicle* vehicle = static_cast<Vehicle*>(parent);
+                    Turret* turret = PhysicsObjectFactory::createTurret(id_object, type_object);
+                    turret->setCoordinates(position);
+                    turret->setAngle(rotation);
+                    vehicle->addTurret(turret);
+                }
+                }
+            }
+        }
+        else if (action == AUTH)
+        {
+            current_id_player = protocol->nextInt();
+            Console::print(QString("My id player #") + QVariant(current_id_player).toString());
+        }
+        else if (action == LOGIN)
+        {
+            int id_player = protocol->nextInt();
+            if (id_player != current_id_player)
+            {
+                Console::print(QString("Player #") + QVariant(id_player).toString() + " logged IN");
+            }
+        }
+        else if (action == LOGOUT)
+        {
+            int id_player = protocol->nextInt();
+            if (id_player != current_id_player)
+            {
+                Console::print(QString("Player #") + QVariant(id_player).toString() + " logged OUT");
+            }
+        }
+        else if (action == ADD_OBJECT)
+        {
+            int id_player = protocol->nextInt();
+            int id_object = protocol->nextInt();
+            Console::print("id player");
+            Console::print(id_player);
+            if (id_player == current_id_player)
+            {
+                Console::print(QString("ID OBJECT: ") + QVariant(id_object).toString());
+                current_id_vehicle = id_object;
+                current_state = NEED_INIT_VEHICLE;
+            }
+        }
+        else if (action == REMOVE_OBJECT)
+        {
+            int id_object = protocol->nextInt();
+            GameModelObject* obj = GameModelObject::findById(id_object);
+            if (obj != 0)
+            {
+                if (current_id_vehicle == obj->my_id)
+                {
+                    Console::print("I am dead");
+                    current_state = WAIT_VEHICLE;
+                    current_id_vehicle = 0;
+                    delete camera_controls;
+                    camera_controls = 0;
+                    delete controls;
+                    controls = 0;
+                    current_vehicle = 0;
+                }
+                obj->invalidate();
+            }
+        }
+    }
+}
 
-        Matrix m = Matrix::mul(obj->getTransform(), obj->getTurrets()[0]->getTransform()).invert();
-        Vector2D p(0, 1);
-        p.rotate(obj->getAngle()+obj->getTurrets()[0]->getAngle());
-        p.normalize();
-        p.mul(25);
-
-        Bullet* b = new Bullet(m.map(e->v), p, 1, Bullet::BULLET, 0.15, 0.43, 0.05, 3);
-        b->setSource(obj);
-        game_world->add(b);
-        physics_world->add(b);
+void GameplayState::render(const RenderData &render_data)
+{
+    map_view->render(render_data);
+    if (camera_controls != 0)
+    {
+        camera_controls->update();
     }
 }
 
 void GameplayState::tick(double dt)
 {
     game_world->tick(dt);
-    physics_world->tick(dt);
-    map_view->update();
-    camera_controls->update();
+
+
+    if (current_id_vehicle != 0)
+    {
+        if (current_state == NEED_INIT_VEHICLE)
+        {
+            GameModelObject* model = GameModelObject::findById(current_id_vehicle);
+            if (model != 0)
+            {
+                current_vehicle = static_cast<Vehicle*>(model);
+                controls = new UIVehicleController(current_vehicle);
+                camera_controls = new CameraController(current_vehicle);
+            }
+            current_state = INITED;
+        }
+        if (current_state == INITED)
+        {
+            Protocol protocol;
+            protocol.putInt(PLAYER_IO);
+            protocol.putInt(current_id_player);
+            protocol.putInt(current_vehicle->acc_state);
+            protocol.putDouble(current_vehicle->rotation_percent);
+
+            protocol.putInt(current_vehicle->firing_state);
+            Vector2D target = Camera::gi()->getTransform().invert().map(Mouse::gi()->position());
+            protocol.putDouble(target.x);
+            protocol.putDouble(target.y);
+
+            server->send(protocol);
+        }
+    }
+
+    //server->send();
+    //camera_controls->update();
 }
 
 void GameplayState::release()
 {
     Keyboard::gi()->removeEventListener(this);
     Mouse::gi()->removeEventListener(this);
+
+    server->deleteLater();
+
     delete camera_controls;
+
     delete controls;
+    delete server;
     delete map_view;
-    delete physics_world;
     delete game_world;
 }

@@ -1,7 +1,8 @@
 #include "turret.h"
-#include "physicsworld.h"
-#include "physicsobjectfactory.h"
 #include "random.h"
+
+#include "gameobjectevent.h"
+#include "console.h"
 
 static const double eps = 1e-3;
 
@@ -9,9 +10,9 @@ const int Turret::MACHINEGUN = 0;
 const int Turret::ROCKET_LAUNCHER = 1;
 const int Turret::SAW = 2;
 
-Turret::Turret(Shape2D *shape, double mass, double inertia_moment,
+Turret::Turret(int id, Shape2D *shape, double mass, double inertia_moment,
                double fire_delay, double max_angle, int bullet_type, double scatter)
-    : PhysicsObject(shape, mass, inertia_moment, PhysicsObject::TURRET), d_angle(0)
+    : PhysicsObject(id, shape, mass, inertia_moment, PhysicsObject::TURRET), d_angle(0)
 {
     this->max_angle = max_angle;
     this->bullet_type = bullet_type;
@@ -39,6 +40,11 @@ void Turret::setFiring(bool firing)
 bool Turret::getFiring() const
 {
     return this->firing;
+}
+
+GameObjectType Turret::getFamilyId()
+{
+    return GameObjectType::TURRET;
 }
 
 void Turret::calculateInnerState(double dt)

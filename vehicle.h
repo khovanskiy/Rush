@@ -8,18 +8,16 @@
 #include "chassis.h"
 #include "vehiclebody.h"
 #include "turret.h"
-#include "console.h"
 
 class Vehicle : public PhysicsObject
 {
-    friend class PhysicsObjectFactory;
-
 public:
-    Vehicle(Rectangle2D * shape, int mass);
+    Vehicle(int id, Rectangle2D * shape, int mass);
 
     virtual ~Vehicle();
 
     virtual void tick(double dt);
+    void invalidate();
 
     void Invoke(const Event &);
 

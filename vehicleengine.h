@@ -1,5 +1,5 @@
-#ifndef PHYSICSVEHICLEENGINE_H
-#define PHYSICSVEHICLEENGINE_H
+#ifndef VEHICLEENGINE_H
+#define VEHICLEENGINE_H
 #include <vector>
 
 class VehicleEngine
@@ -39,4 +39,4 @@ public:
     int getGear();
 };
 
-#endif // PHYSICSVEHICLEENGINE_H
+#endif // VEHICLEENGINE_H

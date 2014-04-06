@@ -13,8 +13,8 @@ const int PhysicsObject::BULLET = 2;
 const int PhysicsObject::EXPLOSION = 3;
 const int PhysicsObject::OBSTACLE = 4;
 
-PhysicsObject::PhysicsObject(Shape2D * shape, double mass, double inertia_moment, int physics_object_type)
-    : shape(shape), mass(mass), inertia_moment(inertia_moment), v(0, 0), a(0, 0), pseudo_v(0, 0),
+PhysicsObject::PhysicsObject(int id, Shape2D * shape, double mass, double inertia_moment, int physics_object_type)
+    : GameModelObject(id), shape(shape), mass(mass), inertia_moment(inertia_moment), v(0, 0), a(0, 0), pseudo_v(0, 0),
       f(0, 0), force_moment(0), angular_speed(0), angular_acceleration(0), time_to_live(INFINITE_TIME)
 {    
     this->dynamic = true;

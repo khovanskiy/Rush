@@ -7,8 +7,8 @@ const int Obstacle::WOODEN_BOX = 0;
 const int Obstacle::WOODEN_BARREL = 1;
 const int Obstacle::STONE_WALL = 2;
 
-Obstacle::Obstacle(Shape2D *shape, double mass, double inertia_moment, int obstacle_type)
-    : PhysicsObject(shape, mass, inertia_moment, PhysicsObject::OBSTACLE)
+Obstacle::Obstacle(int id, Shape2D *shape, double mass, double inertia_moment, int obstacle_type)
+    : PhysicsObject(id, shape, mass, inertia_moment, PhysicsObject::OBSTACLE)
 {
     this->obstacle_type = obstacle_type;
 }

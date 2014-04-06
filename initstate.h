@@ -1,31 +1,27 @@
 #ifndef NULLSTATE_H
 #define NULLSTATE_H
 
-#include <memory>
-
 #include "state.h"
-#include "vehicle.h"
 #include "statecontext.h"
-#include "physicsobjectfactory.h"
+#include "gameworld.h"
+#include "mapview.h"
+#include "physicsworld.h"
+#include "uivehiclecontroller.h"
 
 class InitState : public State
 {
 public:
     InitState();
-    virtual ~InitState();
     void init();
-    void focus();
+    void render(const RenderData&);
     void tick(double dt);
-    void defocus();
     void release();
     void Invoke(const Event &event);
-
-
-    void calculateView();
-
 private:
-    double time;
-    Vehicle* dodge;
+    PhysicsWorld* physics_world;
+    GameWorld* game_world;
+    MapView* map_view;
+    UIVehicleController* controls;
 };
 
 #endif // NULLSTATE_H

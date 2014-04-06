@@ -6,14 +6,20 @@
 
 #include "gamemodelobject.h"
 #include "console.h"
+#include "protocol.h"
+#include "networkevent.h"
 
-class NetworkServer : public QObject, public GameModelObject
+class NetworkServer : public QObject, public EventDispatcher
 {
     Q_OBJECT
 public:
-    NetworkServer(const QString& host, const int port);
+    NetworkServer();
     ~NetworkServer();
-    void send(const QString&);
+
+    void connect(const QString& host, const int port);
+    void send(Protocol&);
+protected:
+    void parseResult(const QString&);
 private:
     QTcpSocket* server;
     QString host;

@@ -12,7 +12,7 @@ public:
     GameViewObject();
     ~GameViewObject();
     bool isValid();
-    void invalidate();
+    virtual void invalidate();
 protected:
     int m_to_px;
     bool valid;

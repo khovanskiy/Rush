@@ -1,19 +1,32 @@
 #include "gamemodelobject.h"
-#include "console.h"
+#include "gameobjectevent.h"
+
+std::map<int, GameModelObject*> GameModelObject::registry;
 
 GameModelObject::~GameModelObject()
 {
-
+    registry.erase(my_id);
 }
 
-GameModelObject::GameModelObject(__int64 id)
+GameModelObject::GameModelObject(int my_id)
 {
     this->valid = true;
+    this->my_id = my_id;
+    this->type_object = 0;
+    registry[my_id] = this;
 }
 
-GameModelObject::GameModelObject()
+GameModelObject* GameModelObject::findById(int id)
 {
-    this->valid = true;
+    std::map<int, GameModelObject*>::iterator i = registry.find(id);
+    if (i != registry.end())
+    {
+        return (*i).second;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 bool GameModelObject::isValid()

@@ -18,34 +18,24 @@
 #include "console.h"
 #include "api.h"
 
-class Server : public QMainWindow, public GameModelObject
+#include "serverstate.h"
+
+class Server : public QMainWindow, public EventHandler
 {
     Q_OBJECT
 public:
     Server();
     virtual ~Server();
-    virtual void tick(double dt);
-    void broadcast(const QString&);
 public slots:
     void onLoop();
-    //void onResult(QNetworkReply* reply);
-protected slots:
-    void onClientConnected();
-    void onClientDisconnected();
-protected:
-    void init();
 private:
-    std::vector<NetworkClient*> players;
-
-    int port;
-    QTcpServer* p_server;
-
+    ServerState* state;
     QElapsedTimer* counter;
     QTimer* loop;
     int TICKS_PER_SECOND;
     int SKIP_TICKS;
     int MAX_FRAMESKIP;
-    long next_game_tick;
+    long next_game_tick;    
 };
 
 #endif // SERVER_H

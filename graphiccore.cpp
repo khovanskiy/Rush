@@ -1,67 +1,73 @@
 #include "graphiccore.h"
 
-#include <QPainter>
-#include <QImage>
-#include <QMatrix>
-#include <QMouseEvent>
-#include <QKeyEvent>
-
-#include "console.h"
-#include "bitmap.h"
-#include "background.h"
-#include "stage.h"
-#include "interface.h"
-#include "event.h"
+#include "camera.h"
 #include "mouse.h"
 #include "keyboard.h"
-#include "mouseevent.h"
-#include "keyboardevent.h"
-#include "camera.h"
-#include "matrix.h"
-
-GraphicCore* GraphicCore::instance = 0;
 
 GraphicCore::GraphicCore() : QGLWidget(QGLFormat(QGL::SampleBuffers), 0)
 {
-    render2d = new QPainter();
-    //this->showFullScreen();
-    pen = new QPen(QColor(255,255,255));
-    setWindowTitle("Rush game");
-    Camera::gi()->resize(1200, 800);
-    resize(1200, 800);
-    move(0,0);
-    prev_interpolation = 0;
-    setAutoFillBackground(false);
-    setMouseTracking(true);
-    show();
+    connect(&loop, SIGNAL(timeout()), this, SLOT(onGameCycle()));
+
+    TICKS_PER_SECOND = 20;
+    SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+    MAX_FRAMESKIP = 5;
+    counter.start();
+    new_frame = false;
+    next_game_tick = counter.elapsed();
+    loop.start(0);
+
+    setWindowTitle("The Rush game 2014");
+    this->resize(1200, 800);
+    this->move(0,0);
+    this->setAutoFillBackground(false);
+    this->setMouseTracking(true);
+
+    render_data.render2d = &render2d;
 }
 
 GraphicCore::~GraphicCore()
 {
-    delete pen;
-    delete render2d;
+
 }
 
-GraphicCore* GraphicCore::gi()
+void GraphicCore::onGameCycle()
 {
-    if (instance == 0)
+    loops = 0;
+
+    old_state = new_frame;
+
+    if (counter.elapsed() > next_game_tick)
     {
-        instance = new GraphicCore();
+        new_frame = true;
     }
-    return instance;
+    else
+    {
+        new_frame = false;
+    }
+
+    while (counter.elapsed() > next_game_tick && loops < MAX_FRAMESKIP)
+    {
+        state_context.tick(1.0 / TICKS_PER_SECOND);
+        next_game_tick += SKIP_TICKS;
+        loops++;
+    }
+
+    render_data.interpolation = (float)(counter.elapsed() + SKIP_TICKS - next_game_tick) / (float)(SKIP_TICKS);
+
+    repaint();
 }
 
 void GraphicCore::paintEvent(QPaintEvent*)
 {
-    render2d->begin(this);
-    render2d->setBackground(QBrush(QColor(0,0,0)));
-    render2d->eraseRect(QRect(this->rect()));
-    render2d->setRenderHint(QPainter::Antialiasing);
-    render2d->setRenderHint(QPainter::SmoothPixmapTransform);
-    Background::gi()->render(render2d, Matrix(), new_frame, current_interpolation);
-    Stage::gi()->render(render2d, Camera::gi()->getTransform(), new_frame, current_interpolation);
-    Interface::gi()->render(render2d, Matrix(), new_frame, current_interpolation);
-    render2d->end();
+    render2d.begin(this);
+    render2d.setBackground(QBrush(QColor(0,0,0)));
+    render2d.eraseRect(QRect(this->rect()));
+    render2d.setRenderHint(QPainter::Antialiasing);
+    render2d.setRenderHint(QPainter::SmoothPixmapTransform);
+
+    state_context.render(render_data);
+
+    render2d.end();
 }
 
 void GraphicCore::resizeEvent(QResizeEvent *event)
@@ -72,19 +78,19 @@ void GraphicCore::resizeEvent(QResizeEvent *event)
 
 void GraphicCore::mouseMoveEvent(QMouseEvent *event)
 {
-    dispatchEvent(MouseEvent(this, MouseEvent::MOUSE_MOVE, event->x(), event->y()));
+    Mouse::gi()->Invoke(MouseEvent(this, MouseEvent::MOUSE_MOVE, event->x(), event->y()));
     event->accept();
 }
 
 void GraphicCore::mousePressEvent(QMouseEvent* event)
 {
-    dispatchEvent(MouseEvent(this, MouseEvent::MOUSE_DOWN, event->x(), event->y()));
+    Mouse::gi()->Invoke(MouseEvent(this, MouseEvent::MOUSE_DOWN, event->x(), event->y()));
     event->accept();
 }
 
 void GraphicCore::mouseReleaseEvent(QMouseEvent* event)
 {
-    dispatchEvent(MouseEvent(this, MouseEvent::MOUSE_UP, event->x(), event->y()));
+    Mouse::gi()->Invoke(MouseEvent(this, MouseEvent::MOUSE_UP, event->x(), event->y()));
     event->accept();
 }
 
@@ -92,7 +98,7 @@ void GraphicCore::keyPressEvent(QKeyEvent* event)
 {
     if (!event->isAutoRepeat())
     {
-        dispatchEvent(KeyboardEvent(this, KeyboardEvent::KEY_DOWN, event->key()));
+        Keyboard::gi()->Invoke(KeyboardEvent(this, KeyboardEvent::KEY_DOWN, event->key()));
         event->accept();
     }
     else
@@ -105,19 +111,11 @@ void GraphicCore::keyReleaseEvent(QKeyEvent* event)
 {
     if (!event->isAutoRepeat())
     {
-        dispatchEvent(KeyboardEvent(this, KeyboardEvent::KEY_UP, event->key()));
+        Keyboard::gi()->Invoke(KeyboardEvent(this, KeyboardEvent::KEY_UP, event->key()));
         event->accept();
     }
     else
     {
         event->ignore();
     }
-}
-
-void GraphicCore::render(bool new_frame, float interpolation)
-{
-    this->new_frame = new_frame;
-    this->current_interpolation = interpolation;
-    repaint();
-    //dispatchEvent(Event(this, Event::ENTER_FRAME));
 }

@@ -1,5 +1,6 @@
 #include "uivehiclecontroller.h"
 
+#include "console.h"
 #include "camera.h"
 
 UIVehicleController::UIVehicleController(Vehicle* vehicle)
@@ -23,7 +24,6 @@ void UIVehicleController::Invoke(const Event &event)
     {
         const MouseEvent* e = static_cast<const MouseEvent*>(&event);
         Vector2D v = Camera::gi()->getTransform().invert().map(Vector2D(e->getX(), e->getY()));
-        Console::print(v);
         vehicle->turretsToPoint(v);
     }
     else if (event.type == MouseEvent::MOUSE_DOWN)

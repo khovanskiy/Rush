@@ -10,11 +10,12 @@ NetworkClient::NetworkClient(QTcpSocket* socket)
 NetworkClient::~NetworkClient()
 {
     this->socket->deleteLater();
+    Console::print("NetworkClient is deleted");
 }
 
-void NetworkClient::send(const QString &m)
+void NetworkClient::send(const QByteArray &m)
 {
-    this->socket->write(m.toUtf8());
+    this->socket->write(m);
     this->socket->write("\n");
 }
 
@@ -28,6 +29,15 @@ void NetworkClient::onReceive()
     while (socket->canReadLine())
     {
         QString buffer = QString::fromUtf8(socket->readLine());
-        Console::print(buffer);
+        Console::print(QString("Client: ")+buffer);
+        if (buffer == "auth\n")
+        {
+            Console::print("dispatch");
+            dispatchEvent(GameObjectEvent(this, "tryauth"));
+        }
+        else
+        {
+
+        }
     }
 }

@@ -9,5 +9,5 @@ ExitState::ExitState()
 
 void ExitState::init()
 {
-    GraphicCore::gi()->close();
+    //GraphicCore::gi().close();
 }

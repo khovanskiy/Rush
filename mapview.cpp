@@ -1,5 +1,8 @@
 #include "mapview.h"
 
+#include "gameobjectevent.h"
+#include "camera.h"
+
 MapView::MapView(GameWorld* world)
 {
     this->world = world;
@@ -13,7 +16,7 @@ MapView::MapView(GameWorld* world)
     }
 }
 
-void MapView::update()
+void MapView::render(const RenderData& render_data)
 {
     for (int i = 0; i < unused.size(); ++i)
     {
@@ -29,6 +32,10 @@ void MapView::update()
             list[i] = list[list.size() - 1];
             list.pop_back();
             --i;
+        }
+        else
+        {
+            list[i]->render(render_data.render2d, Camera::gi()->getTransform(), false, render_data.interpolation);
         }
     }
 }
@@ -54,26 +61,17 @@ void MapView::createObject(GameModelObject *go)
     case GameObjectType::VEHICLE:
     {
         GameViewObject* view = new VehicleView(static_cast<Vehicle*>(go));
-        view->addEventListener(this);
         list.push_back(view);
-
-        Stage::gi()->addChild(view);
     } break;
     case GameObjectType::BULLET:
     {
         GameViewObject* view = new BulletView(static_cast<Bullet*>(go));
-        view->addEventListener(this);
         list.push_back(view);
-
-        Stage::gi()->addChild(view);
     } break;
     case GameObjectType::TERRAIN:
     {
         GameViewObject* view = new TerrainView(static_cast<Terrain*>(go));
-        view->addEventListener(this);
         list.push_back(view);
-
-        Stage::gi()->addChild(view);
     } break;
     }
 }

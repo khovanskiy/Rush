@@ -11,12 +11,12 @@ Mouse* Mouse::instance = 0;
 
 Mouse::Mouse()
 {
-    GraphicCore::gi()->addEventListener(this);
+    //GraphicCore::gi().addEventListener(this);
 }
 
 Mouse::~Mouse()
 {
-    GraphicCore::gi()->removeEventListener(this);
+    //GraphicCore::gi().removeEventListener(this);
 }
 
 void Mouse::Invoke(const Event &event)

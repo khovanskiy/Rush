@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 
-#include "game.h"
+#include "graphiccore.h"
 
 class Program : public QMainWindow
 {
@@ -12,8 +12,6 @@ class Program : public QMainWindow
 public:
     Program(QWidget *parent = 0);
     ~Program();
-private:
-    Game* game;
 };
 
 #endif // PROGRAM_H

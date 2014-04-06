@@ -4,16 +4,18 @@
 #include <QObject>
 #include <QTcpSocket>
 
-#include "gamemodelobject.h"
+#include "networkobject.h"
+#include "networkevent.h"
+#include "gameobjectevent.h"
 #include "console.h"
 
-class NetworkClient : public QObject, public GameModelObject
+class NetworkClient : public QObject, public NetworkObject
 {
     Q_OBJECT
 public:
     NetworkClient(QTcpSocket* socket);
     virtual ~NetworkClient();
-    void send(const QString&);
+    void send(const QByteArray&);
 protected slots:
     void onDisconnected();
     void onReceive();

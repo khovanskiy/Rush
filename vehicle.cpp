@@ -1,6 +1,8 @@
 #include "vehicle.h"
 #include "console.h"
 
+#include "gameobjectevent.h"
+
 static const double eps = 2e-4;
 
 const int Vehicle::DODGE_CHALLENGER_SRT8 = 0;
@@ -21,7 +23,7 @@ void Vehicle::Invoke(const Event &event)
     if (event.type == "TURRET_FIRE")
     {
         const GameObjectEvent* e = static_cast<const GameObjectEvent*>(&event);
-        dispatchEvent(GameObjectEvent(this, "TURRET_FIRE", e->v));
+        dispatchEvent(GameObjectEvent(this, "TURRET_FIRE", e->position));
     }
 }
 
@@ -36,7 +38,7 @@ void Vehicle::setMassCenter(Vector2D mass_center)
     this->recalculateMassCenter();
 }
 
-Vehicle::Vehicle(Rectangle2D * shape, int mass) : PhysicsObject(shape, mass, shape->getInertiaMoment(mass), PhysicsObject::VEHICLE)
+Vehicle::Vehicle(int id, Rectangle2D * shape, int mass) : PhysicsObject(id, shape, mass, shape->getInertiaMoment(mass), PhysicsObject::VEHICLE)
 {
     this->recalculateMassCenter();
     this->setFiring(false);
@@ -87,6 +89,18 @@ void Vehicle::addTurret(Turret* turret)
     this->inertia_moment += turret->getInertiaMoment();
     double d = turret->getCoordinates().getLength();
     this->inertia_moment += d * d * turret->getMass();
+
+    dispatchEvent(GameObjectEvent(this, GameObjectEvent::ADDED_OBJECT, turret));
+}
+
+void Vehicle::invalidate()
+{
+    Console::print("Vehicle is invalidated");
+    for (int i = 0; i < turrets.size(); ++i)
+    {
+        turrets[i]->invalidate();
+    }
+    GameModelObject::invalidate();
 }
 
 void Vehicle::setAccelerationState(AccelerationState const & acc_state)
@@ -146,7 +160,7 @@ void Vehicle::applyCollision(const Collision &collision, double dt)
     }
     else if (collision.source->getFamilyId() == GameObjectType::VEHICLE)
     {
-        health -= collision.relative_speed.getLength();
+        health -= 100;//collision.relative_speed.getLength();
     }
     if (health <= 0)
     {

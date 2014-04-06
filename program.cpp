@@ -6,13 +6,9 @@
 
 Program::Program(QWidget *parent) : QMainWindow(parent)
 {
-    game = new Game();
-    //init IO
-    Mouse::gi();
-    Keyboard::gi();
+
 }
 
 Program::~Program()
 {
-    delete game;
 }

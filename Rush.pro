@@ -20,7 +20,6 @@ SOURCES += background.cpp \
     displayobjectcontainer.cpp \
     event.cpp \
     eventdispatcher.cpp \
-    game.cpp \
     graphiccore.cpp \
     initstate.cpp \
     interactiveobject.cpp \
@@ -76,7 +75,10 @@ SOURCES += background.cpp \
     gameobjectevent.cpp \
     terrainview.cpp \
     terrain.cpp \
-    cameracontroller.cpp
+    cameracontroller.cpp \
+    networkevent.cpp \
+    protocol.cpp \
+    renderdata.cpp
 
 HEADERS  += background.h \
     bitmap.h \
@@ -87,7 +89,6 @@ HEADERS  += background.h \
     event.h \
     eventhandler.h \
     eventdispatcher.h \
-    game.h \
     graphiccore.h \
     initstate.h \
     interactiveobject.h \
@@ -142,4 +143,7 @@ HEADERS  += background.h \
     gameobjectevent.h \
     terrainview.h \
     terrain.h \
-    cameracontroller.h
+    cameracontroller.h \
+    networkevent.h \
+    protocol.h \
+    renderdata.h

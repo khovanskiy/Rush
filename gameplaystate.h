@@ -18,23 +18,29 @@
 #include "mapview.h"
 #include "camera.h"
 
-class GameplayState : public State
+#define WAIT_VEHICLE 1
+#define NEED_INIT_VEHICLE 2
+#define INITED 3
+
+class GameplayState : public State, public EventHandler
 {
 public:
     void init();
+    void render(const RenderData &);
     void tick(double dt);
     void Invoke(const Event &);
     void release();
 private:
-    Vehicle* player;
-    PhysicsWorld* physics_world;
+    int current_id_player;
+    int current_id_vehicle;
+    int current_state;
+    Vehicle* current_vehicle;
     GameWorld* game_world;
-    Vehicle* car;
     MapView* map_view;
+
     UIVehicleController* controls;
     CameraController* camera_controls;
     NetworkServer* server;
-    Bitmap* b;
 };
 
 #endif // GAMEPLAYSTATE_H

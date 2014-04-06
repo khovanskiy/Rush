@@ -1,34 +1,31 @@
 #include "statecontext.h"
 
-#include "graphiccore.h"
-#include "state.h"
 #include "stateevent.h"
-#include "console.h"
 #include "statefactory.h"
 
 StateContext::StateContext()
 {
-    recuirsion_count = 0;
     push(StateEnum::GAMEPLAY);
+}
+
+void StateContext::render(const RenderData& render_data)
+{
+    for (int i = 0; i < states.size(); ++i)
+    {
+        states[i]->render(render_data);
+    }
 }
 
 void StateContext::tick(double dt)
 {
-    ++recuirsion_count;
-    for (LIST::iterator i = states.begin(); i != states.end(); ++i)
+    for (int i = 0; i < states.size(); ++i)
     {
-        if (*i)
-        {
-            (*i)->tick(dt);
-        }
+        states[i]->tick(dt);
     }
-    --recuirsion_count;
 }
 
 void StateContext::push(StateEnum name)
 {
-    ++recuirsion_count;
-    //Console::print("PUSH");
     if (states.size() > 0)
     {
         states[states.size() - 1]->defocus();
@@ -38,12 +35,10 @@ void StateContext::push(StateEnum name)
     s->init();
     states.push_back(s);
     s->focus();
-    --recuirsion_count;
 }
 
 void StateContext::pop()
 {
-    //Console::print("POP");
     State* last = states[states.size() - 1];
     last->defocus();
     last->release();
@@ -57,7 +52,6 @@ void StateContext::pop()
 
 void StateContext::changeState(StateEnum name)
 {
-    //Console::print("CHANGE");
     while (states.size() > 0)
     {
         pop();

@@ -13,7 +13,7 @@ class Explosion : public PhysicsObject
 
     int explosion_type;
 
-    Explosion(Shape2D* shape, double mass, double inertia_moment,
+    Explosion(int id, Shape2D* shape, double mass, double inertia_moment,
               double start_radius, double end_radius, double time,
               double explosion_impulse, int explosion_type);
 
