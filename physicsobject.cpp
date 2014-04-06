@@ -270,7 +270,7 @@ Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, Point2D const 
     Vector2D impulse_change(0, 0);
     if (relative_speed.scalar(common_direction) > 0)
     {
-        Vector2D collision_direction = relative_speed;
+        Vector2D collision_direction = common_direction;
         collision_direction.setLength(1);
         Vector2D r1 = collision_center;
         r1.sub(this->getMassCenter());
@@ -280,7 +280,7 @@ Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, Point2D const 
         r2.sub(other->getMassCenter());
         double k2 = r2.cross(collision_direction);
         k2 = angular_speed_koef * k2 * k2 / other->inertia_moment;
-        double impulse = relative_speed.getLength() / (1 / this->mass + 1 / other->mass + k1 + k2);
+        double impulse = abs(relative_speed.scalar(collision_direction)) / (1 / this->mass + 1 / other->mass + k1 + k2);
         impulse_change = collision_direction;
         impulse_change.mul(-impulse);
     }

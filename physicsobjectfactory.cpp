@@ -205,7 +205,7 @@ Obstacle* PhysicsObjectFactory::createObstacle(Vector2D r, double angle, int obs
     bool dynamic;
     if (obstacle_type == Obstacle::STONE_WALL)
     {
-        shape = new Rectangle2D(r, 2, 0.5, angle);
+        shape = new Rectangle2D(r, 5, 0.5, angle);
         mass = 10000;
         inertia_moment = 1000;
         dynamic = false;
