@@ -78,7 +78,8 @@ SOURCES += background.cpp \
     cameracontroller.cpp \
     networkevent.cpp \
     protocol.cpp \
-    renderdata.cpp
+    renderdata.cpp \
+    mainmenustate.cpp
 
 HEADERS  += background.h \
     bitmap.h \
@@ -146,4 +147,5 @@ HEADERS  += background.h \
     cameracontroller.h \
     networkevent.h \
     protocol.h \
-    renderdata.h
+    renderdata.h \
+    mainmenustate.h

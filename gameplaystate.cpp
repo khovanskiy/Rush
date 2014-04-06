@@ -166,7 +166,6 @@ void GameplayState::tick(double dt)
 {
     game_world->tick(dt);
 
-
     if (current_id_vehicle != 0)
     {
         if (current_state == NEED_INIT_VEHICLE)
@@ -196,9 +195,6 @@ void GameplayState::tick(double dt)
             server->send(protocol);
         }
     }
-
-    //server->send();
-    //camera_controls->update();
 }
 
 void GameplayState::release()

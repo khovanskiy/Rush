@@ -13,6 +13,9 @@
 #include "vehicle.h"
 #include "protocol.h"
 
+#define PLAYER_WAIT_VEHICLE 1
+#define PLAYER_HAS_VEHICLE 2
+
 class Player : public QObject, public EventHandler
 {
     Q_OBJECT
@@ -24,6 +27,8 @@ public:
     {
         this->id_player = id_player;
         this->socket = socket;
+        ticks = 0;
+        state = PLAYER_WAIT_VEHICLE;
         connect(socket, SIGNAL(disconnected()), this, SIGNAL(disconected()));
         connect(socket, SIGNAL(readyRead()), this, SIGNAL(readyRead()));
         Console::print(QString("Player created #") + QVariant(id_player).toString());
@@ -38,6 +43,8 @@ public:
     {
         if (event.type == Event::INVALIDATE)
         {
+            state = PLAYER_WAIT_VEHICLE;
+            ticks = 100;
             Console::print("Now waiting new vehicle");
             vehicle = 0;
         }
@@ -46,6 +53,8 @@ public:
     int id_player;
     QTcpSocket* socket;
     Vehicle* vehicle;
+    int ticks;
+    int state;
 };
 
 class ServerState : public QObject, public State, public EventHandler

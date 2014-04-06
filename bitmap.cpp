@@ -68,7 +68,7 @@ void Bitmap::render(QPainter* render2d, const Matrix& base, bool t, float new_in
 
         Matrix current = Matrix::mul(getTransform(), base);
 
-        render_bounds = getBounds(current);
+        *bounds = getBounds(current);
 
         render2d->save();
         render2d->setMatrix(QMatrix());
@@ -80,7 +80,10 @@ void Bitmap::render(QPainter* render2d, const Matrix& base, bool t, float new_in
         Console::print(Camera::gi()->getTransform());
         Console::print(getTransform());
         Console::print(current);*/
-        render2d->drawRect(render_bounds);
+        //render2d->drawRect(*bounds);
+        //Console::print("render bounds");
+        //Console::print(render_bounds.top());
+        //Console::print(render_bounds.bottom());
         render2d->setMatrix(current.toQMatrix());
 
         render2d->drawImage(0, 0, *source);

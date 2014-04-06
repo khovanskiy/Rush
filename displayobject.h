@@ -138,7 +138,6 @@ public:
     void setRatio(bool ratio) { _ratio = ratio; }
     bool isRatio() const { return _ratio; }
     bool hitTestPoint(float x, float y);
-    QString h(int, QString);
 protected:
     float prev_rotationZ;
     float target_rotationZ;
@@ -157,7 +156,7 @@ protected:
     bool _visible;
     bool _ratio;
 
-    QRectF render_bounds;
+    QRectF* bounds;
 private:
     DisplayObject* root;
     bool ready;

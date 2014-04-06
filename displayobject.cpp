@@ -23,11 +23,13 @@ DisplayObject::DisplayObject()
     ready = false;
 
     isInt = false;
+
+    bounds = new QRectF();
 }
 
 DisplayObject::~DisplayObject()
 {
-
+    delete bounds;
 }
 
 void DisplayObject::render(QPainter *, const Matrix &base, bool new_frame, float interpolation)
@@ -96,16 +98,5 @@ bool DisplayObject::isVisible() const
 
 bool DisplayObject::hitTestPoint(float x, float y)
 {
-    return (render_bounds.top() <= y && y <= render_bounds.bottom() && render_bounds.left() <= x && x <= render_bounds.right());
-}
-
-QString DisplayObject::h(int k, QString text)
-{
-    QString temp = "";
-    for (int i = 0; i < k; i++)
-    {
-        temp.append(" ");
-    }
-    temp.append(text);
-    return temp;
+    return (bounds->top() <= y && y <= bounds->bottom() && bounds->left() <= x && x <= bounds->right());
 }

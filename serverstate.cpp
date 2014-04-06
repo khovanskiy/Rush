@@ -1,6 +1,7 @@
 #include "serverstate.h"
 #include "physicsobjectfactory.h"
 #include "terrain.h"
+#include "random.h"
 
 void ServerState::init()
 {
@@ -12,6 +13,17 @@ void ServerState::init()
     {
         Console::print("Server is running...");
     }
+
+    /*for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
+            Terrain* t = new Terrain(objects_ids.next());
+            t->setPosition(Vector2D(i * 30, j * 30));
+            game_world->add(t);
+        }
+    }*/
+    game_world->add(new Terrain(objects_ids.next()));
 }
 
 void ServerState::Invoke(const Event &event)
@@ -47,6 +59,39 @@ void ServerState::tick(double dt)
     physics_world->tick(dt);
     game_world->tick(dt);
     broadcastObjects();
+
+    for (std::map<int, Player*>::iterator i = players.begin(); i != players.end(); ++i)
+    {
+        Player* player = (*i).second;
+        if (player->state == PLAYER_WAIT_VEHICLE)
+        {
+            if (player->ticks > 0)
+            {
+                player->ticks--;
+            }
+            else
+            {
+                Vehicle* vehicle = PhysicsObjectFactory::createVehicle(objects_ids.next(), 2);
+                Turret* turret = PhysicsObjectFactory::createTurret(objects_ids.next(), 1);
+                player->vehicle = vehicle;
+                player->state = PLAYER_HAS_VEHICLE;
+                vehicle->setCoordinates(Vector2D(Random::getRandom(0, 300), Random::getRandom(0, 300)));
+                vehicle->addEventListener(player);
+                vehicle->addEventListener(this);
+                vehicle->addTurret(turret);
+
+                game_world->add(vehicle);
+                physics_world->add(vehicle);
+
+                Protocol protocol;
+                protocol.putInt(ADD_OBJECT);
+                protocol.putInt(player->id_player);
+                protocol.putInt(vehicle->my_id);
+                broadcast(protocol);
+
+            }
+        }
+    }
 }
 
 void ServerState::broadcastObjects()
@@ -128,7 +173,7 @@ void ServerState::playerConnected()
     connect(player, SIGNAL(disconected()), this, SLOT(playerDisconnected()));
     connect(player, SIGNAL(readyRead()), this, SLOT(playerRecieved()));
 
-    Vehicle* vehicle = PhysicsObjectFactory::createVehicle(objects_ids.next(), 2);
+    /*Vehicle* vehicle = PhysicsObjectFactory::createVehicle(objects_ids.next(), 2);
     Turret* turret = PhysicsObjectFactory::createTurret(objects_ids.next(), 1);
     player->vehicle = vehicle;
     vehicle->addEventListener(player);
@@ -136,7 +181,7 @@ void ServerState::playerConnected()
     vehicle->addTurret(turret);
 
     game_world->add(vehicle);
-    physics_world->add(vehicle);
+    physics_world->add(vehicle);*/
 
     Protocol protocol;
     protocol.putInt(AUTH);
@@ -149,11 +194,11 @@ void ServerState::playerConnected()
     protocol.putInt(player->id_player);
     broadcast(protocol);
 
-    protocol.clear();
+    /*protocol.clear();
     protocol.putInt(ADD_OBJECT);
     protocol.putInt(player->id_player);
     protocol.putInt(vehicle->my_id);
-    broadcast(protocol);
+    broadcast(protocol);*/
 }
 
 void ServerState::playerRecieved()
