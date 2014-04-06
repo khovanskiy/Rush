@@ -32,8 +32,8 @@ void TurretView::Invoke(const Event &event)
 
 void TurretView::render(QPainter *render2d, const Matrix &base, bool new_frame, float interpolation)
 {
-    this->setX(m_to_px * turret->getCoordinates().x);
-    this->setY(m_to_px * turret->getCoordinates().y);
+    this->setX(turret->getCoordinates().x);
+    this->setY(turret->getCoordinates().y);
     this->setRotationZ(turret->getAngle());
     GameViewObject::render(render2d, base, new_frame, interpolation);
 }

@@ -12,16 +12,6 @@ void ServerState::init()
     {
         Console::print("Server is running...");
     }
-
-    for (int i = 0; i < 3; ++i)
-    {
-        for (int j = 0; j < 3; ++j)
-        {
-            Terrain* t = new Terrain(objects_ids.next());
-            t->setPosition(Vector2D(i * 30, j * 30));
-            game_world->add(t);
-        }
-    }
 }
 
 void ServerState::Invoke(const Event &event)

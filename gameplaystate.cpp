@@ -71,19 +71,19 @@ void GameplayState::Invoke(const Event &event)
                 {
                     Terrain* terrain = new Terrain(id_object);
                     terrain->setPosition(position);
-                    parent->add(terrain);
+                    game_world->add(terrain);
                 } break;
                 case GameObjectType::VEHICLE:
                 {
                     Vehicle* vehicle = PhysicsObjectFactory::createVehicle(id_object, type_object);
                     vehicle->setCoordinates(position);
                     vehicle->setAngle(rotation);
-                    parent->add(vehicle);
+                    game_world->add(vehicle);
                 } break;
                 case GameObjectType::BULLET:
                 {
                     Bullet* bullet = PhysicsObjectFactory::createBullet(id_object,position,rotation, type_object, 0.05);
-                    parent->add(bullet);
+                    game_world->add(bullet);
                 } break;
                 case GameObjectType::TURRET:
                 {
@@ -177,8 +177,8 @@ void GameplayState::tick(double dt)
                 current_vehicle = static_cast<Vehicle*>(model);
                 controls = new UIVehicleController(current_vehicle);
                 camera_controls = new CameraController(current_vehicle);
+                current_state = INITED;
             }
-            current_state = INITED;
         }
         if (current_state == INITED)
         {
