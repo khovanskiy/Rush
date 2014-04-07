@@ -11,6 +11,7 @@
 #include "physicsworld.h"
 #include "idsystem.h"
 #include "vehicle.h"
+#include "obstacle.h"
 #include "protocol.h"
 
 #define PLAYER_WAIT_VEHICLE 1

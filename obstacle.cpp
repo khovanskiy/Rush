@@ -17,6 +17,11 @@ Obstacle::~Obstacle()
 {
 }
 
+GameObjectType Obstacle::getFamilyId()
+{
+    return GameObjectType::OBSTACLE;
+}
+
 void Obstacle::calculateInnerState(double dt)
 {
     PhysicsObject::calculateInnerState(dt);

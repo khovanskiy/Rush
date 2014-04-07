@@ -7,6 +7,7 @@
 #include "vehicleview.h"
 #include "bulletview.h"
 #include "terrainview.h"
+#include "obstacleview.h"
 #include "stage.h"
 #include "background.h"
 #include "sprite.h"

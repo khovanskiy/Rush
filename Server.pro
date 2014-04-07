@@ -45,7 +45,8 @@ SOURCES += \
     idsystem.cpp \
     physicsobjectfactory.cpp \
     protocol.cpp \
-    random.cpp
+    random.cpp \
+    obstacle.cpp
 
 HEADERS  += \
     ../background.h \
@@ -81,4 +82,5 @@ HEADERS  += \
     idsystem.h \
     physicsobjectfactory.h \
     protocol.h \
-    random.h
+    random.h \
+    obstacle.h

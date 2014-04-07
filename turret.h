@@ -7,9 +7,6 @@
 
 class Turret : public PhysicsObject
 {
-    friend class PhysicsObjectFactory;
-    friend class Vehicle;
-
     int turret_type;
     double max_angle;
     int bullet_type;

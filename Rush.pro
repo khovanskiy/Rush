@@ -79,7 +79,8 @@ SOURCES += background.cpp \
     networkevent.cpp \
     protocol.cpp \
     renderdata.cpp \
-    mainmenustate.cpp
+    mainmenustate.cpp \
+    obstacleview.cpp
 
 HEADERS  += background.h \
     bitmap.h \
@@ -148,4 +149,5 @@ HEADERS  += background.h \
     networkevent.h \
     protocol.h \
     renderdata.h \
-    mainmenustate.h
+    mainmenustate.h \
+    obstacleview.h

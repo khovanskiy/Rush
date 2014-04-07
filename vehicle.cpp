@@ -160,7 +160,7 @@ void Vehicle::applyCollision(const Collision &collision, double dt)
     }
     else if (collision.source->getFamilyId() == GameObjectType::VEHICLE)
     {
-        health -= 100;//collision.relative_speed.getLength();
+        //health -= 100;//collision.relative_speed.getLength();
     }
     if (health <= 0)
     {

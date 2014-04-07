@@ -1,5 +1,6 @@
 #include "physicsobjectfactory.h"
 #include "console.h"
+#include "obstacle.h"
 
 static const double G = 9.80665;
 static const double M_PI = 3.14159265358979323846;
@@ -65,7 +66,7 @@ Vehicle* PhysicsObjectFactory::createVehicle(int id_object, int vehicle_type)
         result->setWheels(back, front, 1.326);
         result->setVehicleBody(VehicleBody(0.356, 4.710, 1.962, 1.326, result->chassis.getMassCenter()));
     }
-    else if (vehicle_type == Vehicle::FORD_F150_SVT_RAPTOR)
+    else if (vehicle_type == 2)//Vehicle::FORD_F150_SVT_RAPTOR)
     {
         /*result = createEmptyCar(inchToMeter(232.1), inchToMeter(86.3),
                                 inchToMeter(104.1), 2813, vehicle_type);*/
@@ -100,7 +101,7 @@ Turret* PhysicsObjectFactory::createTurret(int id_object, int turret_type)
 Bullet* PhysicsObjectFactory::createBullet(int id_object, Vector2D r, double angle, int bullet_type, double dt)
 {
     double width, height, mass, speed, time_to_live;
-    if (bullet_type == Bullet::BULLET)
+    if (bullet_type == 0)
     {
         width = 0.15;
         height = 0.43;
@@ -108,7 +109,7 @@ Bullet* PhysicsObjectFactory::createBullet(int id_object, Vector2D r, double ang
         speed = 50;
         time_to_live = 3;
     }
-    else if (bullet_type == Bullet::CUT)
+    else if (bullet_type == 1)
     {
         width = 0.03;
         height = 0.03;
@@ -116,7 +117,7 @@ Bullet* PhysicsObjectFactory::createBullet(int id_object, Vector2D r, double ang
         speed = 12;
         time_to_live = 0.05;
     }
-    else if (bullet_type == Bullet::MISSILE)
+    else if (bullet_type == 2)
     {
         width = 0.5;
         height = 1.9;
@@ -127,6 +128,41 @@ Bullet* PhysicsObjectFactory::createBullet(int id_object, Vector2D r, double ang
     Vector2D v(0, speed);
     v.rotate(angle);
     return new Bullet(id_object, r, v, mass, bullet_type, width, height, dt, time_to_live);
+}
+
+Obstacle* PhysicsObjectFactory::createObstacle(int id_object, int obstacle_type)
+{
+    Shape2D * shape;
+    double mass = 100, inertia_moment = 50;
+    bool dynamic;
+    if (obstacle_type == 0)
+    {
+        shape = new Rectangle2D(Vector2D(0, 0), 20, 2);
+        mass = 1000000;
+        inertia_moment = 100000;
+        dynamic = false;
+    }
+    else if (obstacle_type == 1)
+    {
+        shape = new Rectangle2D(Vector2D(0, 0), 1, 1);
+        mass = 30;
+        inertia_moment = 6;
+        dynamic = true;
+    }
+    else if (obstacle_type == 2)
+    {
+        shape = new Circle2D(Vector2D(0, 0), 1, 0);
+        mass = 100;
+        inertia_moment = 50;
+        dynamic = true;
+    }
+    Obstacle* result = new Obstacle(id_object, shape, mass, inertia_moment, obstacle_type);
+    result->type_object = obstacle_type;
+    if (!dynamic)
+    {
+        result->setStatic();
+    }
+    return result;
 }
 
 /*Turret* PhysicsObjectFactory::createVehicleTurret(int turret_type)
@@ -202,40 +238,5 @@ Bullet* PhysicsObjectFactory::createBullet(int id_object, Vector2D r, double ang
     Explosion* result = new Explosion(shape, 1e10, 1e10, start_radius, end_radius,
                                       time, explosion_impulse, explosion_type);
     result->setStatic();
-    return result;
-}
-
-Obstacle* PhysicsObjectFactory::createObstacle(Vector2D r, double angle, int obstacle_type)
-{
-    Shape2D * shape;
-    double mass = 100, inertia_moment = 50;
-    bool dynamic;
-    if (obstacle_type == Obstacle::STONE_WALL)
-    {
-        shape = new Rectangle2D(r, 2, 0.5, angle);
-        mass = 10000;
-        inertia_moment = 1000;
-        dynamic = false;
-    }
-    else if (obstacle_type == Obstacle::WOODEN_BOX)
-    {
-        shape = new Rectangle2D(r, 1, 1, angle);
-        mass = 30;
-        inertia_moment = 6;
-        dynamic = true;
-    }
-    else if (obstacle_type == Obstacle::WOODEN_BARREL)
-    {
-        shape = new Circle2D(r, 1, angle);
-        mass = 100;
-        inertia_moment = 50;
-        dynamic = true;
-    }
-    Obstacle* result = new Obstacle(shape, mass, inertia_moment, obstacle_type);
-    if (!dynamic)
-    {
-        result->setStatic();
-    }
-    PhysicsWorld::gi().addObject(result);
     return result;
 }*/

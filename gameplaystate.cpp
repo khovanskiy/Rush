@@ -80,6 +80,13 @@ void GameplayState::Invoke(const Event &event)
                     vehicle->setAngle(rotation);
                     game_world->add(vehicle);
                 } break;
+                case GameObjectType::OBSTACLE:
+                {
+                    Obstacle* obstacle = PhysicsObjectFactory::createObstacle(id_object, type_object);
+                    obstacle->setCoordinates(position);
+                    obstacle->setAngle(rotation);
+                    game_world->add(obstacle);
+                } break;
                 case GameObjectType::BULLET:
                 {
                     Bullet* bullet = PhysicsObjectFactory::createBullet(id_object,position,rotation, type_object, 0.05);

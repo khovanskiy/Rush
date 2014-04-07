@@ -73,6 +73,11 @@ void MapView::createObject(GameModelObject *go)
         GameViewObject* view = new TerrainView(static_cast<Terrain*>(go));
         list.push_back(view);
     } break;
+    case GameObjectType::OBSTACLE:
+    {
+        GameViewObject* view = new ObstacleView(static_cast<Obstacle*>(go));
+        list.push_back(view);
+    } break;
     }
 }
 

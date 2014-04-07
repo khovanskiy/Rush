@@ -3,6 +3,8 @@
 #include "terrain.h"
 #include "random.h"
 
+static const double M_PI = 3.14159265358979323846;
+
 void ServerState::init()
 {
     game_world = new GameWorld();
@@ -23,7 +25,42 @@ void ServerState::init()
             game_world->add(t);
         }
     }*/
+
     game_world->add(new Terrain(objects_ids.next()));
+
+    for (int i = 0; i < 15; ++i)
+    {
+        Obstacle* wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
+        wall->setCoordinates(Vector2D(10 + 20 * i, 1));
+        game_world->add(wall);
+        physics_world->add(wall);
+    }
+
+    for (int i = 0; i < 15; ++i)
+    {
+        Obstacle* wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
+        wall->setCoordinates(Vector2D(10 + 20 * i, 283));
+        game_world->add(wall);
+        physics_world->add(wall);
+    }
+
+    for (int i = 0; i < 14; ++i)
+    {
+        Obstacle* wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
+        wall->setCoordinates(Vector2D(1, 11 + 20 * i));
+        wall->setAngle(M_PI/2);
+        game_world->add(wall);
+        physics_world->add(wall);
+    }
+
+    for (int i = 0; i < 14; ++i)
+    {
+        Obstacle* wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
+        wall->setCoordinates(Vector2D(299, 11 + 20 * i));
+        wall->setAngle(M_PI/2);
+        game_world->add(wall);
+        physics_world->add(wall);
+    }
 }
 
 void ServerState::Invoke(const Event &event)
@@ -71,11 +108,38 @@ void ServerState::tick(double dt)
             }
             else
             {
-                Vehicle* vehicle = PhysicsObjectFactory::createVehicle(objects_ids.next(), 2);
+                Vehicle* vehicle = PhysicsObjectFactory::createVehicle(objects_ids.next(), rand() % 3);
                 Turret* turret = PhysicsObjectFactory::createTurret(objects_ids.next(), 1);
                 player->vehicle = vehicle;
                 player->state = PLAYER_HAS_VEHICLE;
-                vehicle->setCoordinates(Vector2D(Random::getRandom(0, 300), Random::getRandom(0, 300)));
+
+                Vector2D pos;
+                switch (player->id_player % 4)
+                {
+                case 0:
+                {
+                    pos.x = Random::getRandom(10, 145);
+                    pos.y = Random::getRandom(10, 145);
+                } break;
+                case 1:
+                {
+                    pos.x = Random::getRandom(165, 290);
+                    pos.y = Random::getRandom(10, 145);
+                } break;
+                case 2:
+                {
+                    pos.x = Random::getRandom(10, 145);
+                    pos.y = Random::getRandom(165, 275);
+                } break;
+                case 3:
+                {
+                    pos.x = Random::getRandom(165, 290);
+                    pos.y = Random::getRandom(165, 275);
+                } break;
+                }
+
+
+                vehicle->setCoordinates(pos);
                 vehicle->addEventListener(player);
                 vehicle->addEventListener(this);
                 vehicle->addTurret(turret);
@@ -105,6 +169,11 @@ void ServerState::broadcastObjects()
             broadcastVehicle(object, 0);
         }
         else if (inners[i]->getFamilyId() == GameObjectType::BULLET)
+        {
+            PhysicsObject* object = static_cast<PhysicsObject*>(inners[i]);
+            broadcastPhysicsObject(object, 0);
+        }
+        else if (inners[i]->getFamilyId() == GameObjectType::OBSTACLE)
         {
             PhysicsObject* object = static_cast<PhysicsObject*>(inners[i]);
             broadcastPhysicsObject(object, 0);
