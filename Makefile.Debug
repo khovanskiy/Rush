@@ -3586,7 +3586,6 @@ debug\statefactory.obj: statefactory.cpp statefactory.h \
 		mouseevent.h \
 		mainmenustate.h \
 		gameplaystate.h \
-		interface.h \
 		networkserver.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QObject \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtNetwork\QTcpSocket \
@@ -3979,6 +3978,7 @@ debug\bullet.obj: bullet.cpp bullet.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
 		explosion.h \
 		physicsobjectfactory.h \
+		obstacle.h \
 		vehicle.h \
 		chassis.h \
 		wheel.h \
@@ -3986,7 +3986,6 @@ debug\bullet.obj: bullet.cpp bullet.h \
 		vehicleengine.h \
 		vehiclebody.h \
 		turret.h \
-		obstacle.h \
 		console.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QVariant \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvariant.h \
@@ -4948,7 +4947,8 @@ debug\physicsworld.obj: physicsworld.cpp physicsworld.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QTextStream
 
 debug\physicsobjectfactory.obj: physicsobjectfactory.cpp physicsobjectfactory.h \
-		vehicle.h \
+		obstacle.h \
+		physicsobject.h \
 		gamemodelobject.h \
 		eventdispatcher.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QMutex \
@@ -4998,7 +4998,6 @@ debug\physicsobjectfactory.obj: physicsobjectfactory.cpp physicsobjectfactory.h 
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qstringbuilder.h \
 		eventhandler.h \
 		event.h \
-		physicsobject.h \
 		geometry2d.h \
 		vector2d.h \
 		matrix.h \
@@ -5029,6 +5028,7 @@ debug\physicsobjectfactory.obj: physicsobjectfactory.cpp physicsobjectfactory.h 
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject_impl.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpair.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
+		vehicle.h \
 		chassis.h \
 		wheel.h \
 		carwheel.h \
@@ -5036,7 +5036,6 @@ debug\physicsobjectfactory.obj: physicsobjectfactory.cpp physicsobjectfactory.h 
 		vehiclebody.h \
 		turret.h \
 		bullet.h \
-		obstacle.h \
 		console.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QVariant \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qvariant.h \
@@ -5135,9 +5134,7 @@ debug\obstacle.obj: obstacle.cpp obstacle.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qisenum.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject_impl.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpair.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
-		carwheel.h \
-		wheel.h
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h
 
 debug\geometry2d.obj: geometry2d.cpp geometry2d.h \
 		vector2d.h \
@@ -5738,26 +5735,15 @@ debug\gameplaystate.obj: gameplaystate.cpp gameplaystate.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\qfontmetrics.h \
 		statecontext.h \
 		renderdata.h \
-		vehicle.h \
-		gamemodelobject.h \
-		physicsobject.h \
-		geometry2d.h \
-		vector2d.h \
-		matrix.h \
-		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
-		chassis.h \
-		wheel.h \
-		carwheel.h \
-		vehicleengine.h \
-		vehiclebody.h \
-		turret.h \
-		bullet.h \
 		bitmap.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QImage \
 		interactiveobject.h \
 		displayobject.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtGui\QMatrix \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QRectF \
 		transformableobject.h \
+		matrix.h \
+		vector2d.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QThread \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qthread.h \
 		console.h \
@@ -5770,40 +5756,48 @@ debug\gameplaystate.obj: gameplaystate.cpp gameplaystate.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qset.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qcontiguouscache.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QTextStream \
-		stage.h \
-		displayobjectcontainer.h \
-		interface.h \
-		background.h \
-		physicsworld.h \
-		vehicleview.h \
-		gameviewobject.h \
-		sprite.h \
-		turretview.h \
 		networkserver.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QObject \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtNetwork\QTcpSocket \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtNetwork\qtcpsocket.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtNetwork\qabstractsocket.h \
+		gamemodelobject.h \
 		protocol.h \
 		networkevent.h \
 		mouse.h \
 		mouseevent.h \
 		uivehiclecontroller.h \
+		vehicle.h \
+		physicsobject.h \
+		geometry2d.h \
+		chassis.h \
+		wheel.h \
+		carwheel.h \
+		vehicleengine.h \
+		vehiclebody.h \
+		turret.h \
+		bullet.h \
 		keyboard.h \
 		keyboardevent.h \
 		cameracontroller.h \
 		camera.h \
 		mapview.h \
 		gameworld.h \
+		vehicleview.h \
+		gameviewobject.h \
+		sprite.h \
+		displayobjectcontainer.h \
+		turretview.h \
 		bulletview.h \
 		terrainview.h \
 		terrain.h \
 		obstacleview.h \
 		obstacle.h \
+		stage.h \
+		background.h \
 		thread.h \
 		random.h \
-		gameobjectevent.h \
-		physicsobjectfactory.h
+		gameobjectevent.h
 
 debug\thread.obj: thread.cpp thread.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QObject \
@@ -6364,7 +6358,8 @@ debug\networkserver.obj: networkserver.cpp networkserver.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
 		protocol.h \
 		networkevent.h \
-		gameobjectevent.h
+		gameobjectevent.h \
+		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\QStringList
 
 debug\sampleview.obj: sampleview.cpp sampleview.h \
 		gameviewobject.h \
@@ -7697,8 +7692,6 @@ debug\obstacleview.obj: obstacleview.cpp obstacleview.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qobject_impl.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qpair.h \
 		C:\Qt\Qt5.2.1\5.2.1\msvc2012_64_opengl\include\QtCore\qline.h \
-		carwheel.h \
-		wheel.h \
 		gameviewobject.h \
 		sprite.h \
 		displayobjectcontainer.h \

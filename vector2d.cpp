@@ -56,7 +56,11 @@ void Vector2D::div(double k)
 
 void Vector2D::setLength(double k)
 {
-    mul(k / getLength());
+    double c = getLength();
+    if (c != 0)
+    {
+        mul(k / c);
+    }
 }
 
 double Vector2D::getLength() const
@@ -66,7 +70,11 @@ double Vector2D::getLength() const
 
 void Vector2D::normalize()
 {
-    mul(1 / getLength());
+    double c = getLength();
+    if (c != 0)
+    {
+        mul(1 / c);
+    }
 }
 
 void Vector2D::rotate(double alpha)

@@ -13,6 +13,7 @@ VehicleView::VehicleView(Vehicle* vehicle)
     case 0:
     {
         body->load("DATA\\Textures\\Vehicles\\dodge.png");
+
     } break;
     case 1:
     {

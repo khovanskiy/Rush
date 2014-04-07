@@ -5,23 +5,20 @@ static const double M_PI = 3.14159265358979323846;
 #include "thread.h"
 #include "random.h"
 #include "gameobjectevent.h"
-#include "physicsobjectfactory.h"
+
+std::map<int, WorkView*> WorkView::cache_work;
 
 void GameplayState::init()
 {
-    game_world = new GameWorld();
     server = new NetworkServer();
     server->addEventListener(this);
     server->connect("127.0.0.1", 560);
 
-    map_view = new MapView(game_world);
-
     current_state = WAIT_VEHICLE;
-    controls = 0;
-    camera_controls = 0;
-    current_vehicle = 0;
     current_id_player = 0;
     current_id_vehicle = 0;
+    current_vehicle = 0;
+    controls = 0;
 
     Mouse::gi()->addEventListener(this);
     Keyboard::gi()->addEventListener(this);
@@ -52,54 +49,27 @@ void GameplayState::Invoke(const Event &event)
             position.x = protocol->nextDouble();
             position.y = protocol->nextDouble();
             double rotation = protocol->nextDouble();
-            GameModelObject* object = GameModelObject::findById(id_object);
-            GameModelObject* parent = GameModelObject::findById(id_parent);
+            WorkView* object = WorkView::findById(id_object);
+            WorkView* parent = WorkView::findById(id_parent);
             if (object != 0)
             {
-                if (object->getFamilyId() != GameObjectType::TERRAIN)
+                if (class_object != GameObjectType::TERRAIN)
                 {
-                    PhysicsObject* physics_object = static_cast<PhysicsObject*>(object);
-                    physics_object->setCoordinates(position);
-                    physics_object->setAngle(rotation);
+                    object->setPosition(position);
+                    object->setRotationZ(rotation);
                 }
             }
             else
             {
-                switch (class_object)
+                if (class_object == GameObjectType::TURRET)
                 {
-                case GameObjectType::TERRAIN:
-                {
-                    Terrain* terrain = new Terrain(id_object);
-                    terrain->setPosition(position);
-                    game_world->add(terrain);
-                } break;
-                case GameObjectType::VEHICLE:
-                {
-                    Vehicle* vehicle = PhysicsObjectFactory::createVehicle(id_object, type_object);
-                    vehicle->setCoordinates(position);
-                    vehicle->setAngle(rotation);
-                    game_world->add(vehicle);
-                } break;
-                case GameObjectType::OBSTACLE:
-                {
-                    Obstacle* obstacle = PhysicsObjectFactory::createObstacle(id_object, type_object);
-                    obstacle->setCoordinates(position);
-                    obstacle->setAngle(rotation);
-                    game_world->add(obstacle);
-                } break;
-                case GameObjectType::BULLET:
-                {
-                    Bullet* bullet = PhysicsObjectFactory::createBullet(id_object,position,rotation, type_object, 0.05);
-                    game_world->add(bullet);
-                } break;
-                case GameObjectType::TURRET:
-                {
-                    Vehicle* vehicle = static_cast<Vehicle*>(parent);
-                    Turret* turret = PhysicsObjectFactory::createTurret(id_object, type_object);
-                    turret->setCoordinates(position);
-                    turret->setAngle(rotation);
-                    vehicle->addTurret(turret);
+                    WorkView* view = new WorkView(id_object, class_object, type_object);
+                    parent->addChild(view);
                 }
+                else
+                {
+                    WorkView* view = new WorkView(id_object, class_object, type_object);
+                    view_list.push_back(view);
                 }
             }
         }
@@ -140,21 +110,19 @@ void GameplayState::Invoke(const Event &event)
         else if (action == REMOVE_OBJECT)
         {
             int id_object = protocol->nextInt();
-            GameModelObject* obj = GameModelObject::findById(id_object);
+            WorkView* obj = WorkView::findById(id_object);
             if (obj != 0)
             {
-                if (current_id_vehicle == obj->my_id)
+                if (current_id_vehicle == obj->id_object)
                 {
                     Console::print("I am dead");
                     current_state = WAIT_VEHICLE;
+                    current_vehicle = 0;
                     current_id_vehicle = 0;
-                    delete camera_controls;
-                    camera_controls = 0;
                     delete controls;
                     controls = 0;
-                    current_vehicle = 0;
                 }
-                obj->invalidate();
+                obj->valid = false;
             }
         }
     }
@@ -162,27 +130,35 @@ void GameplayState::Invoke(const Event &event)
 
 void GameplayState::render(const RenderData &render_data)
 {
-    map_view->render(render_data);
-    if (camera_controls != 0)
+    Matrix camera_transform = Camera::gi()->getTransform();
+    for (int i = 0; i < view_list.size(); ++i)
     {
-        camera_controls->update();
+        if (view_list[i]->valid)
+        {
+            view_list[i]->render(render_data.render2d, camera_transform, true, render_data.interpolation);
+        }
+        else
+        {
+
+        }
+    }
+    if (current_state == INITED)
+    {
+        Camera::gi()->setPosition(current_vehicle->getPosition());
     }
 }
 
 void GameplayState::tick(double dt)
 {
-    game_world->tick(dt);
-
     if (current_id_vehicle != 0)
     {
         if (current_state == NEED_INIT_VEHICLE)
         {
-            GameModelObject* model = GameModelObject::findById(current_id_vehicle);
+            WorkView* model = WorkView::findById(current_id_vehicle);
             if (model != 0)
             {
-                current_vehicle = static_cast<Vehicle*>(model);
-                controls = new UIVehicleController(current_vehicle);
-                camera_controls = new CameraController(current_vehicle);
+                current_vehicle = model;
+                controls = new UIController(model);
                 current_state = INITED;
             }
         }
@@ -210,11 +186,5 @@ void GameplayState::release()
     Mouse::gi()->removeEventListener(this);
 
     server->deleteLater();
-
-    delete camera_controls;
-
-    delete controls;
     delete server;
-    delete map_view;
-    delete game_world;
 }
