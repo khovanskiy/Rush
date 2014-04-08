@@ -26,7 +26,15 @@ void ServerState::init()
         }
     }*/
 
-    game_world->add(new Terrain(objects_ids.next()));
+    for (int i = 0; i < 2; ++i)
+    {
+        for (int j = 0; j < 2; ++j)
+        {
+            Terrain* terrain = new Terrain(objects_ids.next());
+            terrain->setPosition(Vector2D(100 * i, 100 * j));
+            game_world->add(terrain);
+        }
+    }
 
     for (int i = 0; i < 10; ++i)
     {
@@ -70,6 +78,11 @@ void ServerState::Invoke(const Event &event)
         GameModelObject* object = static_cast<GameModelObject*>(event.target);
         Console::print(QString("Object #")+QVariant(object->my_id).toString()+" is destroyed");
         broadcastInvalidate(object);
+
+        if (object->getFamilyId() == GameObjectType::VEHICLE)
+        {
+
+        }
     }
     else if (event.type == "TURRET_FIRE")
     {

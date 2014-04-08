@@ -53,11 +53,8 @@ void GameplayState::Invoke(const Event &event)
             WorkView* parent = WorkView::findById(id_parent);
             if (object != 0)
             {
-                if (class_object != GameObjectType::TERRAIN)
-                {
-                    object->setPosition(position);
-                    object->setRotationZ(rotation);
-                }
+                object->setPosition(position);
+                object->setRotationZ(rotation);
             }
             else
             {

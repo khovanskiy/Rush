@@ -63,7 +63,7 @@ public:
         else if (class_object == GameObjectType::OBSTACLE)
         {
             image = new Bitmap();
-            image->load("DATA\\Textures\\Obstacles\\stone_wall.png");
+            image->load("DATA\\Textures\\Obstacles\\wall_texture.png");
             image->setWidth(20);
             image->setHeight(2);
             image->setRSPointCenter();
@@ -71,9 +71,9 @@ public:
         else if (class_object == GameObjectType::TERRAIN)
         {
             image = new Bitmap();
-            image->load("DATA\\Textures\\Terrains\\1.jpg");
-            image->setWidth(200);
-            image->setHeight(200);
+            image->load("DATA\\Textures\\Terrains\\3.jpg");
+            image->setWidth(100);
+            image->setHeight(100);
         }
         else if (class_object == GameObjectType::BULLET)
         {
@@ -159,6 +159,7 @@ public:
         }
         else if (event.type == KeyboardEvent::KEY_DOWN)
         {
+            Console::print("hack");
             const KeyboardEvent* e = static_cast<const KeyboardEvent*>(&event);
             switch (e->keyCode)
             {

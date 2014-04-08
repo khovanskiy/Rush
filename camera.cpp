@@ -8,7 +8,7 @@ Camera::Camera()
     inner_size.x = 1200;
     inner_size.y = 800;
     setRSPoint(Vector2D(0.5, 0.5));
-    scaling.x = scaling.y = 15;
+    scaling.x = scaling.y = 20;
 }
 
 void Camera::resize(int width, int height)
