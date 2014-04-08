@@ -12,7 +12,7 @@ GraphicCore::GraphicCore() : QGLWidget(QGLFormat(QGL::SampleBuffers), 0)
     SKIP_TICKS = 1000 / TICKS_PER_SECOND;
     MAX_FRAMESKIP = 5;
     counter.start();
-    new_frame = false;
+    new_tick = false;
     next_game_tick = counter.elapsed();
     loop.start(0);
 
@@ -34,20 +34,25 @@ void GraphicCore::onGameCycle()
 {
     loops = 0;
 
-    old_state = new_frame;
+    old_state = new_tick;
 
-    if (counter.elapsed() > next_game_tick)
+    /*if (counter.elapsed() > next_game_tick)
     {
-        new_frame = true;
+        new_tick = true;
     }
     else
     {
-        new_frame = false;
-    }
+        new_tick = false;
+    }*/
+
+
+
+    render_data.new_tick = old_state;
 
     while (counter.elapsed() > next_game_tick && loops < MAX_FRAMESKIP)
     {
         state_context.tick(1.0 / TICKS_PER_SECOND);
+        render_data.new_tick = true;
         next_game_tick += SKIP_TICKS;
         loops++;
     }

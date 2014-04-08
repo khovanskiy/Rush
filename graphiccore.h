@@ -17,7 +17,7 @@ public:
     GraphicCore();
     ~GraphicCore();
     static GraphicCore& gi();
-    void render(bool new_frame, float interpolation);
+    void render(bool new_tick, float interpolation);
 public slots:
     void onGameCycle();
 protected:
@@ -42,7 +42,7 @@ private:
     long next_game_tick;
     int loops;
     float interpolation;
-    bool new_frame, old_state;
+    bool new_tick, old_state;
 };
 
 #endif // GRAPHICCORE_H

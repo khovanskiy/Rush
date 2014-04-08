@@ -24,7 +24,7 @@ Turret::Turret(int id, Shape2D *shape, double mass, double inertia_moment,
 
 Turret::~Turret()
 {
-    Console::print("Turret is deleted");
+    //Console::print("Turret is deleted");
 }
 
 int Turret::getTurretType() const

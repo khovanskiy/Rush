@@ -95,7 +95,7 @@ void Vehicle::addTurret(Turret* turret)
 
 void Vehicle::invalidate()
 {
-    Console::print("Vehicle is invalidated");
+    //Console::print("Vehicle is invalidated");
     for (int i = 0; i < turrets.size(); ++i)
     {
         turrets[i]->invalidate();

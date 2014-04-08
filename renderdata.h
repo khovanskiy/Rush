@@ -8,6 +8,7 @@ class RenderData
 public:
     RenderData();
     QPainter* render2d;
+    bool new_tick;
     float interpolation;
 };
 

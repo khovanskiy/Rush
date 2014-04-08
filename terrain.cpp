@@ -3,7 +3,7 @@
 Terrain::Terrain(int id) : GameModelObject(id)
 {
     type = 0;
-    setSize(Vector2D(300,285));
+    setSize(Vector2D(100,100));
 }
 
 GameObjectType Terrain::getFamilyId()

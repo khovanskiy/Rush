@@ -10,8 +10,8 @@ DisplayObject::DisplayObject()
 {
     _visible = true;
 
-    prev_x = target_x = 0;
-    prev_y = target_y = 0;
+    prev_x = 0;
+    prev_y = 0;
 
     speed_rotationZ = prev_rotationZ = target_rotationZ = 0;
 
@@ -32,14 +32,14 @@ DisplayObject::~DisplayObject()
     delete bounds;
 }
 
-void DisplayObject::render(QPainter *, const Matrix &base, bool new_frame, float interpolation)
+void DisplayObject::render(QPainter *, const Matrix &base, bool new_tick, float interpolation)
 {
     if (isInt)
     {
-        if (new_frame)
+        if (new_tick)
         {
-            prev_x = target_x;
-            prev_y = target_y;
+            prev_x = target_position.x;
+            prev_y = target_position.y;
             prev_scaleX = target_scaleX;
             prev_scaleY = target_scaleY;
             prev_rotationZ = target_rotationZ;
@@ -47,8 +47,8 @@ void DisplayObject::render(QPainter *, const Matrix &base, bool new_frame, float
 
         rotationZ = prev_rotationZ + (target_rotationZ - prev_rotationZ) * interpolation;
 
-        position.x = prev_x + (target_x - prev_x) * interpolation;
-        position.y = prev_y + (target_y - prev_y) * interpolation;
+        position.x = prev_x + (target_position.x - prev_x) * interpolation;
+        position.y = prev_y + (target_position.y - prev_y) * interpolation;
         scaling.x = prev_scaleX + (target_scaleX - prev_scaleX) * interpolation;
         scaling.y = prev_scaleY + (target_scaleY - prev_scaleY) * interpolation;
 

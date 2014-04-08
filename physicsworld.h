@@ -17,7 +17,7 @@ struct ObjectData
 
     ~ObjectData()
     {
-        Console::print("Delete object data");
+        //Console::print("Delete object data");
     }
 };
 
@@ -52,7 +52,7 @@ struct ObjectNode
 
     ~ObjectNode()
     {
-        Console::print("Delete object node");
+        //Console::print("Delete object node");
         delete data;
     }
 };
@@ -163,13 +163,9 @@ public:
 
     void remove(ObjectNode* node)
     {
-        if (node->position = this)
+        if (node->position != 0)
         {
             node->position->innerRemove(node);
-        }
-        else
-        {
-
         }
     }
 

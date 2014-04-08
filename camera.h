@@ -10,6 +10,8 @@ public:
     static Camera* gi();
     void resize(int width, int height);
     Matrix& getTransform();
+    int screen_width;
+    int screen_height;
 private:
     Camera();
     static Camera* instance;

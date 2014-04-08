@@ -23,8 +23,8 @@ public:
     {
         if (isInt)
         {
-            prev_x = target_x;
-            target_x = x;
+            prev_x = target_position.x;
+            target_position.x = x;
         }
         else
         {
@@ -36,19 +36,43 @@ public:
     {
         if (isInt)
         {
-            return target_x;
+            return target_position.x;
         }
         else
         {
             return position.x;
         }
     }
+    void setPosition(const Vector2D& p)
+    {
+        if (isInt)
+        {
+            target_position = p;
+        }
+        else
+        {
+            position = p;
+        }
+    }
+
+    const Vector2D& getPosition() const
+    {
+        if (isInt)
+        {
+            return target_position;
+        }
+        else
+        {
+            return position;
+        }
+    }
+
     void setY(float y)
     {
         if (isInt)
         {
-            prev_y = target_y;
-            target_y = y;
+            prev_y = target_position.y;
+            target_position.y = y;
         }
         else
         {
@@ -57,7 +81,14 @@ public:
     }
     float getY() const
     {
-        return position.y;
+        if (isInt)
+        {
+            return target_position.y;
+        }
+        else
+        {
+            return position.y;
+        }
     }
     void setInter(bool i) { isInt = i; }
     void setRotationZ(float rotationZ)
@@ -143,8 +174,7 @@ protected:
     float target_rotationZ;
     float speed_rotationZ;
 
-    float target_x;
-    float target_y;
+    Vector2D target_position;
     float target_scaleX;
     float target_scaleY;
 

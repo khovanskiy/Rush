@@ -16,6 +16,8 @@
 #define NEED_INIT_VEHICLE 2
 #define INITED 3
 
+static const double M_PI = 3.14159265358979323846;
+
 struct WorkView : public Sprite
 {
 public:
@@ -23,6 +25,7 @@ public:
     {
         this->image = 0;
         this->id_object = id_object;
+        this->class_object = class_object;
         if (class_object == GameObjectType::VEHICLE)
         {
             image = new Bitmap();
@@ -69,11 +72,21 @@ public:
         {
             image = new Bitmap();
             image->load("DATA\\Textures\\Terrains\\1.jpg");
-            image->setWidth(300);
-            image->setHeight(283);
+            image->setWidth(200);
+            image->setHeight(200);
+        }
+        else if (class_object == GameObjectType::BULLET)
+        {
+            image = new Bitmap();
+            image->load("DATA\\Textures\\Bullets\\bullet.png");
+            image->setWidth(0.1);
+            image->setHeight(0.43);
+            image->setRSPointCenter();
         }
         if (image)
         {
+            image->setInter(true);
+            this->setInter(true);
             Console::print("add image");
             addChild(image);
             valid = true;
@@ -105,6 +118,7 @@ public:
     }
 
     int id_object;
+    GameObjectType class_object;
     Bitmap* image;
     bool valid;
     AccelerationState acc_state;
@@ -201,6 +215,56 @@ public:
     WorkView* vehicle;
 };
 
+
+struct ArrowsView : public Sprite
+{
+public:
+
+    ArrowsView(std::vector<WorkView*>* list)
+    {
+        arrow = new Bitmap();
+        arrow->load("DATA\\Textures\\bonus.png");
+        this->list = list;
+    }
+
+    void render(QPainter *render2d, const Matrix &base, bool new_tick, float interpolation)
+    {
+        Matrix camera_matrix = Camera::gi()->getTransform();
+        Camera* camera = Camera::gi();
+        for (int i = 0; i < list->size(); ++i)
+        {
+            if (list->at(i)->class_object != GameObjectType::VEHICLE)
+            {
+                continue;
+            }
+            WorkView* view = list->at(i);
+            Vector2D view_pos = camera_matrix.map(view->getPosition());
+            bool hit = view_pos.x >= 0 &&  view_pos.x <= Camera::gi()->screen_width && view_pos.y >=0 && view_pos.y <= Camera::gi()->screen_height;
+            if (!hit)
+            {
+                view_pos.x -= camera->screen_width / 2;
+                view_pos.y -= camera->screen_height / 2;
+                double angle = atan2(view_pos.y, view_pos.x) - M_PI / 2;
+                Vector2D r(0,1);
+                r.mul(100);
+                r.rotate(angle);
+                r.x += camera->screen_width / 2;
+                r.y += camera->screen_height / 2;
+                arrow->setRotationZ(angle);
+                arrow->render(render2d, Matrix::translation(r), new_tick, interpolation);
+            }
+        }
+    }
+
+    ~ArrowsView()
+    {
+        delete arrow;
+    }
+
+    Bitmap* arrow;
+    std::vector<WorkView*>* list;
+};
+
 class GameplayState : public State, public EventHandler
 {
 public:
@@ -217,8 +281,10 @@ private:
     UIController* controls;
 
     NetworkServer* server;
+    ArrowsView* arrows_view;
 
     std::vector<WorkView*> view_list;
+    std::vector<WorkView*> unused_view_list;
 };
 
 #endif // GAMEPLAYSTATE_H

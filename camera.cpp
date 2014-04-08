@@ -8,13 +8,13 @@ Camera::Camera()
     inner_size.x = 1200;
     inner_size.y = 800;
     setRSPoint(Vector2D(0.5, 0.5));
-    scaling.x = scaling.y = 10;
+    scaling.x = scaling.y = 15;
 }
 
 void Camera::resize(int width, int height)
 {
-    inner_size.x = width;
-    inner_size.y = height;
+    screen_width = inner_size.x = width;
+    screen_height = inner_size.y = height;
 }
 
 Camera* Camera::gi()

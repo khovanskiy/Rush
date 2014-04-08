@@ -1,7 +1,5 @@
 #include "gameplaystate.h"
 
-static const double M_PI = 3.14159265358979323846;
-
 #include "thread.h"
 #include "random.h"
 #include "gameobjectevent.h"
@@ -19,6 +17,8 @@ void GameplayState::init()
     current_id_vehicle = 0;
     current_vehicle = 0;
     controls = 0;
+
+    arrows_view = new ArrowsView(&view_list);
 
     Mouse::gi()->addEventListener(this);
     Keyboard::gi()->addEventListener(this);
@@ -130,22 +130,32 @@ void GameplayState::Invoke(const Event &event)
 
 void GameplayState::render(const RenderData &render_data)
 {
+    for (int i = 0; i < unused_view_list.size(); ++i)
+    {
+        delete unused_view_list[i];
+    }
+    unused_view_list.clear();
     Matrix camera_transform = Camera::gi()->getTransform();
     for (int i = 0; i < view_list.size(); ++i)
     {
         if (view_list[i]->valid)
         {
-            view_list[i]->render(render_data.render2d, camera_transform, true, render_data.interpolation);
+            view_list[i]->render(render_data.render2d, camera_transform, render_data.new_tick, render_data.interpolation);
         }
         else
         {
-
+            unused_view_list.push_back(view_list[i]);
+            view_list[i] = view_list[view_list.size() - 1];
+            view_list.pop_back();
+            --i;
         }
     }
     if (current_state == INITED)
     {
         Camera::gi()->setPosition(current_vehicle->getPosition());
     }
+
+    arrows_view->render(render_data.render2d, Matrix(), render_data.new_tick, render_data.interpolation);
 }
 
 void GameplayState::tick(double dt)
@@ -182,6 +192,14 @@ void GameplayState::tick(double dt)
 
 void GameplayState::release()
 {
+    for (int i = 0; i < unused_view_list.size(); ++i)
+    {
+        delete unused_view_list[i];
+    }
+    for (int i = 0; i < view_list.size(); ++i)
+    {
+        delete view_list[i];
+    }
     Keyboard::gi()->removeEventListener(this);
     Mouse::gi()->removeEventListener(this);
 
