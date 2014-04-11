@@ -85,9 +85,8 @@ public:
         }
         if (image)
         {
-            image->setInter(true);
+            //image->setInter(true);
             this->setInter(true);
-            Console::print("add image");
             addChild(image);
             valid = true;
             acc_state = AccelerationState::NoAcc;
@@ -159,7 +158,6 @@ public:
         }
         else if (event.type == KeyboardEvent::KEY_DOWN)
         {
-            Console::print("hack");
             const KeyboardEvent* e = static_cast<const KeyboardEvent*>(&event);
             switch (e->keyCode)
             {
@@ -266,6 +264,97 @@ public:
     std::vector<WorkView*>* list;
 };
 
+struct Player
+{
+    int id_player;
+    int count_kills;
+    int count_dieds;
+    int health;
+    double speed;
+    Player()
+    {
+        id_player = 0;
+        count_kills = 0;
+        count_dieds = 0;
+        health = 0;
+        speed = 0;
+    }
+};
+
+struct StatView : public Sprite
+{
+public:
+    StatView(std::map<int, Player*>* map)
+    {
+        this->map = map;
+        me = QColor::fromRgbF(1,1,0,1);
+        enemy = QColor::fromRgbF(1,1,1,1);
+        pen = QPen(enemy);
+        font = QFont("Arial", 15);
+        current_player_id = 0;
+    }
+
+
+    void render(QPainter *render2d, const Matrix &base, bool new_tick, float interpolation)
+    {
+        render2d->setFont(font);
+        int k = 0;
+        for (std::map<int, Player*>::iterator i = map->begin(); i != map->end(); ++i)
+        {
+            Player* player = (*i).second;
+            if (current_player_id == player->id_player)
+            {
+                pen.setColor(me);
+            }
+            else
+            {
+                pen.setColor(enemy);
+            }
+            render2d->setPen(pen);
+            QString text = QString("Player #") + QVariant(player->id_player).toString() + ": " + QVariant(player->count_kills).toString() + "-" + QVariant(player->count_dieds).toString();
+            render2d->drawText(10, 30 + k * 30, text);
+            ++k;
+        }
+    }
+
+    int current_player_id;
+
+    QColor enemy;
+    QColor me;
+    QFont font;
+    QPen pen;
+    std::map<int, Player*>* map;
+};
+
+struct SpeedometerView : public Sprite
+{
+public:
+    SpeedometerView(std::map<int, Player*>* map)
+    {
+        this->map = map;
+        arrow = new Bitmap();
+        arrow->load("DATA\\Textures\\gui\\arrow.png");
+    }
+
+    void render(QPainter *render2d, const Matrix &base, bool new_tick, float interpolation)
+    {
+        std::map<int, Player*>::iterator i = map->find(current_player_id);
+        if (i != map->end())
+        {
+            Player* player = (*i).second;
+            Camera* camera = Camera::gi();
+            render2d->setFont(QFont("Arial", 15));
+            render2d->setPen(QColor::fromRgbF(1, 1, 0, 1));
+            render2d->drawText(10, camera->screen_height - 30, QVariant(floor(player->speed * 3.6)).toString() + " kmph");
+            render2d->drawText(camera->screen_width - 70, camera->screen_height - 30, QVariant(player->health).toString() + "%");
+        }
+    }
+
+    Bitmap* arrow;
+    int current_player_id;
+    std::map<int, Player*>* map;
+};
+
 class GameplayState : public State, public EventHandler
 {
 public:
@@ -283,9 +372,12 @@ private:
 
     NetworkServer* server;
     ArrowsView* arrows_view;
+    StatView* stat_view;
+    SpeedometerView* speedometer_view;
 
     std::vector<WorkView*> view_list;
     std::vector<WorkView*> unused_view_list;
+    std::map<int, Player*> players;
 };
 
 #endif // GAMEPLAYSTATE_H

@@ -28,6 +28,7 @@ public:
     double getWidth() { return width;}
     double getHeight() { return height;}
     void setSource(PhysicsObject* source);
+    PhysicsObject* getSource() const;
     virtual CrossingResult2D collidesWith(PhysicsObject *other);
     virtual int getBulletType();    
     virtual void applyCollision(const Collision &collision, double dt);

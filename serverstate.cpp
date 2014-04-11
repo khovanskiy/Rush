@@ -73,16 +73,39 @@ void ServerState::init()
 
 void ServerState::Invoke(const Event &event)
 {
-    if (event.type == Event::INVALIDATE)
+    if (event.type == "DESTROY_BY")
+    {
+        const GameObjectEvent* e = static_cast<const GameObjectEvent*>(&event);
+        int id_from = 0;
+        int id_to = 0;
+        for (std::map<int, Player*>::iterator i = players.begin(); i != players.end(); ++i)
+        {
+            Player* current = (*i).second;
+            if (current->vehicle == e->target)
+            {
+                id_from = (*i).first;
+            }
+            else if (current->vehicle == e->subject)
+            {
+                id_to = (*i).first;
+            }
+        }
+        if (id_from != 0 && id_to != 0)
+        {
+            Console::print(QString("Player #")+QVariant(id_from).toString()+" have been killed by Player #"+QVariant(id_to).toString());
+            Player* from = players[id_from];
+            from->count_dieds++;
+            Player* to = players[id_to];
+            to->count_kills++;
+            //broadcastPlayerStat(from);
+            //broadcastPlayerStat(to);
+        }
+    }
+    else if (event.type == Event::INVALIDATE)
     {
         GameModelObject* object = static_cast<GameModelObject*>(event.target);
         Console::print(QString("Object #")+QVariant(object->my_id).toString()+" is destroyed");
         broadcastInvalidate(object);
-
-        if (object->getFamilyId() == GameObjectType::VEHICLE)
-        {
-
-        }
     }
     else if (event.type == "TURRET_FIRE")
     {
@@ -98,6 +121,9 @@ void ServerState::Invoke(const Event &event)
         p.mul(25);
 
         Bullet* b = new Bullet(objects_ids.next(), m.map(e->position), p, 1, Bullet::BULLET, 0.15, 0.43, 0.05, 3);
+        Vector2D new_speed = b->getSpeed();
+        new_speed.setLength(new_speed.getLength() + obj->getSpeed().getLength());
+        b->setSpeed(new_speed);
         b->setSource(obj);
         b->addEventListener(this);
         game_world->add(b);
@@ -169,7 +195,29 @@ void ServerState::tick(double dt)
 
             }
         }
+        broadcastPlayerStat(player);
     }
+}
+
+void ServerState::broadcastPlayerStat(Player* player)
+{
+    Protocol protocol;
+    protocol.putInt(PLAYER_STAT);
+    protocol.putInt(player->id_player);
+    protocol.putInt(player->count_kills);
+    protocol.putInt(player->count_dieds);
+    if (player->vehicle)
+    {
+        protocol.putInt(player->vehicle->health);
+        protocol.putDouble(player->vehicle->getSpeed().getLength());
+        //protocol.putDouble(player->vehicle->ge);
+    }
+    else
+    {
+        protocol.putInt(0);
+        protocol.putDouble(0.0);
+    }
+    broadcast(protocol);
 }
 
 void ServerState::broadcastObjects()
@@ -273,6 +321,18 @@ void ServerState::playerConnected()
 
     protocol.clear();
 
+    for (std::map<int, Player*>::iterator i = players.begin(); i != players.end(); ++i)
+    {
+        Player* current = (*i).second;
+        if (current->id_player != player->id_player)
+        {
+            protocol.putInt(LOGIN);
+            protocol.putInt(current->id_player);
+            player->socket->write(protocol.toByteArray());
+        }
+    }
+    protocol.clear();
+
     protocol.putInt(LOGIN);
     protocol.putInt(player->id_player);
     broadcast(protocol);
@@ -319,6 +379,7 @@ void ServerState::playerDisconnected()
     Protocol protocol;
     protocol.putInt(LOGOUT);
     protocol.putInt(id_player);
+    broadcast(protocol);
 }
 
 void ServerState::broadcastInvalidate(GameModelObject *object)

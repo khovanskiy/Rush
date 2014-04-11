@@ -43,6 +43,11 @@ void Bullet::setSource(PhysicsObject *source)
     this->source = source;
 }
 
+PhysicsObject* Bullet::getSource() const
+{
+    return this->source;
+}
+
 Bullet::~Bullet()
 {
     Console::print("Bullet is deleted");

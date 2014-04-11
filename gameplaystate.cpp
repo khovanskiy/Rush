@@ -19,6 +19,8 @@ void GameplayState::init()
     controls = 0;
 
     arrows_view = new ArrowsView(&view_list);
+    stat_view = new StatView(&players);
+    speedometer_view = new SpeedometerView(&players);
 
     Mouse::gi()->addEventListener(this);
     Keyboard::gi()->addEventListener(this);
@@ -70,10 +72,29 @@ void GameplayState::Invoke(const Event &event)
                 }
             }
         }
+        else if (action == PLAYER_STAT)
+        {
+            int id_player = protocol->nextInt();
+            int count_kills = protocol->nextInt();
+            int count_dieds = protocol->nextInt();
+            int health = protocol->nextInt();
+            double speed = protocol->nextDouble();
+            std::map<int, Player*>::iterator i = players.find(id_player);
+            if (i != players.end())
+            {
+                (*i).second->count_kills = count_kills;
+                (*i).second->count_dieds = count_dieds;
+                (*i).second->health = health;
+                (*i).second->speed = speed;
+            }
+        }
         else if (action == AUTH)
         {
             current_id_player = protocol->nextInt();
-            Console::print(QString("My id player #") + QVariant(current_id_player).toString());
+            Console::print(QString("Current Player #") + QVariant(current_id_player).toString());
+            Player* player = new Player();
+            player->id_player = current_id_player;
+            players[current_id_player] = player;
         }
         else if (action == LOGIN)
         {
@@ -82,6 +103,9 @@ void GameplayState::Invoke(const Event &event)
             {
                 Console::print(QString("Player #") + QVariant(id_player).toString() + " logged IN");
             }
+            Player* player = new Player();
+            player->id_player = id_player;
+            players[id_player] = player;
         }
         else if (action == LOGOUT)
         {
@@ -89,6 +113,12 @@ void GameplayState::Invoke(const Event &event)
             if (id_player != current_id_player)
             {
                 Console::print(QString("Player #") + QVariant(id_player).toString() + " logged OUT");
+            }
+            std::map<int, Player*>::iterator i = players.find(id_player);
+            if (i != players.end())
+            {
+                delete (*i).second;
+                players.erase(i);
             }
         }
         else if (action == ADD_OBJECT)
@@ -127,11 +157,6 @@ void GameplayState::Invoke(const Event &event)
 
 void GameplayState::render(const RenderData &render_data)
 {
-    for (int i = 0; i < unused_view_list.size(); ++i)
-    {
-        delete unused_view_list[i];
-    }
-    unused_view_list.clear();
     Matrix camera_transform = Camera::gi()->getTransform();
     for (int i = 0; i < view_list.size(); ++i)
     {
@@ -153,10 +178,19 @@ void GameplayState::render(const RenderData &render_data)
     }
 
     arrows_view->render(render_data.render2d, Matrix(), render_data.new_tick, render_data.interpolation);
+    stat_view->current_player_id = current_id_player;
+    stat_view->render(render_data.render2d, Matrix(), render_data.new_tick, render_data.interpolation);
+    speedometer_view->current_player_id = current_id_player;
+    speedometer_view->render(render_data.render2d, Matrix(), render_data.new_tick, render_data.interpolation);
 }
 
 void GameplayState::tick(double dt)
 {
+    for (int i = 0; i < unused_view_list.size(); ++i)
+    {
+        delete unused_view_list[i];
+    }
+    unused_view_list.clear();
     if (current_id_vehicle != 0)
     {
         if (current_state == NEED_INIT_VEHICLE)
@@ -197,6 +231,11 @@ void GameplayState::release()
     {
         delete view_list[i];
     }
+
+    delete arrows_view;
+    delete stat_view;
+    delete speedometer_view;
+
     Keyboard::gi()->removeEventListener(this);
     Mouse::gi()->removeEventListener(this);
 

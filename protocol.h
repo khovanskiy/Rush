@@ -12,6 +12,7 @@
 #define REMOVE_OBJECT 16
 #define UPDATE_OBJECT 32
 #define PLAYER_IO 32
+#define PLAYER_STAT 64
 
 class Protocol
 {

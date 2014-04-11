@@ -29,6 +29,8 @@ public:
         this->id_player = id_player;
         this->socket = socket;
         ticks = 0;
+        count_kills = 0;
+        count_dieds = 0;
         state = PLAYER_WAIT_VEHICLE;
         connect(socket, SIGNAL(disconnected()), this, SIGNAL(disconected()));
         connect(socket, SIGNAL(readyRead()), this, SIGNAL(readyRead()));
@@ -50,6 +52,8 @@ public:
             vehicle = 0;
         }
     }
+    int count_kills;
+    int count_dieds;
 
     int id_player;
     QTcpSocket* socket;
@@ -71,6 +75,7 @@ public slots:
     void playerDisconnected();
     void playerRecieved();
 protected:
+    void broadcastPlayerStat(Player*);
     void broadcast(Protocol& buffer);
     void broadcastObjects();
     void broadcastVehicle(Vehicle* vehicle, int id_parent);

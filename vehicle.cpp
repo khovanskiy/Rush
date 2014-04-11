@@ -1,6 +1,7 @@
 #include "vehicle.h"
 #include "console.h"
 
+#include <cmath>
 #include "gameobjectevent.h"
 
 static const double eps = 2e-4;
@@ -157,10 +158,21 @@ void Vehicle::applyCollision(const Collision &collision, double dt)
     {
         Bullet* bullet = static_cast<Bullet*>(collision.source);
         health -= bullet->getDamage();
+        if (health <= 0)
+        {
+            PhysicsObject* phy_obj = bullet->getSource();
+            if (phy_obj)
+            {
+                if (phy_obj->getFamilyId() == GameObjectType::VEHICLE)
+                {
+                    dispatchEvent(GameObjectEvent(this, "DESTROY_BY", phy_obj));
+                }
+            }
+        }
     }
-    else if (collision.source->getFamilyId() == GameObjectType::VEHICLE)
+    else if (collision.source->getFamilyId() == GameObjectType::OBSTACLE)
     {
-        //health -= 100;//collision.relative_speed.getLength();
+        health -= std::max(0.0, collision.relative_speed.getLength() - 10.0);
     }
     if (health <= 0)
     {
