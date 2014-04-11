@@ -210,11 +210,12 @@ void ServerState::broadcastPlayerStat(Player* player)
     {
         protocol.putInt(player->vehicle->health);
         protocol.putDouble(player->vehicle->getSpeed().getLength());
-        //protocol.putDouble(player->vehicle->ge);
+        protocol.putDouble(player->vehicle->getSpins());
     }
     else
     {
         protocol.putInt(0);
+        protocol.putDouble(0.0);
         protocol.putDouble(0.0);
     }
     broadcast(protocol);

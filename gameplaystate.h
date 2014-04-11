@@ -271,6 +271,7 @@ struct Player
     int count_dieds;
     int health;
     double speed;
+    double spins;
     Player()
     {
         id_player = 0;
@@ -278,6 +279,7 @@ struct Player
         count_dieds = 0;
         health = 0;
         speed = 0;
+        spins = 0;
     }
 };
 
@@ -333,7 +335,11 @@ public:
     {
         this->map = map;
         arrow = new Bitmap();
-        arrow->load("DATA\\Textures\\gui\\arrow.png");
+        arrow->load("DATA\\Textures\\gui\\speedo-arrow.png");
+        speedo = new Bitmap();
+        speedo->load("DATA\\Textures\\gui\\speedo.png");
+        speedo->setRSPointCenter();
+        arrow->setRSPoint(Vector2D(0.5, 0.9));
     }
 
     void render(QPainter *render2d, const Matrix &base, bool new_tick, float interpolation)
@@ -344,13 +350,25 @@ public:
             Player* player = (*i).second;
             Camera* camera = Camera::gi();
             render2d->setFont(QFont("Arial", 15));
-            render2d->setPen(QColor::fromRgbF(1, 1, 0, 1));
-            render2d->drawText(10, camera->screen_height - 30, QVariant(floor(player->speed * 3.6)).toString() + " kmph");
+            render2d->setPen(QColor::fromRgb(0x0, 0x0, 0x0, 0xff));
             render2d->drawText(camera->screen_width - 70, camera->screen_height - 30, QVariant(player->health).toString() + "%");
+
+            speedo->setX(100);
+            speedo->setY(camera->screen_height - 100);
+            speedo->render(render2d, base, new_tick, interpolation);
+
+            arrow->setX(100);
+            arrow->setY(camera->screen_height - 100);
+            arrow->setRotationZ(3 * M_PI / 2 * (player->speed * 3.6 / 220) - 3 * M_PI / 4);
+            arrow->render(render2d, base, new_tick, interpolation);
+
+            //render2d->drawText(10, camera->screen_height - 50, QVariant(player->spins).toString());
+            render2d->drawText(70, camera->screen_height - 65, 70, 20, Qt::AlignCenter, QVariant(floor(player->speed * 3.6)).toString());
         }
     }
 
     Bitmap* arrow;
+    Bitmap* speedo;
     int current_player_id;
     std::map<int, Player*>* map;
 };

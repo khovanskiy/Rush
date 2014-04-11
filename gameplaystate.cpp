@@ -10,7 +10,7 @@ void GameplayState::init()
 {
     server = new NetworkServer();
     server->addEventListener(this);
-    server->connect("127.0.0.1", 560);
+    server->connect("192.168.10.100", 560);
 
     current_state = WAIT_VEHICLE;
     current_id_player = 0;
@@ -79,6 +79,7 @@ void GameplayState::Invoke(const Event &event)
             int count_dieds = protocol->nextInt();
             int health = protocol->nextInt();
             double speed = protocol->nextDouble();
+            double spins = protocol->nextDouble();
             std::map<int, Player*>::iterator i = players.find(id_player);
             if (i != players.end())
             {
@@ -86,6 +87,7 @@ void GameplayState::Invoke(const Event &event)
                 (*i).second->count_dieds = count_dieds;
                 (*i).second->health = health;
                 (*i).second->speed = speed;
+                (*i).second->spins = spins;
             }
         }
         else if (action == AUTH)
