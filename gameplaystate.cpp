@@ -10,7 +10,7 @@ void GameplayState::init()
 {
     server = new NetworkServer();
     server->addEventListener(this);
-    server->connect("10.0.0.1", 560);
+    server->connect("127.0.0.1", 560);
 
     current_state = WAIT_VEHICLE;
     current_id_player = 0;
@@ -53,24 +53,22 @@ void GameplayState::Invoke(const Event &event)
             double rotation = protocol->nextDouble();
             WorkView* object = WorkView::findById(id_object);
             WorkView* parent = WorkView::findById(id_parent);
-            if (object != 0)
-            {
-                object->setPosition(position);
-                object->setRotationZ(rotation);
-            }
-            else
+            if (object == 0)
             {
                 if (class_object == GameObjectType::TURRET)
                 {
-                    WorkView* view = new WorkView(id_object, class_object, type_object);
-                    parent->addChild(view);
+                    object = new WorkView(id_object, class_object, type_object);
+                    parent->addChild(object);
+
                 }
                 else
                 {
-                    WorkView* view = new WorkView(id_object, class_object, type_object);
-                    view_list.push_back(view);
+                    object = new WorkView(id_object, class_object, type_object);
+                    view_list.push_back(object);
                 }
             }
+            object->setPosition(position);
+            object->setRotationZ(rotation);
         }
         else if (action == PLAYER_STAT)
         {

@@ -120,7 +120,9 @@ void ServerState::Invoke(const Event &event)
         p.normalize();
         p.mul(25);
 
-        Bullet* b = new Bullet(objects_ids.next(), m.map(e->position), p, 1, Bullet::BULLET, 0.15, 0.43, 0.05, 3);
+        Console::print(e->type_object);
+        //Bullet* b = new Bullet(objects_ids.next(), m.map(e->position), p, 1, Bullet::BULLET, 0.15, 0.43, 0.05, 3);
+        Bullet* b = PhysicsObjectFactory::createBullet(objects_ids.next(), m.map(e->position), p, e->type_object, 0.05);
         Vector2D new_speed = b->getSpeed();
         new_speed.setLength(new_speed.getLength() + obj->getSpeed().getLength());
         b->setSpeed(new_speed);
@@ -149,7 +151,7 @@ void ServerState::tick(double dt)
             else
             {
                 Vehicle* vehicle = PhysicsObjectFactory::createVehicle(objects_ids.next(), rand() % 3);
-                Turret* turret = PhysicsObjectFactory::createTurret(objects_ids.next(), 1);
+                Turret* turret = PhysicsObjectFactory::createTurret(objects_ids.next(), rand() % 3);
                 player->vehicle = vehicle;
                 player->state = PLAYER_HAS_VEHICLE;
 

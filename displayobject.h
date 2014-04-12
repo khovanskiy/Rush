@@ -28,7 +28,7 @@ public:
         }
         else
         {
-            position.x = x;
+            prev_x = position.x = x;
         }
     }
 
@@ -76,7 +76,7 @@ public:
         }
         else
         {
-            position.y = y;
+            prev_y = position.y = y;
         }
     }
     float getY() const

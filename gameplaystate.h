@@ -78,14 +78,34 @@ public:
         else if (class_object == GameObjectType::BULLET)
         {
             image = new Bitmap();
-            image->load("DATA\\Textures\\Bullets\\bullet.png");
-            image->setWidth(0.1);
-            image->setHeight(0.43);
+            switch (type_object)
+            {
+            case 0:
+            {
+                image->load("DATA\\Textures\\Bullets\\bullet.png");
+                image->setWidth(0.1);
+                image->setHeight(0.43);
+            } break;
+            case 1:
+            {
+                image->load("DATA\\Textures\\Bullets\\missile.png");
+                image->setWidth(0.5);
+                image->setHeight(1.9);
+            } break;
+            case 2:
+            {
+                image->load("DATA\\Textures\\Bullets\\plazma.png");
+                image->setWidth(1);
+                image->setHeight(1);
+            } break;
+            }
             image->setRSPointCenter();
         }
         if (image)
         {
             //image->setInter(true);
+            this->setX(1e6);
+            this->setY(1e6);
             this->setInter(true);
             addChild(image);
             valid = true;

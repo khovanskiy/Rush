@@ -7,7 +7,7 @@
 
 class Turret : public PhysicsObject
 {
-    int turret_type;
+
     double max_angle;
     int bullet_type;
     double fire_delay, next_shot;
@@ -22,9 +22,10 @@ public:
     static const int ROCKET_LAUNCHER;
     static const int SAW;
 
-    Turret(int id, Shape2D * shape, double mass, double inertia_moment, double fire_delay, double max_angle, int bullet_type, double scatter);
+    Turret(int id, Shape2D * shape, double mass, double fire_delay, double max_angle, int bullet_type, double scatter);
     virtual ~Turret();
-
+    double getMaxAngle() const;
+    int turret_type;
     int getTurretType() const;
     void setFiring(bool firing);
     bool getFiring() const;

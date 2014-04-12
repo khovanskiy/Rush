@@ -10,9 +10,8 @@ const int Turret::MACHINEGUN = 0;
 const int Turret::ROCKET_LAUNCHER = 1;
 const int Turret::SAW = 2;
 
-Turret::Turret(int id, Shape2D *shape, double mass, double inertia_moment,
-               double fire_delay, double max_angle, int bullet_type, double scatter)
-    : PhysicsObject(id, shape, mass, inertia_moment, PhysicsObject::TURRET), d_angle(0)
+Turret::Turret(int id, Shape2D *shape, double mass, double fire_delay, double max_angle, int bullet_type, double scatter)
+    : PhysicsObject(id, shape, mass, shape->getInertiaMoment(mass), PhysicsObject::TURRET), d_angle(0)
 {
     this->max_angle = max_angle;
     this->bullet_type = bullet_type;
@@ -25,6 +24,11 @@ Turret::Turret(int id, Shape2D *shape, double mass, double inertia_moment,
 Turret::~Turret()
 {
     //Console::print("Turret is deleted");
+}
+
+double Turret::getMaxAngle() const
+{
+    return max_angle;
 }
 
 int Turret::getTurretType() const
@@ -55,7 +59,9 @@ void Turret::calculateInnerState(double dt)
     if (firing && next_shot < eps)
     {
         next_shot = fire_delay;
-        dispatchEvent(GameObjectEvent(this, "TURRET_FIRE", Vector2D(0,1)));
+        GameObjectEvent e(this, "TURRET_FIRE", Vector2D(0,1));
+        e.type_object = this->bullet_type;
+        dispatchEvent(e);
     }
 
     /*if (firing && next_shot < eps)

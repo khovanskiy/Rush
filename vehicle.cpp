@@ -5,6 +5,7 @@
 #include "gameobjectevent.h"
 
 static const double eps = 2e-4;
+static const double M_PI = 3.14159265358979323846;
 
 const int Vehicle::DODGE_CHALLENGER_SRT8 = 0;
 const int Vehicle::FERRARI_599GTO = 1;
@@ -24,7 +25,9 @@ void Vehicle::Invoke(const Event &event)
     if (event.type == "TURRET_FIRE")
     {
         const GameObjectEvent* e = static_cast<const GameObjectEvent*>(&event);
-        dispatchEvent(GameObjectEvent(this, "TURRET_FIRE", e->position));
+        GameObjectEvent e2(this, "TURRET_FIRE", e->position);
+        e2.type_object = e->type_object;
+        dispatchEvent(e2);
     }
 }
 
@@ -173,6 +176,12 @@ void Vehicle::applyCollision(const Collision &collision, double dt)
     else if (collision.source->getFamilyId() == GameObjectType::OBSTACLE)
     {
         health -= std::max(0.0, collision.relative_speed.getLength() - 10.0);
+    }
+    else if (collision.source->getFamilyId() == GameObjectType::VEHICLE)
+    {
+        Vehicle* other = static_cast<Vehicle*>(collision.source);
+        double k  = other->getSpeed().getLength() / this->getSpeed().getLength();
+        health -= std::max(0.0, (collision.relative_speed.getLength() - 10.0) * k);
     }
     if (health <= 0)
     {

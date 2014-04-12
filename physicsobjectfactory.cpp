@@ -93,41 +93,67 @@ Vehicle* PhysicsObjectFactory::createVehicle(int id_object, int vehicle_type)
 Turret* PhysicsObjectFactory::createTurret(int id_object, int turret_type)
 {
     Turret* result;
-    result = new Turret(id_object, new Rectangle2D(Point2D(0, -0.5), 1.5, 1.5), 100, 7, 0.1, 2 * asin(1), Bullet::BULLET, 0);
-    result->type_object = turret_type;
+
+    switch (turret_type)
+    {
+    case 0:
+    {
+        result = new Turret(id_object, new Rectangle2D(Point2D(0, -0.5), 1.5, 1.5), 100, 0.2, asin(1), Bullet::BULLET, 0);
+        result->type_object = result->turret_type = turret_type;
+    } break;
+    case 1:
+    {
+        result = new Turret(id_object, new Rectangle2D(Point2D(0, -0.5), 1.5, 1.5), 150, 0.5, asin(1), Bullet::MISSILE, 0);
+        result->type_object = result->turret_type = turret_type;
+    } break;
+    case 2:
+    {
+        result = new Turret(id_object, new Rectangle2D(Point2D(0, -0.5), 1.5, 1.5), 200, 1.5, asin(1), 2, 0);
+        result->type_object = result->turret_type = turret_type;
+    } break;
+    }
+
+
     return result;
 }
 
-Bullet* PhysicsObjectFactory::createBullet(int id_object, Vector2D r, double angle, int bullet_type, double dt)
+Bullet* PhysicsObjectFactory::createBullet(int id_object, const Vector2D& r, const Vector2D& v, int bullet_type, double dt)
 {
-    double width, height, mass, speed, time_to_live;
-    if (bullet_type == 0)
+    double width, height, mass, speed, time_to_live, damage;
+    if (bullet_type == Bullet::BULLET)
     {
-        width = 0.15;
+        width = 0.1;
         height = 0.43;
-        mass = 1;
-        speed = 50;
+        mass = 5;
+        speed = 70;
         time_to_live = 3;
+        damage = 7;
     }
-    else if (bullet_type == 1)
-    {
-        width = 0.03;
-        height = 0.03;
-        mass = 0.00001;
-        speed = 12;
-        time_to_live = 0.05;
-    }
-    else if (bullet_type == 2)
+    else if (bullet_type == Bullet::MISSILE)
     {
         width = 0.5;
         height = 1.9;
         mass = 100;
         speed = 40;
         time_to_live = 3;
+        damage = 35;
     }
-    Vector2D v(0, speed);
-    v.rotate(angle);
-    return new Bullet(id_object, r, v, mass, bullet_type, width, height, dt, time_to_live);
+    else if (bullet_type == 2)
+    {
+        width = 1;
+        height = 1;
+        mass = 500;
+        speed = 30;
+        time_to_live = 3;
+        damage = 95;
+    }
+    Vector2D va = v;
+    va.normalize();
+    va.mul(speed);
+    Bullet* bullet = new Bullet(id_object, r, va, mass, bullet_type, width, height, dt, time_to_live);
+    bullet->type_object = bullet_type;
+    bullet->setDamage(damage);
+    return bullet;
 }
 
 Obstacle* PhysicsObjectFactory::createObstacle(int id_object, int obstacle_type)

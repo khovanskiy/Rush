@@ -18,7 +18,7 @@ public:
 
     static Vehicle* createVehicle(int id_object, int vehicle_type);
     static Turret* createTurret(int id_object, int turret_type);
-    static Bullet* createBullet(int id_object, Vector2D r, double angle, int bullet_type, double dt);
+    static Bullet* createBullet(int id_object, const Vector2D& r, const Vector2D& v, int bullet_type, double dt);
     static Obstacle* createObstacle(int id_object, int obstacle_type);
 
     //static Turret* createVehicleTurret(int turret_type);
