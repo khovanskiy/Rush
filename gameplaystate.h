@@ -222,7 +222,8 @@ public:
     ArrowsView(std::vector<WorkView*>* list)
     {
         arrow = new Bitmap();
-        arrow->load("DATA\\Textures\\bonus.png");
+        arrow->load("DATA\\Textures\\gui\\enemy-arrow.png");
+        arrow->setSize(Vector2D(20,20));
         this->list = list;
     }
 
@@ -289,7 +290,7 @@ public:
     StatView(std::map<int, Player*>* map)
     {
         this->map = map;
-        me = QColor::fromRgbF(1,1,0,1);
+        me = QColor::fromRgb(0xff, 0xcc, 0x0, 0xff);
         enemy = QColor::fromRgbF(1,1,1,1);
         pen = QPen(enemy);
         font = QFont("Arial", 15);
@@ -350,8 +351,9 @@ public:
             Player* player = (*i).second;
             Camera* camera = Camera::gi();
             render2d->setFont(QFont("Arial", 15));
-            render2d->setPen(QColor::fromRgb(0x0, 0x0, 0x0, 0xff));
-            render2d->drawText(camera->screen_width - 70, camera->screen_height - 30, QVariant(player->health).toString() + "%");
+            render2d->setPen(QColor::fromRgb(0xff, 0xcc, 0x0, 0xff));
+
+            render2d->drawText(camera->screen_width - 150, camera->screen_height - 50, 100, 30, Qt::AlignRight, QVariant(player->health).toString() + "%");
 
             speedo->setX(100);
             speedo->setY(camera->screen_height - 100);
@@ -363,6 +365,7 @@ public:
             arrow->render(render2d, base, new_tick, interpolation);
 
             //render2d->drawText(10, camera->screen_height - 50, QVariant(player->spins).toString());
+            render2d->setPen(QColor::fromRgb(0x0, 0x0, 0x0, 0xff));
             render2d->drawText(70, camera->screen_height - 65, 70, 20, Qt::AlignCenter, QVariant(floor(player->speed * 3.6)).toString());
         }
     }

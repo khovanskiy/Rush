@@ -330,6 +330,7 @@ void ServerState::playerConnected()
             protocol.putInt(LOGIN);
             protocol.putInt(current->id_player);
             player->socket->write(protocol.toByteArray());
+            protocol.clear();
         }
     }
     protocol.clear();
