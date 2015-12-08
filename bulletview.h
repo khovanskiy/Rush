@@ -3,6 +3,7 @@
 
 #include "bullet.h"
 #include "gameviewobject.h"
+#include "client/bitmap.h"
 
 class BulletView : public GameViewObject, public EventHandler
 {

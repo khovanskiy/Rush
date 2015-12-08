@@ -6,8 +6,8 @@
 #include "eventhandler.h"
 #include "state.h"
 #include "renderdata.h"
+#include "common/StateEnum.h"
 
-enum StateEnum;
 class State;
 
 class StateContext

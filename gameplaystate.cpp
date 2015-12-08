@@ -10,7 +10,7 @@ void GameplayState::init()
 {
     server = new NetworkServer();
     server->addEventListener(this);
-    server->connect("127.0.0.1", 560);
+    server->connect("127.0.0.1", 8888);
 
     current_state = WAIT_VEHICLE;
     current_id_player = 0;

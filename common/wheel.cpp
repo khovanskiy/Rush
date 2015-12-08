@@ -2,13 +2,14 @@
 #include "console.h"
 #include <QVariant>
 
-static const double M_PI = 3.14159265358979323846;
+//static const double M_PI = 3.14159265358979323846;
 static const double G = 9.80665;
 static const double eps = 1e-9;
 static const double shaking_koef = 0.1;
 static const double default_surface_friction = 2.5;
 
 #include <math.h>
+#include <cmath>
 
 Wheel::Wheel(double mu_parallel_friction, double mu_parallel_roll,
              double mu_perpendicular_friction, double mu_broken_friction,
@@ -84,8 +85,8 @@ void Wheel::calculateForces(double dt)
     }
     double vl = v.getLength();
     Vector2D w = getWheelDirection();
-    double v_par = abs(v.scalar(w));
-    double v_perp = sqrt(abs(vl * vl - v_par * v_par));
+    double v_par = std::abs(v.scalar(w));
+    double v_perp = sqrt(std::abs(vl * vl - v_par * v_par));
     if (v_par > eps) {
         Vector2D f_par = w;
         if (f_par.scalar(v) > 0)
@@ -117,7 +118,7 @@ void Wheel::calculateForces(double dt)
         {
             p_f_p.mul(-1);
         }
-        double p_v_perp = abs(v.scalar(Vector2D(1, 0)));
+        double p_v_perp = std::abs(v.scalar(Vector2D(1, 0)));
         if (p_f_p.getLength() > shaking_koef * p_v_perp * (distributed_weight / G) / dt)
         {
             p_f_p.setLength(shaking_koef * p_v_perp * (distributed_weight / G) / dt);

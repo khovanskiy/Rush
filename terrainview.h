@@ -3,7 +3,7 @@
 
 #include "terrain.h"
 #include "gameviewobject.h"
-#include "bitmap.h"
+#include "client/bitmap.h"
 
 class TerrainView : public GameViewObject
 {

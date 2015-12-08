@@ -3,10 +3,10 @@
 
 #include "gameviewobject.h"
 #include "vehicle.h"
-#include "bitmap.h"
 #include "sprite.h"
 
 #include "turretview.h"
+#include "client/bitmap.h"
 
 class VehicleView : public GameViewObject, public EventHandler
 {

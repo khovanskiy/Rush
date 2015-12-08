@@ -2,7 +2,6 @@
 #define GAMEVIEWOBJECT_H
 
 #include "sprite.h"
-#include "bitmap.h"
 #include "vector2d.h"
 #include "gamemodelobject.h"
 

@@ -1,3 +1,4 @@
+#include <cmath>
 #include "geometry2d.h"
 #include "math.h"
 #include "console.h"
@@ -87,7 +88,7 @@ Vector2D Line2D::getNormal() const
 
 bool Line2D::isParallelTo(const Line2D &other) const
 {
-    return (abs(this->a * other.b - this->b * other.a) <= eps * abs(this->a * other.b));
+    return (std::abs(this->a * other.b - this->b * other.a) <= eps * abs(this->a * other.b));
 }
 
 Point2D Line2D::getCrossBy(const Line2D &other) const
@@ -98,7 +99,7 @@ Point2D Line2D::getCrossBy(const Line2D &other) const
 
 double Line2D::getDistTo(const Point2D &point) const
 {
-    return abs(point.x * a + point.y * b + c) / sqrt(a * a + b * b);
+    return std::abs(point.x * a + point.y * b + c) / sqrt(a * a + b * b);
 }
 
 bool Line2D::contains(const Point2D &point) const
@@ -428,7 +429,7 @@ bool Rectangle2D::contains(const Point2D &point) const
     Vector2D v = point.toVector();
     v.sub(geometry_center.toVector());
     v.rotate(-this->angle);
-    return (abs(v.x) < width / 2 + eps) && (abs(v.y) < height / 2 + eps);
+    return (std::abs(v.x) < width / 2 + eps) && (std::abs(v.y) < height / 2 + eps);
 }
 
 void Rectangle2D::setRotatingPoint(const Point2D &rotating_point)
@@ -494,11 +495,11 @@ double Rectangle2D::getDepth(const Point2D &point)
 
 AABB Rectangle2D::getAABB()
 {
-    double w = abs(this->ab->p1.x - this->geometry_center.x);
-    double w1 = abs(this->ab->p2.x - this->geometry_center.x);
+    double w = std::abs(this->ab->p1.x - this->geometry_center.x);
+    double w1 = std::abs(this->ab->p2.x - this->geometry_center.x);
     if (w1 > w) w = w1;
-    double h = abs(this->ab->p1.y - this->geometry_center.y);
-    double h1 = abs(this->ab->p2.y - this->geometry_center.y);
+    double h = std::abs(this->ab->p1.y - this->geometry_center.y);
+    double h1 = std::abs(this->ab->p2.y - this->geometry_center.y);
     if (h1 > h) h = h1;
     return AABB(this->geometry_center.x - w, this->geometry_center.x + w,
                 this->geometry_center.y - h, this->geometry_center.y + h);

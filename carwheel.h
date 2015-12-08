@@ -1,6 +1,7 @@
 #ifndef CARWHEEL_H
 #define CARWHEEL_H
-#include "wheel.h"
+
+#include "common/wheel.h"
 
 enum RotationReaction { StraightRot, NoRotation, ReverseRot };
 

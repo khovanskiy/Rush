@@ -3,7 +3,7 @@
 #include "terrain.h"
 #include "random.h"
 
-static const double M_PI = 3.14159265358979323846;
+//static const double M_PI = 3.14159265358979323846;
 
 void ServerState::init()
 {
@@ -11,9 +11,11 @@ void ServerState::init()
     physics_world = new PhysicsWorld();
     server = new QTcpServer();
     connect(server, SIGNAL(newConnection()), this, SLOT(playerConnected()));
-    if (server->listen(QHostAddress::Any, 560))
+    if (server->listen(QHostAddress::Any, 8888))
     {
         Console::print("Server is running...");
+    } else {
+        Console::print("Server failed...");
     }
 
     /*for (int i = 0; i < 3; ++i)

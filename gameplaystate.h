@@ -3,7 +3,6 @@
 
 #include "state.h"
 
-#include "bitmap.h"
 #include "networkserver.h"
 #include "mouse.h"
 #include "mouseevent.h"
@@ -16,7 +15,7 @@
 #define NEED_INIT_VEHICLE 2
 #define INITED 3
 
-static const double M_PI = 3.14159265358979323846;
+//static const double M_PI = 3.14159265358979323846;
 
 struct WorkView : public Sprite
 {
@@ -33,19 +32,19 @@ public:
             {
             case 0:
             {
-                image->load("DATA\\Textures\\Vehicles\\dodge.png");
+                image->load("DATA/Textures/Vehicles/dodge.png");
                 image->setWidth(1.923);
                 image->setHeight(5.0);
             } break;
             case 1:
             {
-                image->load("DATA\\Textures\\Vehicles\\ferrari.png");
+                image->load("DATA/Textures/Vehicles/ferrari.png");
                 image->setWidth(1.962);
                 image->setHeight(4.710);
             } break;
             case 2:
             {
-                image->load("DATA\\Textures\\Vehicles\\ford-f-150.png");
+                image->load("DATA/Textures/Vehicles/ford-f-150.png");
                 image->setWidth(100 * 0.0254);
                 image->setHeight(232.1 * 0.0254);
             } break;
@@ -55,7 +54,7 @@ public:
         else if (class_object == GameObjectType::TURRET)
         {
             image = new Bitmap();
-            image->load("DATA\\Textures\\Turrets\\nailgun.png");
+            image->load("DATA/Textures/Turrets/nailgun.png");
             image->setWidth(1.5);
             image->setHeight(1.5);
             image->setRSPointCenter();
@@ -63,7 +62,7 @@ public:
         else if (class_object == GameObjectType::OBSTACLE)
         {
             image = new Bitmap();
-            image->load("DATA\\Textures\\Obstacles\\wall_texture.png");
+            image->load("DATA/Textures/Obstacles/wall_texture.png");
             image->setWidth(20);
             image->setHeight(2);
             image->setRSPointCenter();
@@ -71,7 +70,7 @@ public:
         else if (class_object == GameObjectType::TERRAIN)
         {
             image = new Bitmap();
-            image->load("DATA\\Textures\\Terrains\\3.jpg");
+            image->load("DATA/Textures/Terrains/3.jpg");
             image->setWidth(100);
             image->setHeight(100);
         }
@@ -82,19 +81,19 @@ public:
             {
             case 0:
             {
-                image->load("DATA\\Textures\\Bullets\\bullet.png");
+                image->load("DATA/Textures/Bullets/bullet.png");
                 image->setWidth(0.1);
                 image->setHeight(0.43);
             } break;
             case 1:
             {
-                image->load("DATA\\Textures\\Bullets\\missile.png");
+                image->load("DATA/Textures/Bullets/missile.png");
                 image->setWidth(0.5);
                 image->setHeight(1.9);
             } break;
             case 2:
             {
-                image->load("DATA\\Textures\\Bullets\\plazma.png");
+                image->load("DATA/Textures/Bullets/plazma.png");
                 image->setWidth(1);
                 image->setHeight(1);
             } break;
@@ -242,7 +241,7 @@ public:
     ArrowsView(std::vector<WorkView*>* list)
     {
         arrow = new Bitmap();
-        arrow->load("DATA\\Textures\\gui\\enemy-arrow.png");
+        arrow->load("DATA/Textures/gui/enemy-arrow.png");
         arrow->setSize(Vector2D(20,20));
         this->list = list;
     }
@@ -356,9 +355,9 @@ public:
     {
         this->map = map;
         arrow = new Bitmap();
-        arrow->load("DATA\\Textures\\gui\\speedo-arrow.png");
+        arrow->load("DATA/Textures/gui/speedo-arrow.png");
         speedo = new Bitmap();
-        speedo->load("DATA\\Textures\\gui\\speedo.png");
+        speedo->load("DATA/Textures/gui/speedo.png");
         speedo->setRSPointCenter();
         arrow->setRSPoint(Vector2D(0.5, 0.9));
     }

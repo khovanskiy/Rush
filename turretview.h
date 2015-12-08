@@ -3,9 +3,9 @@
 
 #include "gameviewobject.h"
 #include "sprite.h"
-#include "bitmap.h"
 
 #include "turret.h"
+#include "client/bitmap.h"
 
 class TurretView : public GameViewObject, public EventHandler
 {

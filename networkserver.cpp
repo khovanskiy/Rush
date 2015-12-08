@@ -61,9 +61,11 @@ void NetworkServer::onDisconnected()
     dispatchEvent(NetworkEvent(this, NetworkEvent::DISCONNECTED));
 }
 
-void NetworkServer::onError(QAbstractSocket::SocketError)
+void NetworkServer::onError(QAbstractSocket::SocketError e)
 {
-    Console::print("Connection error");
+    Console::print("Check");
+    //Console::print(e);
+    Console::print("Connection error ");
 }
 
 void NetworkServer::send(Protocol &protocol)

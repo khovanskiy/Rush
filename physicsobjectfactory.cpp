@@ -3,7 +3,7 @@
 #include "obstacle.h"
 
 static const double G = 9.80665;
-static const double M_PI = 3.14159265358979323846;
+//static const double M_PI = 3.14159265358979323846;
 static const double inch_to_meter = 0.0254;
 
 double PhysicsObjectFactory::revsPerKmToRadius(double revsPerKilometer)

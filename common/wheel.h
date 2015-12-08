@@ -1,9 +1,8 @@
 #ifndef PHYSICSWHEEL_H
 #define PHYSICSWHEEL_H
-#include "vector2d.h"
-
-enum WheelState { Broken, Braking, Free, Forward, Backward };
-enum AccelerationState { ForwardAcc, NoAcc, BackwardAcc, Brakes };
+#include "../vector2d.h"
+#include "WheelState.h"
+#include "AccelerationState.h"
 
 struct Wheel
 {

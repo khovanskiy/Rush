@@ -1,6 +1,7 @@
 #ifndef TRACK_H
 #define TRACK_H
-#include "wheel.h"
+
+#include "common/wheel.h"
 
 enum TrackType { LeftTrack, RightTrack };
 

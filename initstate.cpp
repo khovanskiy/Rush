@@ -2,7 +2,6 @@
 #include "console.h"
 #include "state.h"
 #include "stateevent.h"
-#include "bitmap.h"
 #include "mouseevent.h"
 #include "keyboard.h"
 #include "mouse.h"

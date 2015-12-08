@@ -1,9 +1,10 @@
 #ifndef GRAPHICCORE_H
 #define GRAPHICCORE_H
 
-#include <QGLWidget>
 #include "eventdispatcher.h"
 
+#include <QtOpenGL>
+#include <QGLWidget>
 #include <QTimer>
 #include <QElapsedTimer>
 #include "statecontext.h"

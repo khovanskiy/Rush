@@ -3,6 +3,7 @@
 
 #include "obstacle.h"
 #include "gameviewobject.h"
+#include "client/bitmap.h"
 
 class ObstacleView : public GameViewObject, EventHandler
 {

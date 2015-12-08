@@ -1,3 +1,4 @@
+#include <cmath>
 #include "track.h"
 #include "math.h"
 
@@ -27,7 +28,7 @@ Track::~Track()
 
 double Track::getRotatingSpeed()
 {
-    return abs(getWheelDirection().scalar(v) / radius);
+    return std::abs(getWheelDirection().scalar(v) / radius);
 }
 
 

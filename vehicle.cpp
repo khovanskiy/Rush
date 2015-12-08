@@ -5,7 +5,7 @@
 #include "gameobjectevent.h"
 
 static const double eps = 2e-4;
-static const double M_PI = 3.14159265358979323846;
+//static const double M_PI = 3.14159265358979323846;
 
 const int Vehicle::DODGE_CHALLENGER_SRT8 = 0;
 const int Vehicle::FERRARI_599GTO = 1;

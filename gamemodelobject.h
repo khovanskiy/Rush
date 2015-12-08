@@ -5,11 +5,7 @@
 #include <vector>
 
 #include "eventdispatcher.h"
-
-enum GameObjectType
-{
-    VEHICLE = 0, TURRET = 1, BULLET = 2, TERRAIN = 3, OBSTACLE = 4, UNKNOWN = 5
-};
+#include "common/GameObjectType.h"
 
 class GameModelObject : public EventDispatcher, public EventHandler
 {

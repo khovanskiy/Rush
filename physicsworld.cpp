@@ -8,7 +8,7 @@ typedef std::pair<ObjectData*, AABB> pair;
 
 static const int calc_koef = 1;
 static const int max_collisions_per_pair = 5;
-static const double INFINITY = 1e6;
+static const double INFINITY_L = 1e6;
 static const double eps = 1e-3;
 
 PhysicsWorld::PhysicsWorld()
@@ -56,7 +56,7 @@ void PhysicsWorld::broadCollisionSearch()
     potentially_colliding.clear();
     if (nodes.size() > 0)
     {
-        double minx = +INFINITY, maxx = -INFINITY, miny = +INFINITY, maxy = -INFINITY;
+        double minx = +INFINITY_L, maxx = -INFINITY_L, miny = +INFINITY_L, maxy = -INFINITY_L;
         const int num = (int)nodes.size();
         ObjectNode** ptr = &nodes.front();
         for (int i = 0; i < num; i++)

@@ -2,7 +2,7 @@
 #define MAINMENUSTATE_H
 
 #include "state.h"
-#include "bitmap.h"
+#include "client/bitmap.h"
 
 class MainMenuState : public State, EventHandler
 {

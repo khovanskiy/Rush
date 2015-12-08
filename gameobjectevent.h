@@ -3,10 +3,10 @@
 
 #include "event.h"
 #include "vector2d.h"
+#include "common/AccelerationState.h"
+#include "gamemodelobject.h"
 
 class GameModelObject;
-enum GameObjectType;
-enum AccelerationState;
 
 class GameObjectEvent : public Event
 {

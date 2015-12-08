@@ -1,32 +1,26 @@
-#################
-## Eclipse
-#################
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
 
-*.pydevproject
-.project
-.metadata
-bin/
-tmp/
-*.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
-.classpath
-.settings/
-.loadpath
+*.iml
 
-# External tool builders
-.externalToolBuilders/
+gen/
 
-# Locally stored "Eclipse launch configurations"
-*.launch
+## Directory-based project format:
+.idea/
 
-# CDT-specific
-.cproject
+## Plugin-specific files:
+# IntelliJ
+/out/
 
-# PDT-specific
-.buildpath
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts
+Makefile
+cmake_install.cmake
+install_manifest.txt
 
 
 #################

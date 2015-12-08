@@ -1,13 +1,12 @@
 #ifndef PHYSICSCHASSIS_H
 #define PHYSICSCHASSIS_H
 
-#include "wheel.h"
 #include "carwheel.h"
 #include "vehicleengine.h"
 #include "vector2d.h"
+#include "common/wheel.h"
 
-struct CarTrack
-{
+struct CarTrack {
     double y;
     double width;
     double wheel_radius;
@@ -25,8 +24,7 @@ struct CarTrack
              bool driving, bool braking, RotationReaction reaction,
              double mu_parallel_friction, double mu_parallel_roll,
              double mu_perpendicular_friction, double mu_broken_friction,
-             double max_angle)
-    {
+             double max_angle) {
         this->y = y;
         this->width = width;
         this->wheel_radius = wheel_radius;
@@ -42,17 +40,20 @@ struct CarTrack
     }
 };
 
-class Chassis
-{
+class Chassis {
 protected:
     void distributeWeigth();
+
     void setWheelsReaction();
+
     void setWheelsSpeed();
+
     void distributeTorque();
+
     void sumForces(double dt);
 
 public:
-    std::vector<Wheel*> wheels;
+    std::vector<Wheel *> wheels;
     VehicleEngine engine;
     double weight;
     Vector2D mass_center;
@@ -68,19 +69,30 @@ public:
 
     Vector2D f;
     double force_moment;
+
     Chassis();
-    Chassis(Chassis const & chassis);
+
+    Chassis(Chassis const &chassis);
+
     ~Chassis();
+
     void setWheels(double mass, double height,
                    CarTrack back, CarTrack front);
-    void setEngine(VehicleEngine const & engine);
-    void setStructure(double mass, Vector2D const & mass_center, double height);
-    void setTotalState(Vector2D const & v, Vector2D const & a, double angular_speed,
-                       double torque_percent, AccelerationState const & acc_state,
+
+    void setEngine(VehicleEngine const &engine);
+
+    void setStructure(double mass, Vector2D const &mass_center, double height);
+
+    void setTotalState(Vector2D const &v, Vector2D const &a, double angular_speed,
+                       double torque_percent, AccelerationState const &acc_state,
                        double rotation);
+
     void calculateForces(double dt);
+
     int getGear();
+
     double getSpins();
+
     Vector2D getMassCenter();
 };
 
