@@ -8,145 +8,95 @@
 
 DisplayObject::DisplayObject()
 {
-    lmatrix = new QMatrix();
-    gmatrix = new QMatrix();
     _visible = true;
-    _x = _y = rx = ry = _rotationZ = 0;
-    _scaleX = _scaleY = 1;
+
+    prev_x = 0;
+    prev_y = 0;
+
+    speed_rotationZ = prev_rotationZ = target_rotationZ = 0;
+
+    prev_scaleX = target_scaleX = 1;
+    prev_scaleY = target_scaleY = 1;
+
     _ratio = false;
+    root = 0;
+    ready = false;
+
+    isInt = false;
+
+    bounds = new QRectF();
 }
 
 DisplayObject::~DisplayObject()
 {
-    delete lmatrix;
-    delete gmatrix;
+    delete bounds;
 }
 
-QMatrix* DisplayObject::getRenderMatrix()
+void DisplayObject::render(QPainter *, const Matrix &base, bool new_tick, float interpolation)
 {
-    return getGlobalMatrix();
-}
+    if (isInt)
+    {
+        if (new_tick)
+        {
+            prev_x = target_position.x;
+            prev_y = target_position.y;
+            prev_scaleX = target_scaleX;
+            prev_scaleY = target_scaleY;
+            prev_rotationZ = target_rotationZ;
+        }
 
-QMatrix* DisplayObject::getGlobalMatrix()
-{
-    QMatrix* r = getLocalMatrix();
-    gmatrix->setMatrix(r->m11(),r->m12(),r->m21(),r->m22(),r->dx(),r->dy());
-    return gmatrix;
-}
+        rotationZ = prev_rotationZ + (target_rotationZ - prev_rotationZ) * interpolation;
 
-QMatrix* DisplayObject::getLocalMatrix()
-{
-    QMatrix a; a.translate(-rx,-ry);
-    QMatrix b; b.scale(_scaleX, _scaleY);
-    QMatrix c; c.rotate(_rotationZ / asin(1) * 180);
-    QMatrix d; d.translate(rx,ry);
-    QMatrix e; e.translate(_x-rx, _y-ry);
-    QMatrix r = a * b * c * d * e;
-    lmatrix->setMatrix(r.m11(),r.m12(),r.m21(),r.m22(),r.dx(),r.dy());
-    return lmatrix;
-}
+        position.x = prev_x + (target_position.x - prev_x) * interpolation;
+        position.y = prev_y + (target_position.y - prev_y) * interpolation;
+        scaling.x = prev_scaleX + (target_scaleX - prev_scaleX) * interpolation;
+        scaling.y = prev_scaleY + (target_scaleY - prev_scaleY) * interpolation;
 
-QRectF DisplayObject::getRenderBounds()
-{
-    return getBounds(getRenderMatrix());
-}
-
-QRectF DisplayObject::getBounds(QMatrix* p) const // Спасибо линейной алгебре!
-{
-    float nx = 0;
-    float ny = 0;
-    float x1 = std::numeric_limits<float>::max(); float y1 = std::numeric_limits<float>::max();
-    float x2 = std::numeric_limits<float>::min(); float y2 = std::numeric_limits<float>::min();
-
-    nx = p->dx();
-    ny = p->dy();
-
-    x1 = std::min(x1, nx);
-    y1 = std::min(y1, ny);
-    x2 = std::max(x2, nx);
-    y2 = std::max(y2, ny);
-
-    nx = p->m21() * _height + p->dx();
-    ny = p->m22() * _height + p->dy();
-
-    x1 = std::min(x1, nx);
-    y1 = std::min(y1, ny);
-    x2 = std::max(x2, nx);
-    y2 = std::max(y2, ny);
-
-    nx = p->m11() * _width + p->dx();
-    ny = p->m12() * _width + p->dy();
-
-    x1 = std::min(x1, nx);
-    y1 = std::min(y1, ny);
-    x2 = std::max(x2, nx);
-    y2 = std::max(y2, ny);
-
-    nx = p->m11() * _width + p->m21() * _height + p->dx();
-    ny = p->m12() * _width + p->m22() * _height + p->dy();
-
-    x1 = std::min(x1, nx);
-    y1 = std::min(y1, ny);
-    x2 = std::max(x2, nx);
-    y2 = std::max(y2, ny);
-
-    return QRectF(x1, y1, x2 - x1, y2 - y1);
+        /*if (abs(current_x - target_x) <= 10e-4)
+        {
+            prev_x = target_x;
+        }
+        if (abs(current_y - target_y) <= 10e-4)
+        {
+            prev_y = target_y;
+        }
+        if (abs(current_rotationZ - target_rotationZ) <= 10e-4)
+        {
+            prev_rotationZ = target_rotationZ;
+        }*/
+    }
 }
 
 void DisplayObject::setWidth(float value)
 {
-    setScaleX(value / _width);
-    if (isRatio())
-    {
-        setScaleY(getScaleX());
-    }
+    outer_size.x = value;
+    isWHsettedup = true;
 }
 
-float DisplayObject::getWidth()
+/*float DisplayObject::getWidth()
 {
-    QMatrix* res = getRenderMatrix();
-    return (float)(_height * abs(res->m12()) + _width * abs(res->m11()));
-}
+    Matrix* res = getRenderMatrix();
+    return (float)(inner_height * abs(res->M12) + inner_width * abs(res->M11));
+}*/
 
 void DisplayObject::setHeight(float value)
 {
-    setScaleY(value / _height);
-    if (isRatio())
-    {
-        setScaleX(getScaleY());
-    }
+    outer_size.y = value;
+    isWHsettedup = true;
 }
 
-float DisplayObject::getHeight()
+/*float DisplayObject::getHeight()
 {
-    QMatrix* res = getRenderMatrix();
-    return (float)(_width * abs(res->m12()) + _height * abs(res->m11()));
-}
+    Matrix* res = getRenderMatrix();
+    return (float)(inner_width * abs(res->M12) + inner_height * abs(res->M11));
+}*/
 
 bool DisplayObject::isVisible() const
 {
     return _visible;
 }
 
-void DisplayObject::setRSPointCenter()
-{
-    rx = _width / 2;
-    ry = _height / 2;
-}
-
 bool DisplayObject::hitTestPoint(float x, float y)
 {
-    QRectF r = getRenderBounds();
-    return (r.top() <= y && y <= r.bottom() && r.left() <= x && x <= r.right());
-}
-
-QString DisplayObject::h(int k, QString text)
-{
-    QString temp = "";
-    for (int i = 0; i < k; i++)
-    {
-        temp.append(" ");
-    }
-    temp.append(text);
-    return temp;
+    return (bounds->top() <= y && y <= bounds->bottom() && bounds->left() <= x && x <= bounds->right());
 }

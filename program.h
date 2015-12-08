@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include "graphiccore.h"
+
 class Program : public QMainWindow
 {
     Q_OBJECT

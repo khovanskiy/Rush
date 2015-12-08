@@ -7,22 +7,22 @@
 #include <memory>
 
 #include "interactiveobject.h"
+#include "matrix.h"
 
 class DisplayObjectContainer : public InteractiveObject
 {
 public:
-    typedef std::shared_ptr<DisplayObject> ELEMENT;
-    typedef std::vector<ELEMENT> LIST;
     DisplayObjectContainer();
     virtual ~DisplayObjectContainer();
-    void addChild(std::shared_ptr<DisplayObject> child);
-    void removeChild(std::shared_ptr<DisplayObject> child);
-    bool hasChild(std::shared_ptr<DisplayObject> child) const;
-    LIST* getChildrenList() const;
-    void render(QPainter*);
+
+    void addChild(DisplayObject* child);
+    void removeChild(DisplayObject* child);
+
+    void render(QPainter*, const Matrix&, bool, float);
+
     void handleEvent(const Event &);
 private:
-    LIST* children;
+    std::vector<DisplayObject*> children;
 };
 
 #endif // DISPLAYOBJECTCONTAINER_H

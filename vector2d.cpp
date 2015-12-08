@@ -13,6 +13,23 @@ Vector2D::Vector2D()
     this->y = 0;
 }
 
+Vector2D::Vector2D(const Vector2D &other)
+{
+    swap(other);
+}
+
+Vector2D& Vector2D::operator=(const Vector2D &other)
+{
+    swap(other);
+    return *this;
+}
+
+void Vector2D::swap(const Vector2D &other)
+{
+    this->x = other.x;
+    this->y = other.y;
+}
+
 void Vector2D::add(const Vector2D &other)
 {
     this->x += other.x;
@@ -31,9 +48,19 @@ void Vector2D::mul(double k)
     this->y *= k;
 }
 
+void Vector2D::div(double k)
+{
+    this->x /= k;
+    this->y /= k;
+}
+
 void Vector2D::setLength(double k)
 {
-    mul(k / getLength());
+    double c = getLength();
+    if (c != 0)
+    {
+        mul(k / c);
+    }
 }
 
 double Vector2D::getLength() const
@@ -43,7 +70,18 @@ double Vector2D::getLength() const
 
 void Vector2D::normalize()
 {
-    mul(1 / getLength());
+    double c = getLength();
+    if (c != 0)
+    {
+        mul(1 / c);
+    }
+}
+
+void Vector2D::rotate(double alpha)
+{
+    double x0 = x;
+    x = x * cos(alpha) - y * sin(alpha);
+    y = y * cos(alpha) + x0 * sin(alpha);
 }
 
 double Vector2D::scalar(const Vector2D &a, const Vector2D &b)
@@ -51,9 +89,14 @@ double Vector2D::scalar(const Vector2D &a, const Vector2D &b)
     return a.x * b.x + a.y * b.y;
 }
 
+double Vector2D::cross(const Vector2D &a, const Vector2D &b)
+{
+    return a.x * b.y - b.x * a.y;
+}
+
 double Vector2D::angleBetween(const Vector2D &a, const Vector2D &b)
 {
-    return atan2(a.x * b.y - b.x * a.y, scalar(a,b));
+    return atan2(cross(a, b), scalar(a, b));
 }
 
 double Vector2D::scalar(const Vector2D &other)
@@ -61,8 +104,18 @@ double Vector2D::scalar(const Vector2D &other)
     return Vector2D::scalar(*this, other);
 }
 
+double Vector2D::cross(const Vector2D &other)
+{
+    return Vector2D::cross(*this, other);
+}
+
 double Vector2D::angleBetween(const Vector2D &other)
 {
     return Vector2D::angleBetween(*this, other);
+}
+
+Vector2D Vector2D::getMul(double k) const
+{
+    return Vector2D(x * k, y * k);
 }
 

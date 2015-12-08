@@ -17,6 +17,8 @@ public:
     static const QString CHANGE;
     static const QString ADDED_TO_STAGE;
     static const QString REMOVED_FROM_STAGE;
+    static const QString INVALIDATE;
+
     Event(EventDispatcher*, QString);
     EventDispatcher* target;
     QString type;

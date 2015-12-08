@@ -4,65 +4,59 @@
 
 DisplayObjectContainer::DisplayObjectContainer()
 {
-    children = new std::vector<ELEMENT>();
+
 }
 
 DisplayObjectContainer::~DisplayObjectContainer()
 {
-    while (children->size() > 0)
+
+}
+
+void DisplayObjectContainer::addChild(DisplayObject* child)
+{
+    if (child == 0)
     {
-        children->back().reset();
-        children->pop_back();
+        return;
     }
-    delete children;
+    children.push_back(child);
 }
 
-void DisplayObjectContainer::addChild(std::shared_ptr<DisplayObject> child)
+void DisplayObjectContainer::removeChild(DisplayObject* child)
 {
-    children->push_back(child);
-}
-
-void DisplayObjectContainer::removeChild(std::shared_ptr<DisplayObject> child)
-{
-    //children->erase(std::remove(children->begin(),children->end(), child));
-    for (LIST::iterator i = children->begin(); i != children->end(); i++)
+    if (child == 0)
     {
-        Console::print((*i).get());
-        if ((*i).get() == child.get())
+        return;
+    }
+    for (int i = 0; i < children.size(); ++i)
+    {
+        if (children[i] == child)
         {
-            children->erase(i);
-            return;
+            children[i] = children[children.size() - 1];
+            children.pop_back();
+            break;
         }
     }
 }
 
-bool DisplayObjectContainer::hasChild(std::shared_ptr<DisplayObject> child) const
+void DisplayObjectContainer::render(QPainter* render2d, const Matrix& base, bool t, float new_int)
 {
-    return find(children->begin(),children->end(), child) != children->end();
-}
+    Matrix current = Matrix::mul(getTransform(), base);
 
-void DisplayObjectContainer::render(QPainter* render2d)
-{
-    LIST list = *children;
-    for (LIST::iterator it = list.begin(); it != list.end(); it++)
+    DisplayObject::render(render2d, current, t, new_int);
+
+    for (int i = 0; i < children.size(); ++i)
     {
-        ELEMENT d = *it;
-        d->render(render2d);
+        children[i]->render(render2d, current, t, new_int);
     }
 }
 
-std::vector<std::shared_ptr<DisplayObject>>* DisplayObjectContainer::getChildrenList() const
-{
-    return children;
-}
 void DisplayObjectContainer::handleEvent(const Event &event)
 {
     InteractiveObject::handleEvent(event);
-    LIST list = *children;
-    for (LIST::iterator it = list.begin(); it != list.end(); it++)
+    for (int i = 0; i < children.size(); ++i)
     {
-        std::shared_ptr<DisplayObject> d = *it;
-        if (InteractiveObject* io = dynamic_cast<InteractiveObject*>(d.get()))
+        DisplayObject* d = children[i];
+        if (InteractiveObject* io = dynamic_cast<InteractiveObject*>(d))
         {
             io->handleEvent(event);
         }

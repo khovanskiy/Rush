@@ -1,58 +1,95 @@
 #include "eventdispatcher.h"
 
-#include <QThread>
-
 #include "console.h"
 
 EventDispatcher::EventDispatcher()
 {
-
+    recuirsion_count = 0;
 }
 
-EventDispatcher::~EventDispatcher()
-{
-
-}
-
-void EventDispatcher::addEventListener(QString type, Function* func)
+void EventDispatcher::addEventListener(EventHandler* func)
 {
     if (func == 0)
     {
-        Console::print("FATAL ERROR!!!!");
         return;
     }
-    if (!listeners[type])
+    if (recuirsion_count == 0)
     {
-        listeners[type] = new std::vector<Function*>();
+        listeners.insert(listeners.end(), std::make_pair(func, true));
     }
-    listeners[type]->push_back(func);
+    else
+    {
+        nn.push_back(std::make_pair(func, true));
+    }
 }
 
-void EventDispatcher::removeEventListener(QString type, Function* func)
+void EventDispatcher::removeEventListener(EventHandler* func)
 {
-    if (!listeners[type])
+    if (func == 0)
     {
         return;
     }
-    LIST* list = listeners[type]; // А если разыменовать, то list.erase() нифига не удаляет =(
-    LIST::iterator it = find(list->begin(), list->end(), func);
-    if (it != list->end())
+
+    if (recuirsion_count == 0)
     {
-        list->erase(it);
+        for (LIST::iterator i = listeners.begin(); i != listeners.end();)
+        {
+            if (i->first == func)
+            {
+                i = listeners.erase(i);
+            }
+            else
+            {
+                ++i;
+            }
+        }
+    }
+    else
+    {
+        for (LIST::iterator i = listeners.begin(); i != listeners.end();++i)
+        {
+            if (i->first == func)
+            {
+                i->second = false;
+                break;
+            }
+        }
     }
 }
 
 void EventDispatcher::dispatchEvent(const Event& event)
 {
-    if (!listeners[event.type])
+    if (recuirsion_count == 0)
     {
-        return;
+        while (!nn.empty())
+        {
+            listeners.push_back(nn.back());
+            nn.pop_back();
+        }
     }
-    LIST list = *listeners[event.type];
-    mutex.lock();
-    for (LIST::iterator it = list.begin(); it != list.end(); it++)
+
+    ++recuirsion_count;
+    for (LIST::iterator i = listeners.begin(); i != listeners.end(); ++i)
     {
-        (*it)->Invoke(event);
+        if (i->second)
+        {
+            i->first->Invoke(event);
+        }
     }
-    mutex.unlock();
+    --recuirsion_count; 
+
+    if (recuirsion_count == 0)
+    {
+        for (LIST::iterator i = listeners.begin(); i != listeners.end();)
+        {
+            if (i->second)
+            {
+                ++i;
+            }
+            else
+            {
+                i = listeners.erase(i);
+            }
+        }
+    }
 }

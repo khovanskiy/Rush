@@ -4,23 +4,23 @@
 #include <QMutex>
 #include <QString>
 #include <vector>
-#include <map>
 
-#include "function.h"
+#include "eventhandler.h"
 #include "event.h"
 
 class EventDispatcher
 {
 public:
-    typedef std::vector<Function*> LIST;
+    typedef std::vector<std::pair<EventHandler*, bool>> LIST;
+
     EventDispatcher();
-    virtual ~EventDispatcher();
-    void addEventListener(QString type, Function* func);
-    void removeEventListener(QString type, Function* func);
+    void addEventListener(EventHandler*);
+    void removeEventListener(EventHandler*);
     void dispatchEvent(const Event&);
 private:
-    QMutex mutex;
-    std::map<QString, LIST*> listeners;
+    LIST listeners;
+    LIST nn;
+    int recuirsion_count;
 };
 
 #endif // EVENTDISPATCHER_H

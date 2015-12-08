@@ -7,21 +7,24 @@ Keyboard* Keyboard::instance = 0;
 
 Keyboard::Keyboard()
 {
-    GraphicCore::getInstance()->addEventListener(KeyboardEvent::KEY_UP, this);
+    //GraphicCore::gi().addEventListener(this);
 }
 
 Keyboard::~Keyboard()
 {
-
+    //GraphicCore::gi().removeEventListener(this);
 }
 
 void Keyboard::Invoke(const Event &event)
 {
-    KeyboardEvent* st = (KeyboardEvent*)(&event);
-    dispatchEvent(KeyboardEvent(this, event.type, st->keyCode));
+    if (event.type == KeyboardEvent::KEY_UP || event.type == KeyboardEvent::KEY_DOWN)
+    {
+        const KeyboardEvent* st = static_cast<const KeyboardEvent*>(&event);
+        dispatchEvent(KeyboardEvent(this, event.type, st->keyCode));
+    }
 }
 
-Keyboard* Keyboard::getInstance()
+Keyboard* Keyboard::gi()
 {
     if (instance == 0)
     {

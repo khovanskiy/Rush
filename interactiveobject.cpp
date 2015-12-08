@@ -2,6 +2,7 @@
 
 #include "mouseevent.h"
 #include "keyboardevent.h"
+#include "console.h"
 
 InteractiveObject::InteractiveObject()
 {
@@ -10,16 +11,36 @@ InteractiveObject::InteractiveObject()
 
 void InteractiveObject::handleEvent(const Event &event)
 {
-    if (event.type == MouseEvent::CLICK)
+    if (event.type == MouseEvent::MOUSE_MOVE || event.type == MouseEvent::CLICK || event.type == MouseEvent::MOUSE_DOWN || event.type == MouseEvent::MOUSE_UP)
     {
         MouseEvent* st = (MouseEvent*)(&event);
-        if (hitTestPoint(st->getX(), st->getY()))
+        bool hit = hitTestPoint(st->getX(), st->getY());
+        if (event.type == MouseEvent::MOUSE_MOVE)
         {
-            dispatchEvent(MouseEvent(this, MouseEvent::CLICK, st->getX(), st->getY()));
+            onMouseMove(event);
+            if (isHovered)
+            {
+                if (!hit)
+                {
+                    onMouseOut(event);
+                    dispatchEvent(MouseEvent(this, MouseEvent::MOUSE_OUT, st->getX(), st->getY()));
+                    isHovered = !isHovered;
+                }
+
+            }
+            else
+            {
+                if (hit)
+                {
+                    onMouseOver(event);
+                    dispatchEvent(MouseEvent(this, MouseEvent::MOUSE_OVER, st->getX(), st->getY()));
+                    isHovered = !isHovered;
+                }
+            }
         }
-    }
-    else
-    {
-        dispatchEvent(event);
+        else if (hit)
+        {
+            dispatchEvent(MouseEvent(this, event.type, st->getX(), st->getY()));
+        }
     }
 }

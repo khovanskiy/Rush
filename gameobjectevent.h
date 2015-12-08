@@ -1,0 +1,35 @@
+#ifndef GAMEOBJECTEVENT_H
+#define GAMEOBJECTEVENT_H
+
+#include "event.h"
+#include "vector2d.h"
+
+class GameModelObject;
+enum GameObjectType;
+enum AccelerationState;
+
+class GameObjectEvent : public Event
+{
+public:
+    static const QString ADDED_OBJECT;
+    static const QString REMOVED_OBJECT;
+    static const QString UPDATED_OBJECT;
+    static const QString AUTHORIZED;
+
+    GameObjectEvent(EventDispatcher*, QString, GameModelObject*);
+    GameObjectEvent(EventDispatcher*, QString, const Vector2D& position);
+    GameObjectEvent(EventDispatcher*, QString, int, GameObjectType);
+    GameObjectEvent(EventDispatcher*, QString);
+    GameModelObject* subject;
+    int id_player;
+    int id_object;
+    int id_parent;
+    Vector2D position;
+    double rotation;
+    GameObjectType class_object;
+    int type_object;
+    bool shooting;
+    AccelerationState acc_state;
+};
+
+#endif // GAMEOBJECTEVENT_H

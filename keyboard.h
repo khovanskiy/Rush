@@ -2,12 +2,14 @@
 #define KEYBOARD_H
 
 #include "eventdispatcher.h"
-#include "function.h"
+#include "eventhandler.h"
 
-class Keyboard : public EventDispatcher, public Function
+#include "keyboardevent.h"
+
+class Keyboard : public EventDispatcher, public EventHandler
 {
 public:
-    static Keyboard* getInstance();
+    static Keyboard* gi();
     void Invoke(const Event &event);
 private:
     Keyboard();
