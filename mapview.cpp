@@ -78,6 +78,7 @@ void MapView::createObject(GameModelObject *go)
         GameViewObject* view = new ObstacleView(static_cast<Obstacle*>(go));
         list.push_back(view);
     } break;
+    default: break;
     }
 }
 

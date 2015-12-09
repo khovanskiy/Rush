@@ -26,10 +26,11 @@ struct CollidingPair
     ObjectData* o1;
     ObjectData* o2;
     Point2D center;
+    Vector2D normal;
     int remained_collisions;
 
-    CollidingPair(ObjectData* o1, ObjectData* o2, Point2D center, int remained_collisions)
-        : center(center), remained_collisions(remained_collisions)
+    CollidingPair(ObjectData* o1, ObjectData* o2, Point2D center, Vector2D normal, int remained_collisions)
+        : center(center), remained_collisions(remained_collisions), normal(normal)
     {
         this->o1 = o1;
         this->o2 = o2;

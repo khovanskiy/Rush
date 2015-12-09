@@ -71,6 +71,14 @@ public:
                 image->setHeight(2);
                 image->setRSPointCenter();
             } break;
+            case 1:
+            {
+                image = new Bitmap();
+                image->load("DATA/Textures/Obstacles/wooden_box.png");
+                image->setWidth(1);
+                image->setHeight(1);
+                image->setRSPointCenter();
+            } break;
             case 2:
             {
                 image = new Bitmap();
@@ -79,12 +87,12 @@ public:
                 image->setHeight(2);
                 image->setRSPointCenter();
             } break;
-            case 1:
+            case 3:
             {
                 image = new Bitmap();
-                image->load("DATA/Textures/Obstacles/wooden_box.png");
-                image->setWidth(1);
-                image->setHeight(1);
+                image->load("DATA/Textures/Obstacles/wooden_barrel.png");
+                image->setWidth(4);
+                image->setHeight(4);
                 image->setRSPointCenter();
             } break;
             }

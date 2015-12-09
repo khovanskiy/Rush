@@ -11,7 +11,7 @@ Server::Server()
     connect(loop, SIGNAL(timeout()), this, SLOT(onLoop()));
 
     TICKS_PER_SECOND = 20;
-    std::cout << "TICKS PER SECOND = " << 21 << std::endl;
+    std::cout << "TICKS PER SECOND = " << TICKS_PER_SECOND << std::endl;
     SKIP_TICKS = 1000 / TICKS_PER_SECOND;
     MAX_FRAMESKIP = 10;
     counter->start();

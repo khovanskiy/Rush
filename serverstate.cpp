@@ -38,7 +38,7 @@ void ServerState::init()
         }
     }
 
-    for (int i = 0; i < 10; ++i)
+    /*for (int i = 0; i < 10; ++i)
     {
         Obstacle* wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
         wall->setCoordinates(Vector2D(10 + 20 * i, -1));
@@ -70,7 +70,41 @@ void ServerState::init()
         wall->setAngle(M_PI/2);
         game_world->add(wall);
         physics_world->add(wall);
-    }
+    }/**/
+
+    for (int i = 0; i < 50; ++i)
+        {
+            Obstacle* wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 3);
+            wall->setCoordinates(Vector2D(2 + 4 * i, -1));
+            game_world->add(wall);
+            physics_world->add(wall);
+        }
+
+        for (int i = 0; i < 50; ++i)
+        {
+            Obstacle* wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 3);
+            wall->setCoordinates(Vector2D(2 + 4 * i, 201));
+            game_world->add(wall);
+            physics_world->add(wall);
+        }
+
+        for (int i = 0; i < 50; ++i)
+        {
+            Obstacle* wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 3);
+            wall->setCoordinates(Vector2D(-1, 2 + 4 * i));
+            wall->setAngle(M_PI/2);
+            game_world->add(wall);
+            physics_world->add(wall);
+        }
+
+        for (int i = 0; i < 50; ++i)
+        {
+            Obstacle* wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 3);
+            wall->setCoordinates(Vector2D(201, 2 + 4 * i));
+            wall->setAngle(M_PI/2);
+            game_world->add(wall);
+            physics_world->add(wall);
+        }
 
     for (int i = 0; i < 10; ++i)
     {
@@ -187,23 +221,23 @@ void ServerState::tick(double dt)
                 {
                 case 0:
                 {
-                    pos.x = Random::getRandom(5, 95);
-                    pos.y = Random::getRandom(5, 95);
+                    pos.x = Random::getRandom(10, 90);
+                    pos.y = Random::getRandom(10, 90);
                 } break;
                 case 1:
                 {
-                    pos.x = Random::getRandom(105, 195);
-                    pos.y = Random::getRandom(5, 95);
+                    pos.x = Random::getRandom(110, 190);
+                    pos.y = Random::getRandom(10, 90);
                 } break;
                 case 2:
                 {
-                    pos.x = Random::getRandom(5, 95);
-                    pos.y = Random::getRandom(105, 195);
+                    pos.x = Random::getRandom(10, 90);
+                    pos.y = Random::getRandom(110, 190);
                 } break;
                 case 3:
                 {
-                    pos.x = Random::getRandom(105, 195);
-                    pos.y = Random::getRandom(105, 195);
+                    pos.x = Random::getRandom(110, 190);
+                    pos.y = Random::getRandom(110, 190);
                 } break;
                 }
 

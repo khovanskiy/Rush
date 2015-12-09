@@ -57,7 +57,7 @@ CrossingResult2D Bullet::collidesWith(PhysicsObject *other)
 {
     if (this->source == other)
     {
-        return CrossingResult2D(false, Point2D(0, 0));
+        return CrossingResult2D(false, Point2D(0, 0), this->v);
     }
     else
     {

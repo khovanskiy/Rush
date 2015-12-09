@@ -140,7 +140,8 @@ void PhysicsWorld::narrowCollisionSearch()
             CrossingResult2D result = ptr[i].first->object->collidesWith(ptr[i].second->object);
             if (result.crossing)
             {
-                colliding_pairs.push(CollidingPair(ptr[i].first, ptr[i].second, result.center, max_collisions_per_pair));
+                colliding_pairs.push(CollidingPair(ptr[i].first, ptr[i].second, result.center,
+                                                   result.normal, max_collisions_per_pair));
             }
         }
     }
@@ -157,7 +158,9 @@ void PhysicsWorld::collisionSolving(double dt)
             ||(colliding_pair.o1->object->isValid() && colliding_pair.o2->object->isValid()
                 && colliding_pair.o1->object->collidesWith(colliding_pair.o2->object).crossing))
         {
-            Collision collision = colliding_pair.o1->object->solveCollisionWith(colliding_pair.o2->object, colliding_pair.center);
+            Collision collision = colliding_pair.o1->object->solveCollisionWith(colliding_pair.o2->object,
+                                                                                colliding_pair.center,
+                                                                                colliding_pair.normal);
             colliding_pair.o1->collisions.push_back(collision);
             colliding_pair.o1->object->applyCollision(collision, dt);
             collision.impulse_change.mul(-1);

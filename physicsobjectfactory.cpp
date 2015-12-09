@@ -165,7 +165,7 @@ Obstacle* PhysicsObjectFactory::createObstacle(int id_object, int obstacle_type)
     {
         shape = new Rectangle2D(Vector2D(0, 0), 20, 2);
         mass = 1000000;
-        inertia_moment = 100000;
+        inertia_moment = 1000000;
         dynamic = false;
     }
     else if (obstacle_type == 1)
@@ -181,6 +181,13 @@ Obstacle* PhysicsObjectFactory::createObstacle(int id_object, int obstacle_type)
         mass = 100;
         inertia_moment = 50;
         dynamic = true;
+    }
+    else if (obstacle_type == 3)
+    {
+        shape = new Circle2D(Vector2D(0, 0), 2, 0);
+        mass = 1000000;
+        inertia_moment = 1000000;
+        dynamic = false;
     }
     Obstacle* result = new Obstacle(id_object, shape, mass, inertia_moment, obstacle_type);
     result->type_object = obstacle_type;

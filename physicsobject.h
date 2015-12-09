@@ -94,7 +94,7 @@ public:
     virtual double getInertiaMoment() const;
     virtual Vector2D getRelativeSpeed(PhysicsObject* other);
     virtual CrossingResult2D collidesWith(PhysicsObject* other);
-    virtual Collision solveCollisionWith(PhysicsObject* other, Point2D const & center);
+    virtual Collision solveCollisionWith(PhysicsObject* other, Point2D const & center, Vector2D const & normal);
 };
 
 #endif // PHYSICSOBJECT_H

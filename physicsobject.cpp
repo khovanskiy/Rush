@@ -3,7 +3,8 @@
 
 static const double push_length_koef = 0.5;
 static const double explosion_pseudo_v_koef = 0.2;
-static const double angular_speed_koef = 0.3;
+static const double angular_speed_koef = 1;
+static const double critical_depth_koef = 0.125;
 static const double PI = 3.14159265358979323846;
 static const double INFINITE_TIME = 1e100;
 
@@ -50,11 +51,24 @@ void PhysicsObject::addImpulseAtPoint(const Vector2D &impulse, const Point2D &po
 
 void PhysicsObject::pushAwayFromPoint(const Point2D &point, PhysicsObject* source, double dt)
 {
-    Vector2D d_p_v = this->getMassCenter();
-    d_p_v.sub(point.toVector());
-    double l = push_length_koef * (this->shape->getDepth(point)) * source->mass / (this->mass + source->mass);
-    d_p_v.setLength(l);
-    move(d_p_v);
+    if (dynamic)
+    {
+        Vector2D d_p_v = this->getMassCenter();
+        double depth = this->shape->getDepth(point);
+        if (depth > critical_depth_koef * (this->shape->getHeight() + this->shape->getWidth()))
+        {
+            d_p_v.sub(source->shape->getGeometryCenter().toVector());
+            depth = 0.5 * std::sqrt(this->shape->getHeight() * this->shape->getHeight()
+                              + this->shape->getWidth() * this->shape->getWidth());
+        }
+        else
+        {
+            d_p_v.sub(point.toVector());
+        }
+        double l = push_length_koef * depth * source->mass / (this->mass + source->mass);
+        d_p_v.setLength(l);
+        move(d_p_v);
+    }
 }
 
 Matrix& PhysicsObject::getTransform()
@@ -243,11 +257,11 @@ CrossingResult2D PhysicsObject::collidesWith(PhysicsObject *other)
     return this->shape->cross(other->shape);
 }
 
-Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, Point2D const & center)
+Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, Point2D const & center, Vector2D const & normal)
 {
     if (other->getType() == PhysicsObject::EXPLOSION)
     {
-        Collision collision = other->solveCollisionWith(this, center);
+        Collision collision = other->solveCollisionWith(this, center, normal);
         collision.source = other;
         collision.relative_speed.mul(-1);
         collision.impulse_change.mul(-1);
@@ -256,11 +270,19 @@ Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, Point2D const 
     Vector2D collision_center = center.toVector();
     Vector2D relative_speed = this->getSpeedAtPoint(collision_center);
     relative_speed.sub(other->getSpeedAtPoint(collision_center));
-    Vector2D collision_direction = relative_speed;
-    collision_direction.setLength(1);
-    Line2D collision_line(collision_center, collision_direction);
+    Vector2D collision_direction = normal;
     Vector2D common_direction = this->shape->getGeometryCenter().getVectorTo(other->shape->getGeometryCenter());
-    double speed_projection = relative_speed.scalar(common_direction);
+    if (collision_direction.getLength() == 0) {
+        collision_direction = common_direction;
+    } else {
+        collision_direction.setLength(1);
+    }
+    if (common_direction.scalar(collision_direction) < 0) {
+        collision_direction.mul(-1);
+    }
+    double speed_projection = relative_speed.scalar(collision_direction);
+    relative_speed = collision_direction;
+    relative_speed.setLength(speed_projection);
     Vector2D impulse_change(0, 0);
     if (speed_projection > 0)
     {
@@ -272,7 +294,7 @@ Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, Point2D const 
         r2.sub(other->getMassCenter());
         double k2 = r2.cross(collision_direction);
         k2 = angular_speed_koef * k2 * k2 / other->inertia_moment;
-        double impulse = relative_speed.getLength() / (1 / this->mass + 1 / other->mass + k1 + k2);
+        double impulse = speed_projection / (1 / this->mass + 1 / other->mass + k1 + k2);
         impulse_change = collision_direction;
         impulse_change.mul(-impulse);
     }

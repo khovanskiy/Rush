@@ -175,12 +175,16 @@ void Vehicle::applyCollision(const Collision &collision, double dt)
     }
     else if (collision.source->getFamilyId() == GameObjectType::OBSTACLE)
     {
-        health -= std::max(0.0, collision.relative_speed.getLength() - 10.0);
+        int mass = collision.source->getMass();
+        if (mass > this->getMass())
+        {
+            health -= std::max(0.0, 0.3 * (collision.relative_speed.getLength() - 10.0));
+        }
     }
     else if (collision.source->getFamilyId() == GameObjectType::VEHICLE)
     {
         Vehicle* other = static_cast<Vehicle*>(collision.source);
-        double k  = other->getSpeed().getLength() / this->getSpeed().getLength();
+        double k  = 3 * other->getSpeed().getLength() / (other->getSpeed().getLength() + this->getSpeed().getLength());
         health -= std::max(0.0, (collision.relative_speed.getLength() - 10.0) * k);
     }
     if (health <= 0)
