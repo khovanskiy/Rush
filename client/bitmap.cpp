@@ -3,7 +3,7 @@
 #include <QFile>
 #include <QApplication>
 #include "camera.h"
-#include "console.h"
+#include "../common/console.h"
 
 std::map<QString, QImage*> Bitmap::cache;
 

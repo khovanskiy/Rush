@@ -1,7 +1,15 @@
 cmake_minimum_required(VERSION 3.4)
-set(PROJECT Server)
+IF(${CMAKE_IS_SERVER})
+    message("Generate makefile for SERVER")
+    set(PROJECT Server)
+ELSE()
+    message("Generate makefile for CLIENT")
+    set(PROJECT Client)
+ENDIF()
 project(${PROJECT})
 
+set(CMAKE_C_COMPILER clang)
+set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -14,85 +22,87 @@ find_package(Qt5Multimedia REQUIRED)
 find_package(Qt5Network REQUIRED)
 find_package(Qt5OpenGL REQUIRED)
 
+IF(${CMAKE_IS_SERVER})
+    set(SOURCE_FILES server-main.cpp)
+ELSE()
+    set(SOURCE_FILES client/main.cpp)
+    file(COPY ./DATA DESTINATION .)
+ENDIF()
 set(SOURCE_FILES
-        server-main.cpp
-        #main.cpp
+        ${SOURCE_FILES}
         api.cpp
         api.h
-        background.cpp
-        background.h
+        client/background.cpp
+        client/background.h
         client/bitmap.cpp
         client/bitmap.h
-        bullet.cpp
-        bullet.h
-        bulletfactory.cpp
-        bulletview.cpp
-        bulletview.h
-        camera.cpp
-        camera.h
-        cameracontroller.cpp
-        cameracontroller.h
-        carwheel.cpp
-        carwheel.h
-        chassis.cpp
-        chassis.h
-        console.cpp
-        console.h
-        displayobject.cpp
-        displayobject.h
-        displayobjectcontainer.cpp
-        displayobjectcontainer.h
-        event.cpp
-        event.h
-        eventdispatcher.cpp
-        eventdispatcher.h
-        eventhandler.h
-        exception.cpp
-        exception.h
-        exitstate.cpp
-        exitstate.h
-        explosion.cpp
-        explosion.h
-        gamemodelobject.cpp
-        gamemodelobject.h
+        common/bullet.cpp
+        common/bullet.h
+        client/bulletview.cpp
+        client/bulletview.h
+        client/camera.cpp
+        client/camera.h
+        client/cameracontroller.cpp
+        client/cameracontroller.h
+        common/carwheel.cpp
+        common/carwheel.h
+        common/chassis.cpp
+        common/chassis.h
+        common/console.cpp
+        common/console.h
+        client/displayobject.cpp
+        client/displayobject.h
+        client/displayobjectcontainer.cpp
+        client/displayobjectcontainer.h
+        common/event.cpp
+        common/event.h
+        common/eventdispatcher.cpp
+        common/eventdispatcher.h
+        common/eventhandler.h
+        common/exception.cpp
+        common/exception.h
+        client/exitstate.cpp
+        client/exitstate.h
+        common/explosion.cpp
+        common/explosion.h
+        common/gamemodelobject.cpp
+        common/gamemodelobject.h
         gameobjectevent.cpp
         gameobjectevent.h
-        gameplaystate.cpp
-        gameplaystate.h
-        gameviewobject.cpp
-        gameviewobject.h
+        client/gameplaystate.cpp
+        client/gameplaystate.h
+        client/gameviewobject.cpp
+        client/gameviewobject.h
         gameworld.cpp
         gameworld.h
-        geometry2d.cpp
-        geometry2d.h
-        graphiccore.cpp
-        graphiccore.h
+        common/geometry2d.cpp
+        common/geometry2d.h
+        client/graphiccore.cpp
+        client/graphiccore.h
         idsystem.cpp
         idsystem.h
-        initstate.cpp
-        initstate.h
-        interactiveobject.cpp
-        interactiveobject.h
-        interface.cpp
-        interface.h
-        keyboard.cpp
-        keyboard.h
-        keyboardevent.cpp
-        keyboardevent.h
-        loader.cpp
-        loader.h
-        mainmenustate.cpp
-        mainmenustate.h
-        mapview.cpp
-        mapview.h
-        matrix.cpp
-        matrix.h
-        mouse.cpp
-        mouse.h
-        mouseevent.cpp
-        mouseevent.h
-        movieclip.cpp
-        movieclip.h
+        client/initstate.cpp
+        client/initstate.h
+        client/interactiveobject.cpp
+        client/interactiveobject.h
+        client/interface.cpp
+        client/interface.h
+        client/keyboard.cpp
+        client/keyboard.h
+        client/keyboardevent.cpp
+        client/keyboardevent.h
+        client/mainmenustate.cpp
+        client/mainmenustate.h
+        client/mapview.cpp
+        client/mapview.h
+        common/matrix.cpp
+        common/matrix.h
+        client/mouse.cpp
+        client/mouse.h
+        client/mouseevent.cpp
+        client/mouseevent.h
+        client/movieclip.cpp
+        client/movieclip.h
         networkclient.cpp
         networkclient.h
         networkevent.cpp
@@ -101,79 +111,78 @@ set(SOURCE_FILES
         networkobject.h
         networkserver.cpp
         networkserver.h
-        obstacle.cpp
-        obstacle.h
-        obstacleview.cpp
-        obstacleview.h
-        physicsobject.cpp
-        physicsobject.h
-        physicsobjectfactory.cpp
-        physicsobjectfactory.h
-        physicssystem.cpp
-        physicssystem.h
-        physicsworld.cpp
-        physicsworld.h
-        program.cpp
-        program.h
-        protocol.cpp
-        protocol.h
-        random.cpp
-        random.h
+        common/obstacle.cpp
+        common/obstacle.h
+        client/obstacleview.cpp
+        client/obstacleview.h
+        common/physicsobject.cpp
+        common/physicsobject.h
+        common/physicsobjectfactory.cpp
+        common/physicsobjectfactory.h
+        common/physicssystem.cpp
+        common/physicssystem.h
+        common/physicsworld.cpp
+        common/physicsworld.h
+        client/program.cpp
+        client/program.h
+        common/protocol.cpp
+        common/protocol.h
+        common/random.cpp
+        common/random.h
         README.md
         renderdata.cpp
         renderdata.h
-        sampleview.cpp
-        sampleview.h
+        client/sampleview.cpp
+        client/sampleview.h
         server.cpp
         server.h
         serverstate.cpp
         serverstate.h
-        sprite.cpp
-        sprite.h
-        stage.cpp
-        stage.h
-        state.cpp
-        state.h
-        statecontext.cpp
-        statecontext.h
-        stateevent.cpp
-        stateevent.h
-        statefactory.cpp
-        statefactory.h
-        terrain.cpp
-        terrain.h
-        terrainview.cpp
-        terrainview.h
-        #thread.cpp
-        #thread.h
-        track.cpp
-        track.h
-        transformableobject.cpp
-        transformableobject.h
-        turret.cpp
-        turret.h
-        turretview.cpp
-        turretview.h
-        uivehiclecontroller.cpp
-        uivehiclecontroller.h
-        vector2d.cpp
-        vector2d.h
-        vehicle.cpp
-        vehicle.h
-        vehiclebody.cpp
-        vehiclebody.h
-        vehicleengine.cpp
-        vehicleengine.h
-        vehicleview.cpp
-        vehicleview.h
-        view.cpp
-        view.h
+        client/sprite.cpp
+        client/sprite.h
+        client/stage.cpp
+        client/stage.h
+        common/state.cpp
+        common/state.h
+        common/statecontext.cpp
+        common/statecontext.h
+        common/stateevent.cpp
+        common/stateevent.h
+        client/statefactory.cpp
+        client/statefactory.h
+        common/terrain.cpp
+        common/terrain.h
+        client/terrainview.cpp
+        client/terrainview.h
+        common/track.cpp
+        common/track.h
+        common/transformableobject.cpp
+        common/transformableobject.h
+        common/turret.cpp
+        common/turret.h
+        client/turretview.cpp
+        client/turretview.h
+        client/uivehiclecontroller.cpp
+        client/uivehiclecontroller.h
+        common/vector2d.cpp
+        common/vector2d.h
+        common/vehicle.cpp
+        common/vehicle.h
+        common/vehiclebody.cpp
+        common/vehiclebody.h
+        common/vehicleengine.cpp
+        common/vehicleengine.h
+        client/vehicleview.cpp
+        client/vehicleview.h
+        client/view.cpp
+        client/view.h
         common/wheel.cpp
         common/wheel.h
         common/WheelState.h
         common/AccelerationState.h
         common/GameObjectType.h
-        common/StateEnum.h)
+        common/StateEnum.h
+)
 
 add_executable(${PROJECT} ${SOURCE_FILES})
 

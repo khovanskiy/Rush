@@ -1,8 +1,8 @@
 #ifndef GAMEWORLD_H
 #define GAMEWORLD_H
 
-#include "console.h"
-#include "gamemodelobject.h"
+#include "common/console.h"
+#include "common/gamemodelobject.h"
 
 class GameWorld : public GameModelObject
 {

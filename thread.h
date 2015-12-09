@@ -4,8 +4,8 @@
 #include <QObject>
 #include <QThread>
 
-#include "eventdispatcher.h"
-#include "console.h"
+#include "common/eventdispatcher.h"
+#include "common/console.h"
 
 class Runnable : public QObject
 {

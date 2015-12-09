@@ -10,7 +10,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
-#include "console.h"
+#include "common/console.h"
 
 class API : public QObject
 {

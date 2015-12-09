@@ -2,7 +2,7 @@
 #define LOADER_H
 
 #include "thread.h"
-#include "eventdispatcher.h"
+#include "common/eventdispatcher.h"
 
 class Loader
 {

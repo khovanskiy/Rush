@@ -1,10 +1,10 @@
 #ifndef GAMEOBJECTEVENT_H
 #define GAMEOBJECTEVENT_H
 
-#include "event.h"
-#include "vector2d.h"
+#include "common/event.h"
+#include "common/vector2d.h"
 #include "common/AccelerationState.h"
-#include "gamemodelobject.h"
+#include "common/gamemodelobject.h"
 
 class GameModelObject;
 

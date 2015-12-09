@@ -15,7 +15,7 @@
 #include <QJsonArray>
 
 #include "networkclient.h"
-#include "console.h"
+#include "common/console.h"
 #include "api.h"
 
 #include "serverstate.h"

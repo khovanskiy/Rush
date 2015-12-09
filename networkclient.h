@@ -7,7 +7,7 @@
 #include "networkobject.h"
 #include "networkevent.h"
 #include "gameobjectevent.h"
-#include "console.h"
+#include "common/console.h"
 
 class NetworkClient : public QObject, public NetworkObject
 {

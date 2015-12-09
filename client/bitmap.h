@@ -5,10 +5,10 @@
 #include <QPainter>
 #include <QString>
 #include <map>
-#include "event.h"
+#include "../common/event.h"
 #include "interactiveobject.h"
 #include "QThread"
-#include "console.h"
+#include "../common/console.h"
 
 class TextureLoader : public QObject, public EventDispatcher
 {

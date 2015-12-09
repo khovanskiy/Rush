@@ -1,6 +1,6 @@
 #ifndef PHYSICSWHEEL_H
 #define PHYSICSWHEEL_H
-#include "../vector2d.h"
+#include "vector2d.h"
 #include "WheelState.h"
 #include "AccelerationState.h"
 

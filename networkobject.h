@@ -1,7 +1,7 @@
 #ifndef NETWORKOBJECT_H
 #define NETWORKOBJECT_H
 
-#include "eventdispatcher.h"
+#include "common/eventdispatcher.h"
 
 class NetworkObject : public EventDispatcher
 {

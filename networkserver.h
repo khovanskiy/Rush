@@ -4,9 +4,9 @@
 #include <QObject>
 #include <QTcpSocket>
 
-#include "gamemodelobject.h"
-#include "console.h"
-#include "protocol.h"
+#include "common/gamemodelobject.h"
+#include "common/console.h"
+#include "common/protocol.h"
 #include "networkevent.h"
 
 class NetworkServer : public QObject, public EventDispatcher

@@ -1,7 +1,7 @@
 #ifndef NETWORKEVENT_H
 #define NETWORKEVENT_H
 
-#include "event.h"
+#include "common/event.h"
 
 class Protocol;
 

@@ -1,18 +1,18 @@
 #ifndef SERVERSTATE_H
 #define SERVERSTATE_H
 
-#include "state.h"
+#include "common/state.h"
 #include "networkclient.h"
 #include <QTcpServer>
 #include <QObject>
 #include <vector>
 #include <stack>
 #include "gameworld.h"
-#include "physicsworld.h"
+#include "common/physicsworld.h"
 #include "idsystem.h"
-#include "vehicle.h"
-#include "obstacle.h"
-#include "protocol.h"
+#include "common/vehicle.h"
+#include "common/obstacle.h"
+#include "common/protocol.h"
 
 #define PLAYER_WAIT_VEHICLE 1
 #define PLAYER_HAS_VEHICLE 2

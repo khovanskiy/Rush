@@ -1,10 +1,5 @@
-#include "iostream"
-
-#include <QApplication>
-
-#include "vector2d.h"
-#include "console.h"
 #include "server.h"
+#include <QApplication>
 
 int main(int argc, char** argv)
 {
