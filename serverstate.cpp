@@ -71,6 +71,31 @@ void ServerState::init()
         game_world->add(wall);
         physics_world->add(wall);
     }
+
+    for (int i = 0; i < 10; ++i)
+    {
+        for (int j = 0; j < 10; ++j)
+        {
+            Obstacle* barrel = PhysicsObjectFactory::createObstacle(objects_ids.next(), 2);
+            barrel->setCoordinates(Vector2D(100 + 2 * (5 - i), 100 + 2 * (5 - j)));
+            barrel->setAngle(M_PI/2);
+            game_world->add(barrel);
+            physics_world->add(barrel);
+        }
+    }/**/
+
+    /*for (int i = 0; i < 10; ++i)
+    {
+        for (int j = 0; j < 10; ++j)
+        {
+            Obstacle* box = PhysicsObjectFactory::createObstacle(objects_ids.next(), 1);
+            box->setCoordinates(Vector2D(100 + 1 * (5 - i), 100 + 1 * (5 - j)));
+            box->setAngle(0);
+            game_world->add(box);
+            physics_world->add(box);
+        }
+    }/**/
+
 }
 
 void ServerState::Invoke(const Event &event)

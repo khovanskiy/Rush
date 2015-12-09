@@ -589,7 +589,11 @@ CrossingResult2D Rectangle2D::cross(const Circle2D *circle) const
     }
     if (amount == 0)
     {
-        return CrossingResult2D(false, Point2D(0, 0));
+        if (this->contains(circle->getGeometryCenter())) {
+            return CrossingResult2D(true, circle->getGeometryCenter());
+        } else {
+            return CrossingResult2D(false, Point2D(0, 0));
+        }
     }    
     else
     {

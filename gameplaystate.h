@@ -61,11 +61,33 @@ public:
         }
         else if (class_object == GameObjectType::OBSTACLE)
         {
-            image = new Bitmap();
-            image->load("DATA/Textures/Obstacles/wall_texture.png");
-            image->setWidth(20);
-            image->setHeight(2);
-            image->setRSPointCenter();
+            switch(type_object)
+            {
+            case 0:
+            {
+                image = new Bitmap();
+                image->load("DATA/Textures/Obstacles/wall_texture.png");
+                image->setWidth(20);
+                image->setHeight(2);
+                image->setRSPointCenter();
+            } break;
+            case 2:
+            {
+                image = new Bitmap();
+                image->load("DATA/Textures/Obstacles/wooden_barrel.png");
+                image->setWidth(2);
+                image->setHeight(2);
+                image->setRSPointCenter();
+            } break;
+            case 1:
+            {
+                image = new Bitmap();
+                image->load("DATA/Textures/Obstacles/wooden_box.png");
+                image->setWidth(1);
+                image->setHeight(1);
+                image->setRSPointCenter();
+            } break;
+            }
         }
         else if (class_object == GameObjectType::TERRAIN)
         {
@@ -114,6 +136,17 @@ public:
         }
         cache_work[id_object] = this;
     }
+
+    void render(QPainter * painter, const Matrix &base, bool new_tick, float interpolation)
+    {
+        Sprite::render(painter, base, new_tick, interpolation);
+        if (class_object == VEHICLE)
+        {
+            Console::print(QString("") + QVariant(position.x).toString()
+                           + QString(",") + QVariant(position.y).toString());
+        }
+    }
+
     ~WorkView()
     {
         if (image)

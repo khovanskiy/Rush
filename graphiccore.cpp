@@ -8,15 +8,15 @@ GraphicCore::GraphicCore() : QGLWidget(QGLFormat(QGL::SampleBuffers), 0)
 {
     connect(&loop, SIGNAL(timeout()), this, SLOT(onGameCycle()));
 
-    TICKS_PER_SECOND = 20;
+    TICKS_PER_SECOND = 100;
     SKIP_TICKS = 1000 / TICKS_PER_SECOND;
-    MAX_FRAMESKIP = 5;
+    MAX_FRAMESKIP = 10;
     counter.start();
     new_tick = false;
     next_game_tick = counter.elapsed();
     loop.start(0);
 
-    setWindowTitle("The Rush game 2014");
+    setWindowTitle("The Rush game 2016");
     this->resize(1200, 800);
     this->move(0,0);
     this->setAutoFillBackground(false);

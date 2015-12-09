@@ -45,14 +45,8 @@ public:
     }
     void setPosition(const Vector2D& p)
     {
-        if (isInt)
-        {
-            target_position = p;
-        }
-        else
-        {
-            position = p;
-        }
+        setX(p.x);
+        setY(p.y);
     }
 
     const Vector2D& getPosition() const

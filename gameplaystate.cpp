@@ -46,10 +46,15 @@ void GameplayState::Invoke(const Event &event)
             int id_object = protocol->nextInt();
             int id_parent = protocol->nextInt();
             GameObjectType class_object = (GameObjectType)protocol->nextInt();
+            bool isVehicle = class_object == GameObjectType::VEHICLE;
             int type_object = protocol->nextInt();
             Vector2D position;
             position.x = protocol->nextDouble();
             position.y = protocol->nextDouble();
+            /*if (isVehicle) {
+                Console::print(QString("Vehicle: ") + QVariant(position.x).toString()
+                               + QString(",") + QVariant(position.y).toString());
+            }/**/
             double rotation = protocol->nextDouble();
             WorkView* object = WorkView::findById(id_object);
             WorkView* parent = WorkView::findById(id_parent);

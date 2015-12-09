@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.4)
-set(PROJECT Client)
+set(PROJECT Server)
 project(${PROJECT})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
@@ -15,8 +15,8 @@ find_package(Qt5Network REQUIRED)
 find_package(Qt5OpenGL REQUIRED)
 
 set(SOURCE_FILES
-        #server-main.cpp
-        main.cpp
+        server-main.cpp
+        #main.cpp
         api.cpp
         api.h
         background.cpp

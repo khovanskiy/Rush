@@ -1,4 +1,5 @@
 #include "server.h"
+#include <iostream>
 
 Server::Server()
 {
@@ -9,9 +10,10 @@ Server::Server()
     loop = new QTimer();
     connect(loop, SIGNAL(timeout()), this, SLOT(onLoop()));
 
-    TICKS_PER_SECOND = 30;
+    TICKS_PER_SECOND = 20;
+    std::cout << "TICKS PER SECOND = " << 21 << std::endl;
     SKIP_TICKS = 1000 / TICKS_PER_SECOND;
-    MAX_FRAMESKIP = 5;
+    MAX_FRAMESKIP = 10;
     counter->start();
     next_game_tick = counter->elapsed();
     loop->start(0);
