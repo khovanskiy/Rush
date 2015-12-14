@@ -24,7 +24,7 @@ class Player : public QObject, public EventHandler
 {
     Q_OBJECT
 signals:
-    void disconected();
+    void disconnected();
     void readyRead();
 public:
     Player(int id_player, QTcpSocket* socket)
@@ -35,7 +35,7 @@ public:
         count_kills = 0;
         count_dieds = 0;
         state = PLAYER_WAIT_VEHICLE;
-        connect(socket, SIGNAL(disconnected()), this, SIGNAL(disconected()));
+        connect(socket, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
         connect(socket, SIGNAL(readyRead()), this, SIGNAL(readyRead()));
         Console::print(QString("Player created #") + QVariant(id_player).toString());
     }
@@ -78,12 +78,13 @@ public slots:
     void playerDisconnected();
     void playerRecieved();
 protected:
-    void multicastPlayerStat(Player*);
+    void tcpBroadcastPlayerStat(Player*);
+    void tcpBroadcast(Protocol& buffer);
     void multicast(Protocol& buffer);
     void multicastObjects();
     void multicastVehicle(Vehicle* vehicle, int id_parent);
     void multicastPhysicsObject(PhysicsObject* object, int id_parent);
-    void multicastInvalidate(GameModelObject* object);
+    void tcpBroadcastInvalidate(GameModelObject* object);
     void parseResult(Protocol& protocol);
 private:
     IDSystem players_ids;

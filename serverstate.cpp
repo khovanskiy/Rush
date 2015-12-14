@@ -161,7 +161,7 @@ void ServerState::Invoke(const Event &event) {
     else if (event.type == Event::INVALIDATE) {
         GameModelObject *object = static_cast<GameModelObject *>(event.target);
         Console::print(QString("Object #") + QVariant(object->my_id).toString() + " is destroyed");
-        multicastInvalidate(object);
+        tcpBroadcastInvalidate(object);
     }
     else if (event.type == "TURRET_FIRE") {
         const GameObjectEvent *e = static_cast<const GameObjectEvent *>(&event);
@@ -242,15 +242,15 @@ void ServerState::tick(double dt) {
                 protocol.putInt(ADD_OBJECT);
                 protocol.putInt(player->id_player);
                 protocol.putInt(vehicle->my_id);
-                multicast(protocol);
+                tcpBroadcast(protocol);
 
             }
         }
-        multicastPlayerStat(player);
+        tcpBroadcastPlayerStat(player);
     }
 }
 
-void ServerState::multicastPlayerStat(Player *player) {
+void ServerState::tcpBroadcastPlayerStat(Player *player) {
     Protocol protocol;
     protocol.putInt(PLAYER_STAT);
     protocol.putInt(player->id_player);
@@ -266,7 +266,7 @@ void ServerState::multicastPlayerStat(Player *player) {
         protocol.putDouble(0.0);
         protocol.putDouble(0.0);
     }
-    multicast(protocol);
+    tcpBroadcast(protocol);
 }
 
 void ServerState::multicastObjects() {
@@ -328,10 +328,14 @@ void ServerState::multicast(Protocol &protocol) {
         multicast_socket->writeDatagram(buffer, group_address, group_port);
     }/**/
     multicast_socket->writeDatagram(buffer, group_address, group_port);
-    /*for (std::map<int, Player *>::iterator i = players.begin(); i != players.end(); ++i) {
+}
+
+void ServerState::tcpBroadcast(Protocol &protocol) {
+    QByteArray buffer = protocol.toByteArray();
+    for (std::map<int, Player *>::iterator i = players.begin(); i != players.end(); ++i) {
         Player *current = (*i).second;
         current->socket->write(buffer);
-    }/**/
+    }
 }
 
 void ServerState::release() {
@@ -342,7 +346,7 @@ void ServerState::release() {
 void ServerState::playerConnected() {
     Player *player = new Player(players_ids.next(), tcp_server->nextPendingConnection());
     players[player->id_player] = player;
-    connect(player, SIGNAL(disconected()), this, SLOT(playerDisconnected()));
+    connect(player, SIGNAL(disconnected()), this, SLOT(playerDisconnected()));
     connect(player, SIGNAL(readyRead()), this, SLOT(playerRecieved()));
 
     /*Vehicle* vehicle = PhysicsObjectFactory::createVehicle(objects_ids.next(), 2);
@@ -375,7 +379,7 @@ void ServerState::playerConnected() {
 
     protocol.putInt(LOGIN);
     protocol.putInt(player->id_player);
-    multicast(protocol);
+    tcpBroadcast(protocol);
 
     /*protocol.clear();
     protocol.putInt(ADD_OBJECT);
@@ -399,7 +403,7 @@ void ServerState::playerRecieved() {
 
 void ServerState::playerDisconnected() {
     Player *player = static_cast<Player *>(sender());
-    disconnect(player, SIGNAL(disconected()), this, SLOT(playerDisconnected()));
+    disconnect(player, SIGNAL(disconnected()), this, SLOT(playerDisconnected()));
     Vehicle *vehicle = player->vehicle;
     int id_player = player->id_player;
     players.erase(player->id_player);
@@ -407,21 +411,21 @@ void ServerState::playerDisconnected() {
     player->deleteLater();
 
     if (vehicle) {
-        multicastInvalidate(vehicle);
+        tcpBroadcastInvalidate(vehicle);
         vehicle->invalidate();
     }
 
     Protocol protocol;
     protocol.putInt(LOGOUT);
     protocol.putInt(id_player);
-    multicast(protocol);
+    tcpBroadcast(protocol);
 }
 
-void ServerState::multicastInvalidate(GameModelObject *object) {
+void ServerState::tcpBroadcastInvalidate(GameModelObject *object) {
     Protocol protocol;
     protocol.putInt(REMOVE_OBJECT);
     protocol.putInt(object->my_id);
-    multicast(protocol);
+    tcpBroadcast(protocol);
 }
 
 void ServerState::parseResult(Protocol &protocol) {
