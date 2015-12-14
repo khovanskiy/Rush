@@ -756,36 +756,42 @@ CrossingResult2D Rectangle2D::cross(const Rectangle2D *rectangle) const
     } else if (rectangle->getHeight() + rectangle->getWidth() > 200) {
         return rectangle->cross(this);
     }
-    CrossingResult2D results[8];
-    results[0] = rectangle->cross(ab);
-    results[1] = rectangle->cross(bc);
-    results[2] = rectangle->cross(cd);
-    results[3] = rectangle->cross(da);
-    results[4] = this->cross(rectangle->ab);
-    results[5] = this->cross(rectangle->bc);
-    results[6] = this->cross(rectangle->cd);
-    results[7] = this->cross(rectangle->da);
-    int amount = 0;
-    double x = 0, y = 0;
-    for (int i = 0; i < 8; i++) if (results[i].crossing)
-    {
-        amount++;
-        x += results[i].center.x;
-        y += results[i].center.y;
+    std::vector<Point2D> points = std::vector<Point2D>();
+    if (this->contains(rectangle->ab->p1)) points.push_back(rectangle->ab->p1);
+    if (this->contains(rectangle->ab->p2)) points.push_back(rectangle->ab->p2);
+    if (this->contains(rectangle->cd->p1)) points.push_back(rectangle->cd->p1);
+    if (this->contains(rectangle->cd->p2)) points.push_back(rectangle->cd->p2);
+    if (rectangle->contains(this->ab->p1)) points.push_back(this->ab->p1);
+    if (rectangle->contains(this->ab->p2)) points.push_back(this->ab->p2);
+    if (rectangle->contains(this->cd->p1)) points.push_back(this->cd->p1);
+    if (rectangle->contains(this->cd->p2)) points.push_back(this->cd->p2);
+    std::vector<Segment2D*> segs1 = std::vector<Segment2D*>();
+    segs1.push_back(rectangle->ab);
+    segs1.push_back(rectangle->bc);
+    segs1.push_back(rectangle->cd);
+    segs1.push_back(rectangle->da);
+    std::vector<Segment2D*> segs2 = std::vector<Segment2D*>();
+    segs2.push_back(this->ab);
+    segs2.push_back(this->bc);
+    segs2.push_back(this->cd);
+    segs2.push_back(this->da);
+    for (auto it1 = segs1.begin(); it1 != segs1.end(); it1++) {
+        for (auto it2 = segs2.begin(); it2 != segs2.end(); it2++) {
+            CrossingResult2D res = (*it1)->cross(*it2);
+            if (res.crossing) points.push_back(res.center);
+        }
     }
-    if (amount == 0)
+    if (points.size() == 0)
     {
         return CrossingResult2D(false, Point2D(0, 0), Vector2D(0, 0));
     }
     else
     {
-        x /= amount;
-        y /= amount;
-        Point2D ans(x, y);
+        Point2D collisionCenter = convexMassCenter(convex_hull(points));
         if (normal.getLength() == 0) {
             normal = this->getGeometryCenter().getVectorTo(rectangle->getGeometryCenter());
         }
-        return CrossingResult2D(this->contains(ans) && rectangle->contains(ans), ans, normal);
+        return CrossingResult2D(true, collisionCenter, normal);
     }
 }
 
