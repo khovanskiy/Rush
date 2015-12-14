@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QUdpSocket>
 
 #include "common/gamemodelobject.h"
 #include "common/console.h"
@@ -18,17 +19,21 @@ public:
 
     void connect(const QString& host, const int port);
     void send(Protocol&);
+    void multicast(Protocol&);
+
 protected:
     void parseResult(const QString&);
 private:
-    QTcpSocket* server;
+    QTcpSocket* tcp_socket;
+    QUdpSocket* multicast_socket;
     QString host;
     int port;
 private slots:
-    void onRead();
-    void onError(QAbstractSocket::SocketError);
-    void onConnected();
-    void onDisconnected();
+    void onTcpRead();
+    void onMulticastRead();
+    void onTcpError(QAbstractSocket::SocketError);
+    void onTcpConnected();
+    void onTcpDisconnected();
 };
 
 #endif // NETWORKSERVER_H

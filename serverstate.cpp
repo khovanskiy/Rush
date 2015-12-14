@@ -2,18 +2,29 @@
 #include "common/physicsobjectfactory.h"
 #include "common/terrain.h"
 #include "common/random.h"
+#include "multicastparams.h"
 
 //static const double M_PI = 3.14159265358979323846;
 
 void ServerState::init() {
     game_world = new GameWorld();
     physics_world = new PhysicsWorld();
-    server = new QTcpServer();
-    connect(server, SIGNAL(newConnection()), this, SLOT(playerConnected()));
-    if (server->listen(QHostAddress::Any, 8888)) {
+    tcp_server = new QTcpServer();
+    connect(tcp_server, SIGNAL(newConnection()), this, SLOT(playerConnected()));
+    if (tcp_server->listen(QHostAddress::Any, 8888)) {
         Console::print("Server is running...");
     } else {
         Console::print("Server failed...");
+    }
+    group_address = MulticastParams::getGroupAddress();
+    group_port = MulticastParams::getGroupPort();
+    multicast_socket = new QUdpSocket();
+    QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
+    multicast_interfaces = std::vector<QNetworkInterface>();
+    for (auto it = interfaces.begin(); it != interfaces.end(); it++) {
+        if (it->CanMulticast && it->IsRunning && it->isValid()) {
+            multicast_interfaces.push_back(*it);
+        }
     }
 
     /*for (int i = 0; i < 3; ++i)
@@ -68,7 +79,7 @@ void ServerState::init() {
         physics_world->add(wall);
     }/**/
 
-    for (int i = 0; i < 50; ++i) {
+    /*for (int i = 0; i < 50; ++i) {
         Obstacle *wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 3);
         wall->setCoordinates(Vector2D(2 + 4 * i, -1));
         game_world->add(wall);
@@ -150,7 +161,7 @@ void ServerState::Invoke(const Event &event) {
     else if (event.type == Event::INVALIDATE) {
         GameModelObject *object = static_cast<GameModelObject *>(event.target);
         Console::print(QString("Object #") + QVariant(object->my_id).toString() + " is destroyed");
-        broadcastInvalidate(object);
+        multicastInvalidate(object);
     }
     else if (event.type == "TURRET_FIRE") {
         const GameObjectEvent *e = static_cast<const GameObjectEvent *>(&event);
@@ -180,7 +191,7 @@ void ServerState::Invoke(const Event &event) {
 void ServerState::tick(double dt) {
     physics_world->tick(dt);
     game_world->tick(dt);
-    broadcastObjects();
+    multicastObjects();
 
     for (std::map<int, Player *>::iterator i = players.begin(); i != players.end(); ++i) {
         Player *player = (*i).second;
@@ -231,15 +242,15 @@ void ServerState::tick(double dt) {
                 protocol.putInt(ADD_OBJECT);
                 protocol.putInt(player->id_player);
                 protocol.putInt(vehicle->my_id);
-                broadcast(protocol);
+                multicast(protocol);
 
             }
         }
-        broadcastPlayerStat(player);
+        multicastPlayerStat(player);
     }
 }
 
-void ServerState::broadcastPlayerStat(Player *player) {
+void ServerState::multicastPlayerStat(Player *player) {
     Protocol protocol;
     protocol.putInt(PLAYER_STAT);
     protocol.putInt(player->id_player);
@@ -255,23 +266,23 @@ void ServerState::broadcastPlayerStat(Player *player) {
         protocol.putDouble(0.0);
         protocol.putDouble(0.0);
     }
-    broadcast(protocol);
+    multicast(protocol);
 }
 
-void ServerState::broadcastObjects() {
+void ServerState::multicastObjects() {
     std::vector<GameModelObject *> inners = game_world->getInners();
     for (int i = 0; i < inners.size(); ++i) {
         if (inners[i]->getFamilyId() == GameObjectType::VEHICLE) {
             Vehicle *object = static_cast<Vehicle *>(inners[i]);
-            broadcastVehicle(object, 0);
+            multicastVehicle(object, 0);
         }
         else if (inners[i]->getFamilyId() == GameObjectType::BULLET) {
             PhysicsObject *object = static_cast<PhysicsObject *>(inners[i]);
-            broadcastPhysicsObject(object, 0);
+            multicastPhysicsObject(object, 0);
         }
         else if (inners[i]->getFamilyId() == GameObjectType::OBSTACLE) {
             PhysicsObject *object = static_cast<PhysicsObject *>(inners[i]);
-            broadcastPhysicsObject(object, 0);
+            multicastPhysicsObject(object, 0);
         }
         else if (inners[i]->getFamilyId() == GameObjectType::TERRAIN) {
             Terrain *object = static_cast<Terrain *>(inners[i]);
@@ -284,20 +295,20 @@ void ServerState::broadcastObjects() {
             protocol.putDouble(object->getPosition().x);
             protocol.putDouble(object->getPosition().y);
             protocol.putDouble(0);
-            broadcast(protocol);
+            multicast(protocol);
         }
     }
 }
 
-void ServerState::broadcastVehicle(Vehicle *vehicle, int id_parent) {
-    broadcastPhysicsObject(vehicle, id_parent);
+void ServerState::multicastVehicle(Vehicle *vehicle, int id_parent) {
+    multicastPhysicsObject(vehicle, id_parent);
     std::vector<Turret *> turrets = vehicle->getTurrets();
     for (int i = 0; i < turrets.size(); ++i) {
-        broadcastPhysicsObject(turrets[i], vehicle->my_id);
+        multicastPhysicsObject(turrets[i], vehicle->my_id);
     }
 }
 
-void ServerState::broadcastPhysicsObject(PhysicsObject *object, int id_parent) {
+void ServerState::multicastPhysicsObject(PhysicsObject *object, int id_parent) {
     Protocol protocol;
     protocol.putInt(UPDATE_OBJECT);
     protocol.putInt(object->my_id);
@@ -307,15 +318,20 @@ void ServerState::broadcastPhysicsObject(PhysicsObject *object, int id_parent) {
     protocol.putDouble(object->getCoordinates().x);
     protocol.putDouble(object->getCoordinates().y);
     protocol.putDouble(object->getAngle());
-    broadcast(protocol);
+    multicast(protocol);
 }
 
-void ServerState::broadcast(Protocol &protocol) {
+void ServerState::multicast(Protocol &protocol) {
     QByteArray buffer = protocol.toByteArray();
-    for (std::map<int, Player *>::iterator i = players.begin(); i != players.end(); ++i) {
+    /*for (auto it = multicast_interfaces.begin(); it != multicast_interfaces.end(); it++) {
+        multicast_socket->setMulticastInterface(*it);
+        multicast_socket->writeDatagram(buffer, group_address, group_port);
+    }/**/
+    multicast_socket->writeDatagram(buffer, group_address, group_port);
+    /*for (std::map<int, Player *>::iterator i = players.begin(); i != players.end(); ++i) {
         Player *current = (*i).second;
         current->socket->write(buffer);
-    }
+    }/**/
 }
 
 void ServerState::release() {
@@ -324,7 +340,7 @@ void ServerState::release() {
 }
 
 void ServerState::playerConnected() {
-    Player *player = new Player(players_ids.next(), server->nextPendingConnection());
+    Player *player = new Player(players_ids.next(), tcp_server->nextPendingConnection());
     players[player->id_player] = player;
     connect(player, SIGNAL(disconected()), this, SLOT(playerDisconnected()));
     connect(player, SIGNAL(readyRead()), this, SLOT(playerRecieved()));
@@ -359,7 +375,7 @@ void ServerState::playerConnected() {
 
     protocol.putInt(LOGIN);
     protocol.putInt(player->id_player);
-    broadcast(protocol);
+    multicast(protocol);
 
     /*protocol.clear();
     protocol.putInt(ADD_OBJECT);
@@ -391,21 +407,21 @@ void ServerState::playerDisconnected() {
     player->deleteLater();
 
     if (vehicle) {
-        broadcastInvalidate(vehicle);
+        multicastInvalidate(vehicle);
         vehicle->invalidate();
     }
 
     Protocol protocol;
     protocol.putInt(LOGOUT);
     protocol.putInt(id_player);
-    broadcast(protocol);
+    multicast(protocol);
 }
 
-void ServerState::broadcastInvalidate(GameModelObject *object) {
+void ServerState::multicastInvalidate(GameModelObject *object) {
     Protocol protocol;
     protocol.putInt(REMOVE_OBJECT);
     protocol.putInt(object->my_id);
-    broadcast(protocol);
+    multicast(protocol);
 }
 
 void ServerState::parseResult(Protocol &protocol) {

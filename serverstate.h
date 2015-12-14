@@ -4,7 +4,10 @@
 #include "common/state.h"
 #include "networkclient.h"
 #include <QTcpServer>
+#include <QUdpSocket>
+#include <QHostAddress>
 #include <QObject>
+#include <QNetworkInterface>
 #include <vector>
 #include <stack>
 #include "gameworld.h"
@@ -75,19 +78,24 @@ public slots:
     void playerDisconnected();
     void playerRecieved();
 protected:
-    void broadcastPlayerStat(Player*);
-    void broadcast(Protocol& buffer);
-    void broadcastObjects();
-    void broadcastVehicle(Vehicle* vehicle, int id_parent);
-    void broadcastPhysicsObject(PhysicsObject* object, int id_parent);
-    void broadcastInvalidate(GameModelObject* object);
+    void multicastPlayerStat(Player*);
+    void multicast(Protocol& buffer);
+    void multicastObjects();
+    void multicastVehicle(Vehicle* vehicle, int id_parent);
+    void multicastPhysicsObject(PhysicsObject* object, int id_parent);
+    void multicastInvalidate(GameModelObject* object);
     void parseResult(Protocol& protocol);
 private:
     IDSystem players_ids;
     IDSystem objects_ids;
     std::map<int, Player*> players;
 
-    QTcpServer* server;
+    QTcpServer* tcp_server;
+    QUdpSocket* multicast_socket;
+    QHostAddress group_address;
+    int group_port;
+    std::vector<QNetworkInterface> multicast_interfaces;
+
     GameWorld* game_world;
     PhysicsWorld* physics_world;
     int next_player_id;
