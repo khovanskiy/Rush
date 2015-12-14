@@ -67,8 +67,8 @@ public:
             {
                 image = new Bitmap();
                 image->load("DATA/Textures/Obstacles/wall_texture.png");
-                image->setWidth(20);
-                image->setHeight(2);
+                image->setWidth(200);
+                image->setHeight(10);
                 image->setRSPointCenter();
             } break;
             case 1:

@@ -44,7 +44,26 @@ void ServerState::init() {
             game_world->add(terrain);
         }
     }
-
+    {
+        Obstacle* wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
+        wall->setCoordinates(Vector2D(100, -5));
+        game_world->add(wall);
+        physics_world->add(wall);
+        wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
+        wall->setCoordinates(Vector2D(100, 205));
+        game_world->add(wall);
+        physics_world->add(wall);
+        wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
+        wall->setCoordinates(Vector2D(-5, 100));
+        wall->setAngle(M_PI/2);
+        game_world->add(wall);
+        physics_world->add(wall);
+        wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
+        wall->setCoordinates(Vector2D(205, 100));
+        wall->setAngle(M_PI/2);
+        game_world->add(wall);
+        physics_world->add(wall);
+    }
     /*for (int i = 0; i < 10; ++i)
     {
         Obstacle* wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
@@ -107,7 +126,7 @@ void ServerState::init() {
         wall->setAngle(M_PI / 2);
         game_world->add(wall);
         physics_world->add(wall);
-    }
+    }/**/
 
     for (int i = 0; i < 10; ++i) {
         for (int j = 0; j < 10; ++j) {

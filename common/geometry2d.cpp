@@ -745,6 +745,17 @@ CrossingResult2D Rectangle2D::cross(const Circle2D *circle) const
 
 CrossingResult2D Rectangle2D::cross(const Rectangle2D *rectangle) const
 {
+    Vector2D normal = Vector2D(0, 0);
+    // Switch technology in action
+    if (this->getHeight() + this->getWidth() > 200) {
+        if (std::abs(getAngle()) < M_PI / 2) {
+            normal = Vector2D(0, 1);
+        } else {
+            normal = Vector2D(1, 0);
+        }
+    } else if (rectangle->getHeight() + rectangle->getWidth() > 200) {
+        return rectangle->cross(this);
+    }
     CrossingResult2D results[8];
     results[0] = rectangle->cross(ab);
     results[1] = rectangle->cross(bc);
@@ -765,14 +776,16 @@ CrossingResult2D Rectangle2D::cross(const Rectangle2D *rectangle) const
     if (amount == 0)
     {
         return CrossingResult2D(false, Point2D(0, 0), Vector2D(0, 0));
-    }    
+    }
     else
     {
         x /= amount;
         y /= amount;
         Point2D ans(x, y);
-        return CrossingResult2D(this->contains(ans) && rectangle->contains(ans), ans,
-                                this->getGeometryCenter().getVectorTo(rectangle->getGeometryCenter()));
+        if (normal.getLength() == 0) {
+            normal = this->getGeometryCenter().getVectorTo(rectangle->getGeometryCenter());
+        }
+        return CrossingResult2D(this->contains(ans) && rectangle->contains(ans), ans, normal);
     }
 }
 
