@@ -182,6 +182,8 @@ set(SOURCE_FILES
         common/AccelerationState.h
         common/GameObjectType.h
         common/StateEnum.h
+        multicastparams.h
+        multicastparams.cpp
 )
 
 add_executable(${PROJECT} ${SOURCE_FILES})
