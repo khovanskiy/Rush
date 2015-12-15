@@ -46,20 +46,20 @@ void ServerState::init() {
     }
     {
         Obstacle* wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
-        wall->setCoordinates(Vector2D(100, -5));
+        wall->setCoordinates(Vector2D(100, -0));
         game_world->add(wall);
         physics_world->add(wall);
         wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
-        wall->setCoordinates(Vector2D(100, 205));
+        wall->setCoordinates(Vector2D(100, 200));
         game_world->add(wall);
         physics_world->add(wall);
         wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
-        wall->setCoordinates(Vector2D(-5, 100));
+        wall->setCoordinates(Vector2D(-0, 100));
         wall->setAngle(M_PI/2);
         game_world->add(wall);
         physics_world->add(wall);
         wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
-        wall->setCoordinates(Vector2D(205, 100));
+        wall->setCoordinates(Vector2D(200, 100));
         wall->setAngle(M_PI/2);
         game_world->add(wall);
         physics_world->add(wall);

@@ -49,11 +49,11 @@ void PhysicsObject::addImpulseAtPoint(const Vector2D &impulse, const Point2D &po
     this->angular_speed += d_ang_speed;
 }
 
-void PhysicsObject::pushAwayFromPoint(const Point2D &point, PhysicsObject* source, double dt)
+void PhysicsObject::pushAwayFromPoint(const Point2D &point, Vector2D const & normal, PhysicsObject* source, double dt)
 {
     if (dynamic)
     {
-        Vector2D d_p_v = this->getMassCenter();
+        /*Vector2D d_p_v = this->getMassCenter();
         double depth = this->shape->getDepth(point);
         if (depth > critical_depth_koef * (this->shape->getHeight() + this->shape->getWidth()))
         {
@@ -64,10 +64,19 @@ void PhysicsObject::pushAwayFromPoint(const Point2D &point, PhysicsObject* sourc
         else
         {
             d_p_v.sub(point.toVector());
+        }/**/
+        Vector2D dir = source->getShape()->getGeometryCenter().getVectorTo(shape->getGeometryCenter());
+        Vector2D col_dir = normal;
+        double depth = this->shape->getDepth(point);
+        if (col_dir.getLength() == 0) {
+            col_dir = dir;
+        }
+        if (col_dir.scalar(dir) < 0) {
+            col_dir.mul(-1);
         }
         double l = push_length_koef * depth * source->mass / (this->mass + source->mass);
-        d_p_v.setLength(l);
-        move(d_p_v);
+        col_dir.setLength(l);
+        move(col_dir);
     }
 }
 
@@ -298,7 +307,7 @@ Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, Point2D const 
         impulse_change = collision_direction;
         impulse_change.mul(-impulse);
     }
-    return Collision(collision_center, relative_speed, impulse_change, other);
+    return Collision(collision_center, collision_direction, relative_speed, impulse_change, other);
 }
 
 void PhysicsObject::applyCollision(const Collision &collision, double dt)
@@ -317,7 +326,7 @@ void PhysicsObject::applyCollision(const Collision &collision, double dt)
         }
         else
         {
-            pushAwayFromPoint(collision.center, collision.source, dt);
+            pushAwayFromPoint(collision.center, collision.normal, collision.source, dt);
         }
     }
 }

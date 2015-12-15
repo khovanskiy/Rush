@@ -38,7 +38,8 @@ void Explosion::tick(double dt)
 
 Collision Explosion::solveCollisionWith(PhysicsObject *other, const Point2D &center)
 {
-    return Collision(this->getShape()->cross(other->getShape()).center.toVector(),
+    return Collision(shape->cross(other->getShape()).center.toVector(),
+                     shape->getGeometryCenter().getVectorTo(other->getShape()->getGeometryCenter()),
                      other->getSpeed(), Vector2D(this->explosion_impulse, 0), other);
 }
 

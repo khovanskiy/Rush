@@ -14,13 +14,14 @@ class Collision
 {
 public:
     Vector2D center;
+    Vector2D normal;
     Vector2D relative_speed;
     Vector2D impulse_change;
     PhysicsObject* source;
 
     Collision(){}
-    Collision(Vector2D center, Vector2D relative_speed, Vector2D impulse_change, PhysicsObject* source)
-        : center(center), relative_speed(relative_speed), impulse_change(impulse_change)
+    Collision(Vector2D center, Vector2D normal, Vector2D relative_speed, Vector2D impulse_change, PhysicsObject* source)
+        : center(center), normal(normal), relative_speed(relative_speed), impulse_change(impulse_change)
     {
         this->source = source;
     }
@@ -46,7 +47,7 @@ protected:
     Vector2D getSpeedAtPoint(Point2D const & point);
 
     void addImpulseAtPoint(Vector2D const & impulse, Point2D const & point);
-    void pushAwayFromPoint(Point2D const & point, PhysicsObject* source, double dt);
+    void pushAwayFromPoint(Point2D const & point, Vector2D const & normal, PhysicsObject* source, double dt);
     void pushAwayFromExplosion(Point2D const & center, double radius, double impulse_change);
 
     Matrix* local_matrix;
