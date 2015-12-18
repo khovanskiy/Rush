@@ -32,7 +32,7 @@ DisplayObject::~DisplayObject()
     delete bounds;
 }
 
-void DisplayObject::render(QPainter *, const Matrix &base, bool new_tick, float interpolation)
+void DisplayObject::render(QPainter *, const Matrix &base, bool new_tick, double interpolation)
 {
     if (isInt)
     {

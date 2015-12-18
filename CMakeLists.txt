@@ -48,7 +48,6 @@ set(SOURCE_FILES
         common/carwheel.h
         common/chassis.cpp
         common/chassis.h
-        common/console.cpp
         common/console.h
         client/displayobject.cpp
         client/displayobject.h

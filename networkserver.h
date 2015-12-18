@@ -10,29 +10,35 @@
 #include "common/protocol.h"
 #include "networkevent.h"
 
-class NetworkServer : public QObject, public EventDispatcher
-{
-    Q_OBJECT
+class NetworkServer : public QObject, public EventDispatcher {
+Q_OBJECT
 public:
     NetworkServer();
+
     ~NetworkServer();
 
-    void connect(const QString& host, const int port);
-    void send(Protocol&);
-    void multicast(Protocol&);
+    void connect(const QString &host, const quint16 port);
+
+    void send(Protocol &);
 
 protected:
-    void parseResult(const QString&);
+    void parseResult(const QString &);
+
 private:
-    QTcpSocket* tcp_socket;
-    QUdpSocket* multicast_socket;
+    QTcpSocket *tcp_socket;
+    QUdpSocket *multicast_socket;
     QString host;
     int port;
 private slots:
+
     void onTcpRead();
+
     void onMulticastRead();
+
     void onTcpError(QAbstractSocket::SocketError);
+
     void onTcpConnected();
+
     void onTcpDisconnected();
 };
 

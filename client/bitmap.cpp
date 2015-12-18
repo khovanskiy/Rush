@@ -2,8 +2,6 @@
 
 #include <QFile>
 #include <QApplication>
-#include "camera.h"
-#include "../common/console.h"
 
 std::map<QString, QImage*> Bitmap::cache;
 
@@ -60,7 +58,7 @@ void Bitmap::load(QString path)
     }
 }
 
-void Bitmap::render(QPainter* render2d, const Matrix& base, bool t, float new_int)
+void Bitmap::render(QPainter* render2d, const Matrix& base, bool t, double new_int)
 {
     if (source != 0)
     {

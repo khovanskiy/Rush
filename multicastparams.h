@@ -8,7 +8,7 @@ class MulticastParams
 public:
     MulticastParams();
     static QHostAddress getGroupAddress();
-    static int getGroupPort();
+    static quint16 getGroupPort();
 };
 
 #endif // MULTICASTPARAMS_H

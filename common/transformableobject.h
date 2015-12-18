@@ -26,7 +26,7 @@ protected:
     Vector2D scaling;
     Vector2D position;
     Vector2D rs_point;
-    float rotationZ;
+    double rotationZ;
     Matrix matrix;
     QRectF bounds;
 };

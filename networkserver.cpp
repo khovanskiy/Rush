@@ -5,25 +5,22 @@
 #include <QNetworkInterface>
 #include "multicastparams.h"
 
-NetworkServer::NetworkServer()
-{
+NetworkServer::NetworkServer() {
 
 }
 
-NetworkServer::~NetworkServer()
-{
+NetworkServer::~NetworkServer() {
     tcp_socket->close();
     delete tcp_socket;
 }
 
 
-void NetworkServer::connect(const QString &host, const int port)
-{
+void NetworkServer::connect(const QString &host, const quint16 port) {
     this->host = host;
     this->port = port;
     multicast_socket = new QUdpSocket();
     multicast_socket->bind(QHostAddress::AnyIPv4, MulticastParams::getGroupPort(),
-                    QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+                           QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
     QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
     QHostAddress groupAddress = MulticastParams::getGroupAddress();
     for (auto it = interfaces.begin(); it != interfaces.end(); it++) {
@@ -36,12 +33,12 @@ void NetworkServer::connect(const QString &host, const int port)
     QObject::connect(tcp_socket, SIGNAL(connected()), this, SLOT(onTcpConnected()));
     QObject::connect(tcp_socket, SIGNAL(disconnected()), this, SLOT(onTcpDisconnected()));
     QObject::connect(tcp_socket, SIGNAL(readyRead()), this, SLOT(onTcpRead()));
-    QObject::connect(tcp_socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(onTcpError(QAbstractSocket::SocketError)));
+    QObject::connect(tcp_socket, SIGNAL(error(QAbstractSocket::SocketError)), this,
+                     SLOT(onTcpError(QAbstractSocket::SocketError)));
     tcp_socket->connectToHost(host, port);
 }
 
-void NetworkServer::onMulticastRead()
-{
+void NetworkServer::onMulticastRead() {
     while (multicast_socket->hasPendingDatagrams()) {
         // Create a temporary buffer ...
         QByteArray datagram;
@@ -52,29 +49,25 @@ void NetworkServer::onMulticastRead()
         // ... and copy over the received multicast datagram into that buffer.
         multicast_socket->readDatagram(datagram.data(), datagram.size());
         QString str = QString::fromUtf8(datagram.data());
-        Console::print(str);
+        //Console::print(str);
         parseResult(str);
     }
 }
 
-void NetworkServer::onTcpRead()
-{
-    while (tcp_socket->canReadLine())
-    {
+void NetworkServer::onTcpRead() {
+    while (tcp_socket->canReadLine()) {
         QString str = QString::fromUtf8(tcp_socket->readLine());
         parseResult(str);
     }
 }
 
-void NetworkServer::parseResult(const QString &result)
-{
+void NetworkServer::parseResult(const QString &result) {
     //Console::print(result);
     QStringList protocolStrings = result.split("#");
     for (int i = 0; i < protocolStrings.size(); ++i) {
-        Protocol* protocol = new Protocol();
+        Protocol *protocol = new Protocol();
         QStringList list = protocolStrings[i].split(";");
-        for (int j = 0; j < list.size(); ++j)
-        {
+        for (int j = 0; j < list.size(); ++j) {
             protocol->putString(list[j]);
         }
         dispatchEvent(NetworkEvent(this, NetworkEvent::PROTOCOL, protocol));
@@ -82,26 +75,22 @@ void NetworkServer::parseResult(const QString &result)
     }
 }
 
-void NetworkServer::onTcpConnected()
-{
-    Console::print(QString("Connected to ").append(this->host+" ").append(QVariant(this->port).toString()));
+void NetworkServer::onTcpConnected() {
+    Console::print(QString("Connected to ").append(this->host + " ").append(QVariant(this->port).toString()));
     dispatchEvent(NetworkEvent(this, NetworkEvent::CONNECTED));
 }
 
-void NetworkServer::onTcpDisconnected()
-{
+void NetworkServer::onTcpDisconnected() {
     Console::print("Connection has been interrupted");
     dispatchEvent(NetworkEvent(this, NetworkEvent::DISCONNECTED));
 }
 
-void NetworkServer::onTcpError(QAbstractSocket::SocketError e)
-{
+void NetworkServer::onTcpError(QAbstractSocket::SocketError e) {
     Console::print("Check");
     //Console::print(e);
     Console::print("Connection error ");
 }
 
-void NetworkServer::send(Protocol &protocol)
-{
+void NetworkServer::send(Protocol &protocol) {
     tcp_socket->write(protocol.toByteArray());
 }

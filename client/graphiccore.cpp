@@ -8,7 +8,7 @@ GraphicCore::GraphicCore() : QGLWidget(QGLFormat(QGL::SampleBuffers), 0)
 {
     connect(&loop, SIGNAL(timeout()), this, SLOT(onGameCycle()));
 
-    TICKS_PER_SECOND = 100;
+    TICKS_PER_SECOND = 20;
     SKIP_TICKS = 1000 / TICKS_PER_SECOND;
     MAX_FRAMESKIP = 10;
     counter.start();

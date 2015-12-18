@@ -12,177 +12,161 @@
 #include "../common/vector2d.h"
 #include "../common/matrix.h"
 
-class DisplayObject : public TransformableObject, public EventDispatcher
-{
+class DisplayObject : public TransformableObject, public EventDispatcher {
 public:
     DisplayObject();
-    virtual ~DisplayObject();
-    virtual void render(QPainter* render2d, const Matrix& base, bool t, float new_int);
 
-    void setX(float x)
-    {
-        if (isInt)
-        {
+    virtual ~DisplayObject();
+
+    virtual void render(QPainter *render2d, const Matrix &base, bool t, double new_int);
+
+    void setX(double x) {
+        if (isInt) {
             prev_x = target_position.x;
             target_position.x = x;
         }
-        else
-        {
+        else {
             prev_x = position.x = x;
         }
     }
 
-    float getX() const
-    {
-        if (isInt)
-        {
+    double getX() const {
+        if (isInt) {
             return target_position.x;
         }
-        else
-        {
+        else {
             return position.x;
         }
     }
-    void setPosition(const Vector2D& p)
-    {
+
+    void setPosition(const Vector2D &p) {
         setX(p.x);
         setY(p.y);
     }
 
-    const Vector2D& getPosition() const
-    {
-        if (isInt)
-        {
+    const Vector2D &getPosition() const {
+        if (isInt) {
             return target_position;
         }
-        else
-        {
+        else {
             return position;
         }
     }
 
-    void setY(float y)
-    {
-        if (isInt)
-        {
+    void setY(double y) {
+        if (isInt) {
             prev_y = target_position.y;
             target_position.y = y;
         }
-        else
-        {
+        else {
             prev_y = position.y = y;
         }
     }
-    float getY() const
-    {
-        if (isInt)
-        {
+
+    double getY() const {
+        if (isInt) {
             return target_position.y;
         }
-        else
-        {
+        else {
             return position.y;
         }
     }
+
     void setInter(bool i) { isInt = i; }
-    void setRotationZ(float rotationZ)
-    {
-        if (isInt)
-        {
+
+    void setRotationZ(double rotationZ) {
+        if (isInt) {
             prev_rotationZ = target_rotationZ;
             target_rotationZ = rotationZ;
         }
-        else
-        {
+        else {
             this->rotationZ = rotationZ;
         }
     }
-    float getRotationZ() const
-    {
-        if (isInt)
-        {
+
+    double getRotationZ() const {
+        if (isInt) {
             return target_rotationZ;
         }
-        else
-        {
+        else {
             return rotationZ;
         }
     }
-    void setScaleX(float scaleX)
-    {
-        if (isInt)
-        {
+
+    void setScaleX(double scaleX) {
+        if (isInt) {
             prev_scaleX = target_scaleX;
             target_scaleX = scaleX;
         }
-        else
-        {
+        else {
             scaling.x = scaleX;
         }
     }
-    float getScaleX() const
-    {
-        if (isInt)
-        {
+
+    double getScaleX() const {
+        if (isInt) {
             return target_scaleX;
         }
-        else
-        {
+        else {
             return scaling.x;
         }
     }
-    void setScaleY(float scaleY)
-    {
-        if (isInt)
-        {
+
+    void setScaleY(double scaleY) {
+        if (isInt) {
             prev_scaleY = target_scaleY;
             target_scaleY = scaleY;
         }
-        else
-        {
+        else {
             scaling.y = scaleY;
         }
     }
-    float getScaleY() const
-    {
-        if (isInt)
-        {
+
+    double getScaleY() const {
+        if (isInt) {
             return target_scaleY;
         }
-        else
-        {
+        else {
             return scaling.y;
         }
     }
+
     void setVisible(bool visible) { _visible = visible; }
+
     bool isVisible() const;
+
     void setWidth(float);
+
     //float getWidth();
     void setHeight(float);
+
     //float getHeight();
     void setRatio(bool ratio) { _ratio = ratio; }
+
     bool isRatio() const { return _ratio; }
+
     bool hitTestPoint(float x, float y);
+
 protected:
-    float prev_rotationZ;
-    float target_rotationZ;
-    float speed_rotationZ;
+    double prev_rotationZ;
+    double target_rotationZ;
+    double speed_rotationZ;
 
     Vector2D target_position;
-    float target_scaleX;
-    float target_scaleY;
+    double target_scaleX;
+    double target_scaleY;
 
-    float prev_x;
-    float prev_y;
-    float prev_scaleX;
-    float prev_scaleY;
+    double prev_x;
+    double prev_y;
+    double prev_scaleX;
+    double prev_scaleY;
 
     bool _visible;
     bool _ratio;
 
-    QRectF* bounds;
+    QRectF *bounds;
 private:
-    DisplayObject* root;
+    DisplayObject *root;
     bool ready;
     bool isInt;
 };

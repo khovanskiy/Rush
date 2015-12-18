@@ -145,14 +145,9 @@ public:
         cache_work[id_object] = this;
     }
 
-    void render(QPainter * painter, const Matrix &base, bool new_tick, float interpolation)
+    void render(QPainter * painter, const Matrix &base, bool new_tick, double interpolation)
     {
         Sprite::render(painter, base, new_tick, interpolation);
-        if (class_object == VEHICLE)
-        {
-            Console::print(QString("") + QVariant(position.x).toString()
-                           + QString(",") + QVariant(position.y).toString());
-        }
     }
 
     ~WorkView()
