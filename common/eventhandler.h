@@ -2,30 +2,28 @@
 #define EVENTHANDLER_H
 
 class Event;
+
 class FunctionProxy;
 
-class EventHandler
-{
+class EventHandler {
 public:
-    virtual void Invoke(const Event&)
-    {
+    virtual void Invoke(const Event &) {
 
     }
 };
 
-class FunctionProxy : public EventHandler
-{
+class FunctionProxy : public EventHandler {
 public:
-    FunctionProxy(EventHandler* f)
-    {
+    FunctionProxy(EventHandler *f) {
         this->f = f;
     }
-    void Invoke(const Event &event)
-    {
+
+    void Invoke(const Event &event) {
         f->Invoke(event);
     }
+
 private:
-    EventHandler* f;
+    EventHandler *f;
 };
 
 #endif // EVENTHANDLER_H

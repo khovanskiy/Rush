@@ -17,8 +17,6 @@ class GraphicCore : public QGLWidget, public EventDispatcher
 public:
     GraphicCore();
     ~GraphicCore();
-    static GraphicCore& gi();
-    void render(bool new_tick, float interpolation);
 public slots:
     void onGameCycle();
 protected:

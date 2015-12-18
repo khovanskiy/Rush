@@ -1,8 +1,7 @@
 #include "server.h"
 #include <iostream>
 
-Server::Server()
-{
+Server::Server(int argc, char **argv) : QCoreApplication(argc, argv) {
     state = new ServerState();
     state->init();
 
@@ -26,8 +25,7 @@ Server::Server()
 
 }
 
-Server::~Server()
-{
+Server::~Server() {
     state->release();
 }
 
@@ -145,11 +143,9 @@ void Server::broadcast(const QByteArray& buffer)
     }
 }*/
 
-void Server::onLoop()
-{
+void Server::onLoop() {
     int loops = 0;
-    while (counter->elapsed() > next_game_tick && loops < MAX_FRAMESKIP)
-    {
+    while (counter->elapsed() > next_game_tick && loops < MAX_FRAMESKIP) {
         state->tick(1.0 / TICKS_PER_SECOND);
         next_game_tick += SKIP_TICKS;
         loops++;

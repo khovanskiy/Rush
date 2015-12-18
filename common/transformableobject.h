@@ -14,6 +14,8 @@ public:
     virtual Matrix& getTransform();
 
     void setSize(const Vector2D& size);
+    void setScaling(const Vector2D& scaling);
+    const Vector2D& getScaling() const;
     const Vector2D& getSize() const;
     virtual void setPosition(const Vector2D& p);
     virtual const Vector2D& getPosition() const;

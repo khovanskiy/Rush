@@ -1,7 +1,5 @@
 #include "matrix.h"
 
-#include "vector2d.h"
-#include "math.h"
 #include "console.h"
 
 Matrix::Matrix()

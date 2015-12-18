@@ -5,12 +5,12 @@
 #include <QPainter>
 #include <QRectF>
 
-#include "../common/eventdispatcher.h"
-#include "../common/eventhandler.h"
-#include "../common/transformableobject.h"
+#include <common/eventdispatcher.h>
+#include <common/eventhandler.h>
+#include <common/transformableobject.h>
 
-#include "../common/vector2d.h"
-#include "../common/matrix.h"
+#include <common/vector2d.h>
+#include <common/matrix.h>
 
 class DisplayObject : public TransformableObject, public EventDispatcher {
 public:
@@ -26,7 +26,7 @@ public:
             target_position.x = x;
         }
         else {
-            prev_x = position.x = x;
+            position.x = x;
         }
     }
 
@@ -59,7 +59,7 @@ public:
             target_position.y = y;
         }
         else {
-            prev_y = position.y = y;
+            position.y = y;
         }
     }
 

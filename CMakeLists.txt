@@ -131,8 +131,6 @@ set(SOURCE_FILES
         README.md
         renderdata.cpp
         renderdata.h
-        client/sampleview.cpp
-        client/sampleview.h
         server.cpp
         server.h
         serverstate.cpp

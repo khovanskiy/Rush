@@ -9,7 +9,7 @@ public:
     RenderData();
     QPainter* render2d;
     bool new_tick;
-    float interpolation;
+    double interpolation;
 };
 
 #endif // RENDERDATA_H

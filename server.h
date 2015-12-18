@@ -13,6 +13,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QCoreApplication>
 
 #include "networkclient.h"
 #include "common/console.h"
@@ -20,11 +21,11 @@
 
 #include "serverstate.h"
 
-class Server : public QMainWindow, public EventHandler
+class Server : public QCoreApplication, public EventHandler
 {
     Q_OBJECT
 public:
-    Server();
+    Server(int argc, char** argv);
     virtual ~Server();
 public slots:
     void onLoop();

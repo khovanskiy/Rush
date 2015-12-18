@@ -40,20 +40,27 @@ void GameplayState::Invoke(const Event &event) {
             Vector2D position;
             position.x = protocol->nextDouble();
             position.y = protocol->nextDouble();
-            /*if (isVehicle) {
-                Console::print(QString("Vehicle: ") + QVariant(position.x).toString()
-                               + QString(",") + QVariant(position.y).toString());
-            }/**/
             double rotation = protocol->nextDouble();
+            /*if (class_object == GameObjectType::VEHICLE) {
+                static int ttt = 0;
+                if (ttt % 2 == 0) {
+                    Console::print("Vehicle: " + QVariant(position.x).toString()
+                                   + "," + QVariant(position.y).toString() + ", " + QVariant(rotation).toString());
+                }
+                ++ttt;
+            }*/
             WorkView *object = WorkView::findById(id_object);
             WorkView *parent = WorkView::findById(id_parent);
             if (object == 0) {
                 if (class_object == GameObjectType::TURRET) {
+                    Console::print("Create view for TURRET");
                     object = new WorkView(id_object, class_object, type_object);
                     parent->addChild(object);
-
                 }
                 else {
+                    if (class_object == GameObjectType::VEHICLE) {
+                        Console::print("Create view for VEHICLE");
+                    }
                     object = new WorkView(id_object, class_object, type_object);
                     view_list.push_back(object);
                 }
@@ -134,11 +141,24 @@ void GameplayState::Invoke(const Event &event) {
 }
 
 void GameplayState::render(const RenderData &render_data) {
+    //Console::print(QVariant(render_data.interpolation).toString());
     Matrix camera_transform = Camera::gi()->getTransform();
+    //Matrix cam = Matrix::scaling(Vector2D(20, 20));
+    if (current_state == INITED) {
+        /*static int ttt = 0;
+        if (ttt % 10 == 0) {
+            Console::print("View -> Camera");
+        }
+        ++ttt;*/
+        //cam.M31 += current_vehicle->getX();
+        //cam.M32 += current_vehicle->getY();
+        Camera::gi()->setPosition(current_vehicle->getPosition());
+    }
     for (int i = 0; i < view_list.size(); ++i) {
         if (view_list[i]->valid) {
             view_list[i]->render(render_data.render2d, camera_transform, render_data.new_tick,
                                  render_data.interpolation);
+
         }
         else {
             unused_view_list.push_back(view_list[i]);
@@ -146,9 +166,6 @@ void GameplayState::render(const RenderData &render_data) {
             view_list.pop_back();
             --i;
         }
-    }
-    if (current_state == INITED) {
-        Camera::gi()->setPosition(current_vehicle->getPosition());
     }
 
     arrows_view->render(render_data.render2d, Matrix(), render_data.new_tick, render_data.interpolation);

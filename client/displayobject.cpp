@@ -1,13 +1,8 @@
 #include "displayobject.h"
-#include "math.h"
-#include "../common/console.h"
+#include <common/console.h>
 #include "mouse.h"
-#include "mouseevent.h"
-#include <numeric>
-#include <cmath>
 
-DisplayObject::DisplayObject()
-{
+DisplayObject::DisplayObject() {
     _visible = true;
 
     prev_x = 0;
@@ -27,17 +22,13 @@ DisplayObject::DisplayObject()
     bounds = new QRectF();
 }
 
-DisplayObject::~DisplayObject()
-{
+DisplayObject::~DisplayObject() {
     delete bounds;
 }
 
-void DisplayObject::render(QPainter *, const Matrix &base, bool new_tick, double interpolation)
-{
-    if (isInt)
-    {
-        if (new_tick)
-        {
+void DisplayObject::render(QPainter *, const Matrix &base, bool new_tick, double interpolation) {
+    if (isInt) {
+        if (new_tick) {
             prev_x = target_position.x;
             prev_y = target_position.y;
             prev_scaleX = target_scaleX;
@@ -67,8 +58,7 @@ void DisplayObject::render(QPainter *, const Matrix &base, bool new_tick, double
     }
 }
 
-void DisplayObject::setWidth(float value)
-{
+void DisplayObject::setWidth(float value) {
     outer_size.x = value;
     isWHsettedup = true;
 }
@@ -79,8 +69,7 @@ void DisplayObject::setWidth(float value)
     return (float)(inner_height * abs(res->M12) + inner_width * abs(res->M11));
 }*/
 
-void DisplayObject::setHeight(float value)
-{
+void DisplayObject::setHeight(float value) {
     outer_size.y = value;
     isWHsettedup = true;
 }
@@ -91,12 +80,10 @@ void DisplayObject::setHeight(float value)
     return (float)(inner_width * abs(res->M12) + inner_height * abs(res->M11));
 }*/
 
-bool DisplayObject::isVisible() const
-{
+bool DisplayObject::isVisible() const {
     return _visible;
 }
 
-bool DisplayObject::hitTestPoint(float x, float y)
-{
+bool DisplayObject::hitTestPoint(float x, float y) {
     return (bounds->top() <= y && y <= bounds->bottom() && bounds->left() <= x && x <= bounds->right());
 }

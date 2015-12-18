@@ -48,7 +48,7 @@ void ServerState::init() {
         }
     }
     {
-        Obstacle* wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
+        Obstacle *wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
         wall->setCoordinates(Vector2D(100, -0));
         game_world->add(wall);
         physics_world->add(wall);
@@ -58,12 +58,12 @@ void ServerState::init() {
         physics_world->add(wall);
         wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
         wall->setCoordinates(Vector2D(-0, 100));
-        wall->setAngle(M_PI/2);
+        wall->setAngle(M_PI / 2);
         game_world->add(wall);
         physics_world->add(wall);
         wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
         wall->setCoordinates(Vector2D(200, 100));
-        wall->setAngle(M_PI/2);
+        wall->setAngle(M_PI / 2);
         game_world->add(wall);
         physics_world->add(wall);
     }
@@ -220,7 +220,6 @@ void ServerState::tick(double dt) {
         multicastObjects();
     }
 
-
     for (std::map<int, Player *>::iterator i = players.begin(); i != players.end(); ++i) {
         Player *player = (*i).second;
         if (player->state == PLAYER_WAIT_VEHICLE) {
@@ -266,19 +265,14 @@ void ServerState::tick(double dt) {
                 game_world->add(vehicle);
                 physics_world->add(vehicle);
 
-                if (iteration % skipTicks == 0) {
-                    Protocol protocol;
-                    protocol.putInt(ADD_OBJECT);
-                    protocol.putInt(player->id_player);
-                    protocol.putInt(vehicle->my_id);
-                    tcpBroadcast(protocol);
-                }
-
+                Protocol protocol;
+                protocol.putInt(ADD_OBJECT);
+                protocol.putInt(player->id_player);
+                protocol.putInt(vehicle->my_id);
+                tcpBroadcast(protocol);
             }
         }
-        if (iteration % skipTicks == 0) {
-            tcpBroadcastPlayerStat(player);
-        }
+        tcpBroadcastPlayerStat(player);
     }
 }
 
@@ -352,7 +346,7 @@ void ServerState::multicastPhysicsObject(PhysicsObject *object, int id_parent) {
     protocol.putDouble(object->getCoordinates().x);
     protocol.putDouble(object->getCoordinates().y);
     protocol.putDouble(object->getAngle());
-    multicast(protocol);    
+    multicast(protocol);
 }
 
 void ServerState::multicast(Protocol &protocol, bool forceSend) {
@@ -437,8 +431,7 @@ void ServerState::playerRecieved() {
         for (int i = 0; i < protocolStrings.size(); ++i) {
             Protocol protocol;
             QStringList list = protocolStrings[i].split(";");
-            for (int j = 0; j < list.size(); ++j)
-            {
+            for (int j = 0; j < list.size(); ++j) {
                 protocol.putString(list[j]);
             }
             parseResult(protocol);

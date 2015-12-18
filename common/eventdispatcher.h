@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "eventhandler.h"
-#include "event.h"
 
 class EventDispatcher
 {
