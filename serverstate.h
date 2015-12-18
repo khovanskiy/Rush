@@ -80,7 +80,7 @@ public slots:
 protected:
     void tcpBroadcastPlayerStat(Player*);
     void tcpBroadcast(Protocol& buffer);
-    void multicast(Protocol& buffer);
+    void multicast(Protocol& buffer, bool forceSend = false);
     void multicastObjects();
     void multicastVehicle(Vehicle* vehicle, int id_parent);
     void multicastPhysicsObject(PhysicsObject* object, int id_parent);

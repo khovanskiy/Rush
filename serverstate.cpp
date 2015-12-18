@@ -330,6 +330,8 @@ void ServerState::multicastObjects() {
             multicast(protocol);
         }
     }
+    Protocol a = Protocol();
+    multicast(a, true);
 }
 
 void ServerState::multicastVehicle(Vehicle *vehicle, int id_parent) {
@@ -353,11 +355,11 @@ void ServerState::multicastPhysicsObject(PhysicsObject *object, int id_parent) {
     multicast(protocol);    
 }
 
-void ServerState::multicast(Protocol &protocol) {
+void ServerState::multicast(Protocol &protocol, bool forceSend) {
     //tcpBroadcast(protocol);
     static std::queue<Protocol> q;
-    q.push(protocol);
-    if (q.size() == QUEUE_SIZE) {
+    if (!forceSend) q.push(protocol);
+    if (q.size() == QUEUE_SIZE || forceSend) {
         QByteArray buffer;
         while (q.size() > 1) {
             buffer.append(q.front().toByteArray()).append('#');
