@@ -69,14 +69,17 @@ void NetworkServer::onTcpRead()
 void NetworkServer::parseResult(const QString &result)
 {
     //Console::print(result);
-    Protocol* protocol = new Protocol();
-    QStringList list = result.split(";");
-    for (int i = 0; i < list.size(); ++i)
-    {
-        protocol->putString(list[i]);
+    QStringList protocolStrings = result.split("#");
+    for (int i = 0; i < protocolStrings.size(); ++i) {
+        Protocol* protocol = new Protocol();
+        QStringList list = protocolStrings[i].split(";");
+        for (int j = 0; j < list.size(); ++j)
+        {
+            protocol->putString(list[j]);
+        }
+        dispatchEvent(NetworkEvent(this, NetworkEvent::PROTOCOL, protocol));
+        delete protocol;
     }
-    dispatchEvent(NetworkEvent(this, NetworkEvent::PROTOCOL, protocol));
-    delete protocol;
 }
 
 void NetworkServer::onTcpConnected()

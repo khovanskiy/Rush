@@ -7,6 +7,7 @@ static const double angular_speed_koef = 1;
 static const double critical_depth_koef = 0.125;
 static const double PI = 3.14159265358979323846;
 static const double INFINITE_TIME = 1e100;
+static const double elasticity = 0.25;
 
 const int PhysicsObject::TURRET = 0;
 const int PhysicsObject::VEHICLE = 1;
@@ -303,7 +304,7 @@ Collision PhysicsObject::solveCollisionWith(PhysicsObject *other, Point2D const 
         r2.sub(other->getMassCenter());
         double k2 = r2.cross(collision_direction);
         k2 = angular_speed_koef * k2 * k2 / other->inertia_moment;
-        double impulse = speed_projection / (1 / this->mass + 1 / other->mass + k1 + k2);
+        double impulse = speed_projection * (1 + elasticity) / (1 / this->mass + 1 / other->mass + k1 + k2);
         impulse_change = collision_direction;
         impulse_change.mul(-impulse);
     }

@@ -3,8 +3,11 @@
 #include "common/terrain.h"
 #include "common/random.h"
 #include "multicastparams.h"
+#include <queue>
 
 //static const double M_PI = 3.14159265358979323846;
+static const int skipTicks = 2;
+static const int QUEUE_SIZE = 30;
 
 void ServerState::init() {
     game_world = new GameWorld();
@@ -208,9 +211,15 @@ void ServerState::Invoke(const Event &event) {
 }
 
 void ServerState::tick(double dt) {
+    static int iteration = -1;
+    iteration = (iteration + 1) % skipTicks;
     physics_world->tick(dt);
     game_world->tick(dt);
-    multicastObjects();
+
+    if (iteration % skipTicks == 0) {
+        multicastObjects();
+    }
+
 
     for (std::map<int, Player *>::iterator i = players.begin(); i != players.end(); ++i) {
         Player *player = (*i).second;
@@ -257,15 +266,19 @@ void ServerState::tick(double dt) {
                 game_world->add(vehicle);
                 physics_world->add(vehicle);
 
-                Protocol protocol;
-                protocol.putInt(ADD_OBJECT);
-                protocol.putInt(player->id_player);
-                protocol.putInt(vehicle->my_id);
-                tcpBroadcast(protocol);
+                if (iteration % skipTicks == 0) {
+                    Protocol protocol;
+                    protocol.putInt(ADD_OBJECT);
+                    protocol.putInt(player->id_player);
+                    protocol.putInt(vehicle->my_id);
+                    tcpBroadcast(protocol);
+                }
 
             }
         }
-        tcpBroadcastPlayerStat(player);
+        if (iteration % skipTicks == 0) {
+            tcpBroadcastPlayerStat(player);
+        }
     }
 }
 
@@ -337,16 +350,23 @@ void ServerState::multicastPhysicsObject(PhysicsObject *object, int id_parent) {
     protocol.putDouble(object->getCoordinates().x);
     protocol.putDouble(object->getCoordinates().y);
     protocol.putDouble(object->getAngle());
-    multicast(protocol);
+    multicast(protocol);    
 }
 
 void ServerState::multicast(Protocol &protocol) {
-    QByteArray buffer = protocol.toByteArray();
-    /*for (auto it = multicast_interfaces.begin(); it != multicast_interfaces.end(); it++) {
-        multicast_socket->setMulticastInterface(*it);
+    //tcpBroadcast(protocol);
+    static std::queue<Protocol> q;
+    q.push(protocol);
+    if (q.size() == QUEUE_SIZE) {
+        QByteArray buffer;
+        while (q.size() > 1) {
+            buffer.append(q.front().toByteArray()).append('#');
+            q.pop();
+        }
+        buffer.append(q.front().toByteArray());
+        q.pop();
         multicast_socket->writeDatagram(buffer, group_address, group_port);
-    }/**/
-    multicast_socket->writeDatagram(buffer, group_address, group_port);
+    }
 }
 
 void ServerState::tcpBroadcast(Protocol &protocol) {
@@ -411,12 +431,16 @@ void ServerState::playerRecieved() {
     Player *player = static_cast<Player *>(sender());
     while (player->socket->canReadLine()) {
         QString str = QString::fromUtf8(player->socket->readLine());
-        Protocol protocol;
-        QStringList list = str.split(";");
-        for (int i = 0; i < list.size(); ++i) {
-            protocol.putString(list[i]);
+        QStringList protocolStrings = str.split("#");
+        for (int i = 0; i < protocolStrings.size(); ++i) {
+            Protocol protocol;
+            QStringList list = protocolStrings[i].split(";");
+            for (int j = 0; j < list.size(); ++j)
+            {
+                protocol.putString(list[j]);
+            }
+            parseResult(protocol);
         }
-        parseResult(protocol);
     }
 }
 
