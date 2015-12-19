@@ -1,3 +1,4 @@
+#include <common/Arguments.h>
 #include "gameplaystate.h"
 
 std::map<int, WorkView *> WorkView::cache_work;
@@ -5,7 +6,7 @@ std::map<int, WorkView *> WorkView::cache_work;
 void GameplayState::init() {
     server = new NetworkServer();
     server->addEventListener(this);
-    server->connect("127.0.0.1", 8888);
+    server->connect(Arguments::gi()->getHostname(), 8888);
 
     current_state = WAIT_VEHICLE;
     current_id_player = 0;

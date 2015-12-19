@@ -181,7 +181,7 @@ set(SOURCE_FILES
         common/StateEnum.h
         multicastparams.h
         multicastparams.cpp
-)
+        common/Arguments.cpp common/Arguments.h)
 
 add_executable(${PROJECT} ${SOURCE_FILES})
 
