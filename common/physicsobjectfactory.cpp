@@ -163,7 +163,7 @@ Obstacle* PhysicsObjectFactory::createObstacle(int id_object, int obstacle_type)
     bool dynamic;
     if (obstacle_type == 0)
     {
-        shape = new Rectangle2D(Vector2D(0, 0), 200, 10);
+        shape = new Rectangle2D(Vector2D(0, 0), 200, 5);
         mass = 1000000;
         inertia_moment = 1000000;
         dynamic = false;

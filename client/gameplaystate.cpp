@@ -143,18 +143,11 @@ void GameplayState::Invoke(const Event &event) {
 
 void GameplayState::render(const RenderData &render_data) {
     //Console::print(QVariant(render_data.interpolation).toString());
-    Matrix camera_transform = Camera::gi()->getTransform();
     //Matrix cam = Matrix::scaling(Vector2D(20, 20));
     if (current_state == INITED) {
-        /*static int ttt = 0;
-        if (ttt % 10 == 0) {
-            Console::print("View -> Camera");
-        }
-        ++ttt;*/
-        //cam.M31 += current_vehicle->getX();
-        //cam.M32 += current_vehicle->getY();
         Camera::gi()->setPosition(current_vehicle->getPosition());
     }
+    Matrix camera_transform = Camera::gi()->getTransform();
     for (int i = 0; i < view_list.size(); ++i) {
         if (view_list[i]->valid) {
             view_list[i]->render(render_data.render2d, camera_transform, render_data.new_tick,

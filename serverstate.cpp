@@ -48,21 +48,22 @@ void ServerState::init() {
         }
     }
     {
+        double shift = 2.5;
         Obstacle *wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
-        wall->setCoordinates(Vector2D(100, -0));
+        wall->setCoordinates(Vector2D(100, shift));
         game_world->add(wall);
         physics_world->add(wall);
         wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
-        wall->setCoordinates(Vector2D(100, 200));
+        wall->setCoordinates(Vector2D(100, 200 - shift));
         game_world->add(wall);
         physics_world->add(wall);
         wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
-        wall->setCoordinates(Vector2D(-0, 100));
+        wall->setCoordinates(Vector2D(shift, 100));
         wall->setAngle(M_PI / 2);
         game_world->add(wall);
         physics_world->add(wall);
         wall = PhysicsObjectFactory::createObstacle(objects_ids.next(), 0);
-        wall->setCoordinates(Vector2D(200, 100));
+        wall->setCoordinates(Vector2D(200 - shift, 100));
         wall->setAngle(M_PI / 2);
         game_world->add(wall);
         physics_world->add(wall);
@@ -210,6 +211,8 @@ void ServerState::Invoke(const Event &event) {
     }
 }
 
+#define BOOST 1
+
 void ServerState::tick(double dt) {
     static int iteration = -1;
     iteration = (iteration + 1) % skipTicks;
@@ -350,18 +353,23 @@ void ServerState::multicastPhysicsObject(PhysicsObject *object, int id_parent) {
 }
 
 void ServerState::multicast(Protocol &protocol, bool forceSend) {
-    //tcpBroadcast(protocol);
-    static std::queue<Protocol> q;
-    if (!forceSend) q.push(protocol);
-    if (q.size() == QUEUE_SIZE || forceSend) {
-        QByteArray buffer;
-        while (q.size() > 1) {
-            buffer.append(q.front().toByteArray()).append('#');
-            q.pop();
+    if (BOOST) {
+        if (!forceSend) {
+            tcpBroadcast(protocol);
         }
-        buffer.append(q.front().toByteArray());
-        q.pop();
-        multicast_socket->writeDatagram(buffer, group_address, group_port);
+    } else {
+        static std::queue<Protocol> q;
+        if (!forceSend) q.push(protocol);
+        if (q.size() == QUEUE_SIZE || forceSend) {
+            QByteArray buffer;
+            while (q.size() > 1) {
+                buffer.append(q.front().toByteArray()).append('#');
+                q.pop();
+            }
+            buffer.append(q.front().toByteArray());
+            q.pop();
+            multicast_socket->writeDatagram(buffer, group_address, group_port);
+        }
     }
 }
 
